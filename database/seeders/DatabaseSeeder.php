@@ -20,13 +20,15 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        DB::table('orders')->truncate();
-        DB::table('products')->truncate();
+        DB::table('orders')->delete();
+        DB::table('products')->delete();
+        DB::table('users')->delete();
 
 
         $this->call([
             ProductSeeder::class,
             OrderSeeder::class,
+            RoleSeeder::class,
         ]);
     }
 }
