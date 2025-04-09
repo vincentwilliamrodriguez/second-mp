@@ -2,46 +2,52 @@
 
     <div class="w-[70vw] max-w-[700px] p-4">
         <x-validation-errors class="mb-4" />
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div>
                 <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus/>
             </div>
 
             <div class="mt-4">
-                <x-label for="username" value="{{ __('Username') }}" />
-                <x-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                <x-label for="description" value="{{ __('Description') }}" />
+                <x-input id="description" class="block mt-1 w-full" type="text" name="description" :value="old('description')" autofocus/>
             </div>
 
             <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                <x-label for="quantity" value="{{ __('Quantity Available') }}" />
+                <x-input id="quantity" class="block mt-1 w-full" type="number" name="quantity" :value="old('quantity')" required/>
             </div>
 
             <div class="mt-4">
-                <x-label for="username" value="{{ __('Username') }}" />
-                <x-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                <x-label for="price" value="{{ __('Price') }}" />
+                <x-input id="price" class="block mt-1 w-full" type="number" name="price" pattern="[0-9]+([\.,][0-9]+)?" step="0.01" min='0' :value="old('price')" required autofocus/>
             </div>
 
             <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                <x-label for="category" value="{{ __('Category') }}" />
+                <x-dropdown-wrapper
+                    :defaultText="'Select a Category'"
+                    :options="$categories"
+                    name="category"
+                    align="left"
+                    width="60"
+                ></x-dropdown-wrapper>
             </div>
 
             <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                <x-label for="picture" value="{{ __('Picture (Optional)') }}" />
+                <x-input id="picture" class="block mt-1 w-full rounded-none" type="file" name="picture" :value="old('picture')" autofocus/>
             </div>
 
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
+                    {{ __('Cancel') }}
                 </a>
 
                 <x-button class="ms-4">
-                    {{ __('Register') }}
+                    {{ __('Create') }}
                 </x-button>
             </div>
         </form>
