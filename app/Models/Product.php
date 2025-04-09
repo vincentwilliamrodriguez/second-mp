@@ -13,6 +13,7 @@ class Product extends Model
     use HasFactory;
     use HasUuids;
 
+    protected $table = 'products';
     protected $keyType = 'string';
     public $incrementing = 'false';
 

@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignUuid('product_id');
+            $table->foreignId('customer_id');
+            $table->integer('quantity');
+            $table->boolean('is_placed');
+            $table->date('date_placed');
+            $table->string('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

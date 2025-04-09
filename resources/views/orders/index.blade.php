@@ -9,7 +9,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="flex flex-col p-8">
-                    Awaw
+                    @foreach ($orders as $order)
+                        <div class="mb-4 flex flex-col">
+                            @foreach ($order->getAttributes() as $key => $value)
+                                <div class="flex gap-1">
+                                    <strong>{{ $key }}: </strong> {{ $value }}
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

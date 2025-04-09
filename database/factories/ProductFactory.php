@@ -17,9 +17,11 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $seller = User::inRandomOrder()->first() ?? 1;
+
         return [
             'name' => $this->faker->word(),
-            'seller_id' => 1,
+            'seller_id' => $seller->id,
             'description' => $this->faker->sentence(),
             'category' => $this->faker->randomElement(['Electronics', 'Books', 'Clothing', 'Home', 'Sports']),
             'quantity' => $this->faker->numberBetween(1, 100),
