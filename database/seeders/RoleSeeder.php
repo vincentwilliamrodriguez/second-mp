@@ -78,8 +78,10 @@ class RoleSeeder extends Seeder
 
         foreach ($roles as $roleName => $perms) {
             $role = Role::firstOrCreate(['name' => $roleName]);
-            if ($perms === ['all-permissions']) {
+            if (in_array('all-permissions', $perms)) {
                 $role->givePermissionTo($permissions);
+            } else {
+                $role->givePermissionTo($perms);
             }
         }
 
