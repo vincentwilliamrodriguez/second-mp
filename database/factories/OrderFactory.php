@@ -19,7 +19,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         $product = Product::inRandomOrder()->first() ?? Product::factory()->create();
-        $customer = User::inRandomOrder()->first() ?? 1;
+        $customer = User::inRandomOrder()->first() ?? User::factory()->create();
 
         return [
             'product_id' => $product->id,

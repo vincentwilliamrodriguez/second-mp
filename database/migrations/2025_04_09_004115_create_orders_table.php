@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('product_id');
-            $table->foreignId('customer_id');
+            $table->foreignUuid('product_id')
+                ->constrained()
+                ->onDelete('cascade');
+            $table->foreignId('customer_id')
+                ->constrained('users')
+                ->onDelete('cascade');
             $table->integer('quantity');
             $table->boolean('is_placed');
             $table->date('date_placed');

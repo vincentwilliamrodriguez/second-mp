@@ -17,7 +17,7 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $seller = User::inRandomOrder()->first() ?? 1;
+        $seller = User::inRandomOrder()->first() ?? User::factory()->create();
 
         return [
             'name' => $this->faker->word(),
