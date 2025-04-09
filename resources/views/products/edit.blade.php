@@ -18,12 +18,12 @@
 
             <div class="mt-4">
                 <x-label for="quantity" value="{{ __('Quantity Available') }}" />
-                <x-input id="quantity" class="block mt-1 w-full" type="number" name="quantity" :value="$product->quantity" required/>
+                <x-input id="quantity" class="block mt-1 w-full" type="number" min='1' max='10000000' name="quantity" :value="$product->quantity" required/>
             </div>
 
             <div class="mt-4">
                 <x-label for="price" value="{{ __('Price') }}" />
-                <x-input id="price" class="block mt-1 w-full" type="number" name="price" pattern="[0-9]+([\.,][0-9]+)?" step="0.01" min='0' :value="$product->price" required autofocus/>
+                <x-input id="price" class="block mt-1 w-full" type="number" min='0' max='100000000' name="price" pattern="[0-9]+([\.,][0-9]+)?" step="0.01" min='0' :value="$product->price" required autofocus/>
             </div>
 
             <div class="mt-4">
@@ -53,7 +53,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
+                <a class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('products.index') }}">
                     {{ __('Cancel') }}
                 </a>
 
