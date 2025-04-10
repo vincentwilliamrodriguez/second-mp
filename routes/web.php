@@ -71,7 +71,7 @@ Route::middleware([
         Route::resource('users', UserController::class);
     });
 
-    Route::middleware('permission:read-tickets')->group(function () {
-        Route::resource('tickets', TicketController::class);
+    Route::middleware('permission:read-supports')->group(function () {
+        Route::resource('supports', SupportController::class);
     });
 });
