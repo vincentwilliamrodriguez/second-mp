@@ -70,4 +70,8 @@ Route::middleware([
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
+
+    Route::middleware('permission:read-tickets')->group(function () {
+        Route::resource('tickets', TicketController::class);
+    });
 });

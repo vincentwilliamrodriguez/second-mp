@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-mark class="block h-9 w-auto" />
+                        <img src="shopstream.png" class="block h-9 w-auto" />
                     </a>
                 </div>
 
@@ -17,7 +17,7 @@
                     </x-nav-link> --}}
                     @can('read-products')
                         <x-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.index')">
-                            {{ __('Products') }}
+                            {{ __('Shop') }}
                         </x-nav-link>
                     @endcan
 
@@ -30,6 +30,12 @@
                     @can('read-users')
                         <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                             {{ __('Users') }}
+                        </x-nav-link>
+                    @endcan
+
+                    @can('read-tickets')
+                        <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
+                            {{ __('Support') }}
                         </x-nav-link>
                     @endcan
                 </div>
