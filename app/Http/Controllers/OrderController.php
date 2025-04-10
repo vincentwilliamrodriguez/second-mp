@@ -17,7 +17,21 @@ class OrderController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
+        dd($validated['quantity']);
+
         return redirect()->route('orders.index')
             ->with('message', 'Added to cart successfully.');
+    }
+
+    public function update(Request $request, Order $order) {
+        $validated = $request->validate([
+            'status' => 'required|in:accepted,cancelled',
+        ]);
+
+        dd($validated['status']);
+    }
+
+    public function destroy(Order $order) {
+        dd($order);
     }
 }
