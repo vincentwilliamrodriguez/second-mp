@@ -16,7 +16,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::redirect('dashboard', 'products');
 
-Route::get('/support', function () {
+Route::get('/ticket', function () {
     return view('support.index');
 });
 
