@@ -7,17 +7,17 @@
 
             <div>
                 <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus/>
+                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus maxlength="40" />
             </div>
 
             <div class="mt-4">
                 <x-label for="description" value="{{ __('Description') }}" />
-                <x-input id="description" class="block mt-1 w-full" type="text" name="description" :value="old('description')" autofocus/>
+                <textarea id="description" class="resize-none block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" name="description" autofocus cols="30" rows="5" maxlength="250">{{ old('description') }}</textarea>
             </div>
 
             <div class="mt-4">
                 <x-label for="quantity" value="{{ __('Quantity Available') }}" />
-                <x-input id="quantity" class="block mt-1 w-full" type="number" min='1' max='10000000' name="quantity" :value="old('quantity')" required/>
+                <x-input id="quantity" class="block mt-1 w-full" type="number" min='0' max='10000000' name="quantity" :value="old('quantity')" required/>
             </div>
 
             <div class="mt-4">

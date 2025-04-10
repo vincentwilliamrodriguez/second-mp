@@ -23,4 +23,12 @@ class Order extends Model
     protected $casts = [
         'date_placed' => 'date',
     ];
+
+    public function product() {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function customer() {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
 }

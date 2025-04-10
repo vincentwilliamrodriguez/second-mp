@@ -35,7 +35,35 @@ Route::middleware([
     //     return view('dashboard');
     // })->name('dashboard');
 
-    Route::resource('products', ProductController::class);
-    Route::resource('orders', OrderController::class);
-    Route::resource('users', UserController::class);
+    Route::resource('products', ProductController::class)->only(['create', 'store'])
+        ->middleware('permission:create-products');
+
+    Route::resource('products', ProductController::class)->only(['index', 'show'])
+        ->middleware('permission:read-products');
+
+    Route::resource('products', ProductController::class)->only(['edit', 'update'])
+        ->middleware('permission:update-products');
+
+    Route::resource('products', ProductController::class)->only(['destroy'])
+        ->middleware('permission:delete-products');
+
+
+
+    Route::resource('orders', OrderController::class)->only(['store'])
+        ->middleware('permission:create-orders');
+
+    Route::resource('orders', OrderController::class)->only(['index'])
+        ->middleware('permission:read-orders');
+
+    Route::resource('orders', OrderController::class)->only(['update'])
+        ->middleware('permission:update-orders');
+
+    Route::resource('orders', OrderController::class)->only(['destroy'])
+        ->middleware('permission:delete-orders');
+
+
+
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('users', UserController::class);
+    });
 });
