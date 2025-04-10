@@ -1,6 +1,9 @@
-@props(['product'])
+@props([
+    'product',
+    'init' => '1',
+])
 
-<div x-data="{ count: 1 }" class="flex items-center">
+<div x-data="{ count: {{ $init }} }" class="flex items-center">
     <button type="button"
         class="px-2 py-1 border rounded select-none"
         @click="count = count > 1 ? count - 1 : 1">-</button>

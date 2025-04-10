@@ -156,4 +156,7 @@ return [
         ]),
     ],
 
+    'actions' => [
+        'create_new_user' => \App\Actions\Fortify\CreateNewUser::class,
+    ],
 ];
