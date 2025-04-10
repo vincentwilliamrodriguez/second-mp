@@ -16,6 +16,10 @@ Route::view('dashboard', 'dashboard')
 
 Route::redirect('dashboard', 'products');
 
+Route::get('/support', function () {
+    return view('support.support');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
