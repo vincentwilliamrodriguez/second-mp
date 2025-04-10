@@ -73,6 +73,6 @@ Route::middleware([
     });
 
     Route::middleware('permission:read-supports')->group(function () {
-        Route::resource('supports', SupportController::class);
+        Route::resource('support', SupportController::class);
     });
 });

@@ -9,8 +9,8 @@
         <thead class="bg-blue-700">
             <tr>
                 @foreach($columns as $key => $column)
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        @if(isset($widths[$key])) style="max-width: {{ $widths[$key] }}" @endif>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
+                        @if(isset($widths[$key])) style="min-width: {{ $widths[$key] }}; max-width: {{ $widths[$key] }}" @endif>
 
                         {{ $key }}
                     </th>
@@ -21,15 +21,9 @@
             @forelse($items as $item)
                 <tr class="hover:bg-blue-50">
                     @foreach($columns as $key => $callback)
-                        @if($loop->first)
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-900 bg-blue-50">
-                                {!! $callback($item) !!}
-                            </td>
-                        @else
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {!! $callback($item) !!}
-                            </td>
-                        @endif
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 first:font-medium first:text-blue-900 first:bg-blue-50">
+                            {!! $callback($item) !!}
+                        </td>
                     @endforeach
                 </tr>
             @empty

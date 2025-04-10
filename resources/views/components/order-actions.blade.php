@@ -1,6 +1,6 @@
 @props(['order'])
 
-<div class="flex justify-end space-x-2">
+<div class="flex flex-wrap gap-2 justify-end space-x-2">
     @can('update-orders') @unlessrole('customer') @if ($order->is_placed && $order->status === 'pending')
 
         <form action="{{ route('orders.update', $order) }}" method='POST' class='inline z-20 relative pointer-events-auto'>

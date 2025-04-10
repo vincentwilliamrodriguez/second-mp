@@ -8,9 +8,6 @@
                         <img class='w-[200px]' src='".Storage::url($product->picture)."' alt='".$product->name."'>
                     </div>";
         },
-        'Customer' => function($order) {
-            return $order->customer->username;
-        },
         'Price per Piece' => function($order) {
             return Number::currency($order->product->price, 'PHP');
         },
@@ -49,10 +46,15 @@
         }
     ];
 
-    $actionsColumn = [
-    ];
+    $customerTableColumns = $baseTableColumns;
 
-    $sellerTableColumns = array_merge($baseTableColumns, $actionsColumn);
+    $sellerTableColumns = array_merge($baseTableColumns, [
+        'Customer' => function($order) {
+            return $order->customer->username;
+        },
+    ]);
+
+    $adminTableColumns = $sellerTableColumns;
 
 @endphp
 
@@ -69,8 +71,9 @@
             :items="$orders"
             :columns="$sellerTableColumns"
             :widths="[
-                'Product' => '200px',
-                'Status' => '150px'
+                'Product' => '300px',
+                'Status' => '150px',
+                'Actions' => '150px',
             ]"
         />
     </div>
