@@ -66,13 +66,22 @@ Route::middleware([
     Route::resource('orders', OrderController::class)->only(['destroy'])
         ->middleware('permission:delete-orders');
 
+    Route::post('/orders/place-all', [OrderController::class, 'placeAll'])
+        ->middleware('permission:update-orders')
+        ->name('orders.place-all');
+
+    Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
+        ->middleware('permission:update-orders')
+        ->name('orders.update-quantity');
 
 
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
 
-    Route::middleware('permission:read-supports')->group(function () {
-        Route::resource('support', SupportController::class);
-    });
+
+
+    // Route::middleware('permission:read-supports')->group(function () {
+    //     Route::resource('support', SupportController::class);
+    // });
 });

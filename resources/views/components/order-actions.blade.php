@@ -1,12 +1,12 @@
 @props(['order'])
 
-<div class="flex flex-wrap gap-2 justify-end space-x-2">
+<div class="flex flex-col gap-2 justify-center items-center">
     @can('update-orders') @unlessrole('customer') @if ($order->is_placed && $order->status === 'pending')
 
         <form action="{{ route('orders.update', $order) }}" method='POST' class='inline z-20 relative pointer-events-auto'>
             @csrf
             @method('PUT')
-            <input type="hidden" name="status" value="accepted">
+            <input type="hidden" name="status" value="completed">
 
             <button class='text-green-600 hover:text-green-900 hover:cursor-pointer'>
                 <span class='px-2 py-1 bg-green-100 rounded-md text-xs'>Accept</span>

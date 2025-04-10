@@ -1,6 +1,9 @@
 <x-tab title="Products">
     <form method="POST" action="{{ route('orders.store') }}" class="flex flex-col items-start w-[70vw] max-w-[600px] p-4">
         @csrf
+        <input type="hidden" name="product_id" value="{{$product->id}}">
+
+        <x-validation-errors class="mb-4" />
 
         <img class="w-[500px] mb-4 self-center" src="{{ Storage::url($product->picture) }}" alt="{{ $product->name }}">
         <h1 class='font-black mb-1 text-2xl'>{{ $product->name }}</h1>
