@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -16,8 +17,8 @@ Route::view('dashboard', 'dashboard')
 
 Route::redirect('dashboard', 'products');
 
-Route::get('/ticket', function () {
-    return view('support.index');
+Route::get('/support', function () {
+    return view('tickets.index');
 });
 
 Route::middleware(['auth'])->group(function () {
