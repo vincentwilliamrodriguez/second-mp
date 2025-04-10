@@ -8,33 +8,41 @@
         <h2 class='font-black mb-1 text-2xl text-blue-500'>₱{{ $product->price }}</h2>
         <p>{{ $product->description }}</p>
         <div class="flex gap-2">
-            <p class="text-blue-700 font-black">Quantity:</p>
 
-            <div x-data="{ count: 1 }" class="flex items-center">
-                <button type="button"
-                    class="px-2 py-1 border rounded"
-                    @click="count = count > 1 ? count - 1 : 1">-</button>
+            @can('create-orders')
+                <p class="text-blue-700 font-black">Quantity:</p>
 
-                <span class="px-4" x-text="count"></span>
+                <div x-data="{ count: 1 }" class="flex items-center">
+                    <button type="button"
+                        class="px-2 py-1 border rounded select-none"
+                        @click="count = count > 1 ? count - 1 : 1">-</button>
 
-                <button type="button"
-                    class="px-2 py-1 border rounded"
-                    @click="count = count < {{ $product->quantity }} ? count + 1 : count">+</button>
+                    <span class="px-4 select-none" x-text="count"></span>
 
-                <input type="hidden" name="quantity" :value="count">
-            </div>
+                    <button type="button"
+                        class="px-2 py-1 border rounded select-none"
+                        @click="count = count < {{ $product->quantity }} ? count + 1 : count">+</button>
+
+                    <input type="hidden" name="quantity" :value="count">
+                </div>
+            @endcan
 
             <p class="text-gray-600">{{$product->quantity}} pieces in stock</p>
         </div>
 
         <div class="self-end flex items-center justify-end mt-4">
             <a class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('products.index') }}">
-                {{ __('Cancel') }}
+                {{ __('Go Back') }}
             </a>
 
-            <x-button class="ms-4">
-                {{ __('Order') }}
-            </x-button>
+            @can('create-orders')
+                @if ($product->quantity >= 1)
+                    <x-button class="ms-4">
+                        {{ __('Order') }}
+                    </x-button>
+                @endif
+            @endcan
+
         </div>
     </form>
 </x-tab>

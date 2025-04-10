@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Illuminate\Validation\Rule;
 
@@ -12,9 +13,19 @@ class ProductController extends Controller
 {
     protected $categories = ['Electronics', 'Books', 'Clothing'];
 
+    public function __construct() {
+        $this->middleware('permission:create-products')->only(['create', 'store']);
+        $this->middleware('permission:read-products')->only(['index', 'show']);
+        $this->middleware('permission:update-products')->only(['edit', 'update']);
+        $this->middleware('permission:delete-products')->only(['destroy']);
+    }
 
     public function index() {
-        $products = Product::latest()->paginate(5);
+        $user = auth()->user();
+        $products = $user->hasRole('seller')
+                        ? $user->products()->latest()->paginate(10)
+                        : Product::latest()->paginate(10);
+
         return view('products.index', compact('products'));
     }
 
@@ -29,11 +40,11 @@ class ProductController extends Controller
 
     public function store(Request $request) {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name' => 'required|string|max:40',
+            'description' => 'nullable|string:max:250',
             'category' => ['required', Rule::in($this->categories)],
-            'quantity' => 'required|integer',
-            'price' => 'required|decimal:0,2|min:0',
+            'quantity' => 'required|integer|min:0|max:10000000',
+            'price' => 'required|decimal:0,2|min:0|max:100000000',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -57,13 +68,14 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product) {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name' => 'required|string|max:30',
+            'description' => 'nullable|string:max:250',
             'category' => ['required', Rule::in($this->categories)],
             'quantity' => 'required|integer',
             'price' => 'required|decimal:0,2|min:0',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
 
         if ($request->hasFile('picture')) {
             if ($product->picture) {
