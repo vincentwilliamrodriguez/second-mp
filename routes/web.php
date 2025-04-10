@@ -17,7 +17,7 @@ Route::view('dashboard', 'dashboard')
 Route::redirect('dashboard', 'products');
 
 Route::get('/support', function () {
-    return view('support.support');
+    return view('support.index');
 });
 
 Route::middleware(['auth'])->group(function () {
