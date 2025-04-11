@@ -11,11 +11,16 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    $user = auth()->user();
 
-Route::redirect('dashboard', 'products');
+    if ($user->hasRole('support')) {
+        return redirect()->route('tickets.index');
+    }
+
+    return redirect()->route('products.index');
+})->name('dashboard');
+
 Route::redirect('/', 'login');
 
 Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
@@ -41,10 +46,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    // Route::get('/dashboard', function () {
-    //     return view('dashboard');
-    // })->name('dashboard');
-
+    
     Route::resource('products', ProductController::class)->only(['create', 'store'])
         ->middleware('permission:create-products');
 
