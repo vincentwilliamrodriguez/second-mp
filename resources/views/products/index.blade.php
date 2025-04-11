@@ -23,7 +23,7 @@
                 <div class="mb-4 flex flex-col border border-gray-200 hover:bg-gray-100 p-4 relative">
                     <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-0 pointer-events-auto"></a>
 
-                    <img class="w-[200px]" src="{{ Storage::url($product->picture) }}" alt="{{ $product->name }}">
+                    <img class="w-[200px]" src="{{ Storage::url($product->picture) ?? '' }}" alt="{{ $product->name }}">
                     <p class="text-blue-700 mb-2">Sold by <strong>{{ $product->seller->username }}</strong></p>
 
                     @foreach ($product->getAttributes() as $key => $value)
@@ -33,13 +33,6 @@
                             </div>
                         @endif
                     @endforeach
-
-                    <div class="flex gap-1">
-                        <strong>Orders:</strong>
-                        @foreach ($product->orders as $order)
-                            {{ $order->customer->username }}
-                        @endforeach
-                    </div>
 
                     <div class="flex gap-4 mt-2">
                         @can('update-products')

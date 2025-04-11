@@ -15,6 +15,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $number = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public string $role = '';
 
     /**
      * Handle an incoming registration request.
@@ -27,13 +28,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'number' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:customer,seller,support,admin'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
         event(new Registered(($user = User::create($validated))));
-        
-        $user->assignRole('customer');
+
+        $user->assignRole($validated['role']);
 
         Auth::login($user);
 
@@ -42,7 +44,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <x-validation-errors class="md-2"></x-validation-errors>
+
+    <x-auth-header :title="__('Want to join ShopStream?')" :description="__('Create an account by filling up the details below')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -108,6 +112,28 @@ new #[Layout('components.layouts.auth')] class extends Component {
             required
             autocomplete="new-password"
             :placeholder="__('Confirm password')"
+        />
+
+        <div>
+            <x-label for="role" value="{{ __('Role') }}" class="!text-[#27272A]" />
+            <x-dropdown-wrapper
+                id="role"
+                name="role"
+                :defaultText="'customer'"
+                :options="['customer', 'seller', 'support', 'admin']"
+                align="left"
+                width="48"
+                :disableHiddenInput='true'
+            />
+
+        </div>
+
+        <flux:input id="hiddenRole" class="hidden"
+            wire:model="role"
+            type="role"
+            required
+            autocomplete="role"
+            :placeholder="__('Role')"
         />
 
         <div class="flex items-center justify-end">

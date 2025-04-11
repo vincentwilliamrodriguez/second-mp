@@ -16,6 +16,7 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::redirect('dashboard', 'products');
+Route::redirect('/', 'login');
 
 Route::get('/support', function () {
     return view('tickets.index');
