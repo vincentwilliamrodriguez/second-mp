@@ -2,7 +2,6 @@
     <div>
         <h3>Contact us via this form, and wait for your Support Ticket!</h3></h3>
 
-        <!-- Form Section for User Inputs -->
         <form id="ticket-form">
             <div class="mb-3">
                 <label for="user-name" class="block text-gray-700">Name:</label>
@@ -40,8 +39,7 @@
             const userEmail = document.getElementById('user-email').value;
             const userPhone = document.getElementById('user-phone').value;
 
-            // Example of sending the data to a backend (using fetch)
-            fetch('/submit-ticket', {  // Adjust this URL to match your backend route
+            fetch('/submit-ticket', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
