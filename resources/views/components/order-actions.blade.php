@@ -9,7 +9,7 @@
             <input type="hidden" name="status" value="completed">
 
             <button class='text-green-600 hover:text-green-900 hover:cursor-pointer'>
-                <span class='px-2 py-1 bg-green-100 rounded-md text-xs'>Accept</span>
+                <span class='px-2 py-1 bg-green-100 rounded-md text-xs flex gap-1 items-center'><x-eos-check class="h-4 w-4"/> Accept</span>
             </button>
         </form>
 
@@ -18,10 +18,10 @@
             @method('PUT')
             <input type="hidden" name="status" value="cancelled">
 
-            <button class='text-red-600 hover:text-red-900 hover:cursor-pointer'
+            <button class='text-red-600 hover:text-red-900 hover:cursor-pointer @role('admin') mb-2 @endrole'
                 onclick="return confirm('Are you sure you want to cancel this order?')">
 
-                <span class='px-2 py-1 bg-red-100 rounded-md text-xs'>Cancel</span>
+                <span class='px-2 py-1 bg-red-100 rounded-md text-xs flex gap-1 items-center'><x-eos-close class="h-4 w-4 mr-1"/> Cancel</span>
             </button>
         </form>
 
@@ -36,7 +36,8 @@
             <button type='submit'
                     class='text-red-600 hover:text-red-900 hover:cursor-pointer'
                     onclick="return confirm('Are you sure you want to remove this order?')">
-                <span class='px-2 py-1 bg-red-100 rounded-md text-xs'>Remove</span>
+
+                <span class='px-2 py-1 bg-red-100 rounded-md text-xs flex gap-1 items-center'> <x-eos-delete class="h-4 w-4"/> Remove</span>
             </button>
         </form>
     @endcan

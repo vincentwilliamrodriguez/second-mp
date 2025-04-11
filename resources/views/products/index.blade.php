@@ -36,7 +36,7 @@
                 </a>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
                 @foreach ($products as $product)
                     <x-product-card :product="$product"></x-product-card>
                 @endforeach

@@ -1,6 +1,6 @@
 @props(['product'])
 
-<div class="relative bg-white rounded-lg shadow-sm border-2 border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:transform hover:translate-y-[-4px] hover:border-blue-300">
+<div class="relative bg-white rounded-lg shadow-sm border-2 border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md hover:transform hover:translate-y-[-4px] hover:border-blue-300">
     <div class="h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-gray-100">
         <a href="{{ route('products.show', $product) }}" class="block h-full">
 
