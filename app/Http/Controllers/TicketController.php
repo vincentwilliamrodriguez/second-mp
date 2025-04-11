@@ -9,7 +9,7 @@ class TicketController extends Controller
 {
     public function index()
     {
-    return view('tickets.index');
+        return view('tickets.index');
     }
 
     public function store(Request $request)
@@ -23,8 +23,6 @@ class TicketController extends Controller
 
         Ticket::create($validated);
 
-        return response()->json(['success' => true]);
+        return redirect()->route('tickets.index')->with('success', 'Your ticket has been submitted successfully. We will contact you shortly!');
     }
 }
-
-?>
