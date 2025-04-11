@@ -17,9 +17,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::redirect('dashboard', 'products');
 
-Route::get('/support', function () {
-    return view('tickets.index');
-});
+Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -78,10 +76,4 @@ Route::middleware([
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
-
-
-
-    // Route::middleware('permission:read-supports')->group(function () {
-    //     Route::resource('support', SupportController::class);
-    // });
 });
