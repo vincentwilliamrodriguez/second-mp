@@ -22,6 +22,10 @@ Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index'
 
 Route::post('/ticket', [TicketController::class, 'store']);
 
+Route::get('/ticket', function () {
+    return view('tickets.index');
+})->middleware('auth');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -79,5 +83,9 @@ Route::middleware([
 
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
+    });
+
+    Route::middleware('permission:read-supports')->group(function () {
+        Route::resource('support', TicketController::class);
     });
 });
