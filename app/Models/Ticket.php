@@ -14,6 +14,7 @@ class Ticket extends Model
         'user_email',
         'user_phone',
         'user_description',
+        'ticket_number',
     ];
 }
 
