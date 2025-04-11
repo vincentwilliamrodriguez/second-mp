@@ -1,5 +1,4 @@
 <x-app-layout>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div>
         <h3>Contact us via this form, and wait for your Support Ticket!</h3>
@@ -32,44 +31,4 @@
             <p>Your ticket has been submitted successfully. We will contact you shortly!</p>
         </div>
     </div>
-
-    <script>
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        document.getElementById('ticket-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const payload = {
-                name: document.getElementById('user-name').value,
-                email: document.getElementById('user-email').value,
-                phone: document.getElementById('user-phone').value,
-                description: document.getElementById('user-description').value
-            };
-
-            fetch('/submit-ticket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (!response.ok) return response.json().then(error => Promise.reject(error));
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('ticket-form').style.display = 'none';
-                    document.getElementById('confirmation').classList.remove('hidden');
-                } else {
-                    alert('There was an error submitting your ticket. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error: ' + (error.message || 'An unexpected error occurred.'));
-            });
-        });
-    </script>
 </x-app-layout>
