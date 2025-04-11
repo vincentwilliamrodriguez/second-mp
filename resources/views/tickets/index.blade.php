@@ -1,4 +1,5 @@
 <x-app-layout>
+    @role('customer')
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
@@ -69,4 +70,9 @@
             @endif
         </div>
     </div>
+    @endrole
+
+    @role('support')
+
+    @endrole
 </x-app-layout>

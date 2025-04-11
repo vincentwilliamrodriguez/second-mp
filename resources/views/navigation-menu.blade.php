@@ -32,7 +32,7 @@
                         </x-nav-link>
                     @endcan
 
-                    @can('read-tickets')
+                    @can('read-ticket')
                         <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
                             {{ __('Support') }}
                         </x-nav-link>
