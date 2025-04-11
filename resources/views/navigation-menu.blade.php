@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-200">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -6,15 +6,14 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="shopstream.png" class="block h-9 w-auto" />
+                        <div class="w-52">
+                            <img src="{{ asset('images/logo-with-text.svg') }}" alt="Logo" class="block w-full object-contain" loading="lazy" />
+                        </div>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    {{-- <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link> --}}
                     @can('read-products')
                         <x-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.index')">
                             {{ __('Shop') }}
@@ -95,6 +94,7 @@
                 @endif
 
                 <!-- Settings Dropdown -->
+                <div class="font-medium text-base text-gray-600">{{ Auth::user()->name }}</div>
                 <div class="ms-3 relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
@@ -161,9 +161,29 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @can('read-products')
+                <x-responsive-nav-link href="{{ route('products.index') }}" :active="request()->routeIs('products.index')">
+                    {{ __('Shop') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('read-orders')
+                <x-responsive-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
+                    {{ __('Orders') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('read-users')
+                <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('read-tickets')
+                <x-responsive-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
+                    {{ __('Support') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
