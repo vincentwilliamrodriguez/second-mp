@@ -1,5 +1,4 @@
-
-<x-tab title="{{ (auth()->user()->hasRole('seller')) ? 'My Products' : 'All Products' }}">
+<x-tab title="Products">
     <div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px]">
         @if(session('message'))
             <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
@@ -8,56 +7,44 @@
         @endif
 
         <div class="flex justify-between items-center mb-2">
-            @can('create-products')
+            <h2 class="font-black text-3xl">
+                {{ (auth()->user()->hasRole('seller')) ? 'My Products' : 'All Products' }}
+            </h2>
+
+            @if(auth()->user()->can('create-products') && !$products->isEmpty())
+
                 <x-button
                     onclick="window.location.href='{{ route('products.create') }}'"
-                    class="w-[100px] mb-4">
+                    :baseColor="'blue'">
 
-                    Create Product
+                    <x-slot name='icon' :iconSize="'w-6 h-6'"><x-eos-add-box-o/></x-slot>
+                    Create
+
                 </x-button>
-            @endcan
+
+            @endif
         </div>
 
-        <div class="flex flex-wrap gap-4">
-            @foreach ($products as $product)
-                <div class="mb-4 flex flex-col border border-gray-200 hover:bg-gray-100 p-4 relative">
-                    <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-0 pointer-events-auto"></a>
-
-                    <img class="w-[200px]" src="{{ Storage::url($product->picture) ?? '' }}" alt="{{ $product->name }}">
-                    <p class="text-blue-700 mb-2">Sold by <strong>{{ $product->seller->username }}</strong></p>
-
-                    @foreach ($product->getAttributes() as $key => $value)
-                        @if (in_array($key, ['name', 'category', 'price']))
-                            <div class="flex gap-1">
-                                <strong>{{ $key }}:</strong> {{ $value }}
-                            </div>
-                        @endif
-                    @endforeach
-
-                    <div class="flex gap-4 mt-2">
-                        @can('update-products')
-                            <x-button class="z-20 relative pointer-events-auto"
-                                    onclick="window.location.href='{{ route('products.edit', $product) }}'">
-                                Edit
-                            </x-button>
-                        @endcan
-
-                        @can('delete-products')
-                            <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline z-20 relative pointer-events-auto">
-                                @csrf
-                                @method('DELETE')
-                                <x-button type="submit"
-                                        onclick="return confirm('Are you sure you want to delete this item?')">
-                                    Delete
-                                </x-button>
-                            </form>
-                        @endcan
+        @if(auth()->user()->can('create-products') && $products->isEmpty())
+            <div class="col-span-full flex items-center justify-center">
+                <a href="{{ route('products.create') }}" class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                        <x-eos-add class="w-10 h-10 text-blue-600" />
                     </div>
-                </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 pointer-events-none select-none">No Products Yet</h3>
+                    <p class="text-gray-600 text-center mb-4 pointer-events-none select-none">Add your first product to start selling</p>
+                </a>
+            </div>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
+                @foreach ($products as $product)
+                    <x-product-card :product="$product"></x-product-card>
+                @endforeach
+            </div>
+        @endif
 
-            @endforeach
-        </div>
-
-        {{ $products->links() }}
+        @if(!$products->isEmpty())
+            {{ $products->links() }}
+        @endif
     </div>
 </x-tab>

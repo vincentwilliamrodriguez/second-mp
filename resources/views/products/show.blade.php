@@ -1,38 +1,111 @@
-<x-tab title="Products">
-    <form method="POST" action="{{ route('orders.store') }}" class="flex flex-col items-start w-[70vw] max-w-[600px] p-4">
-        @csrf
-        <input type="hidden" name="product_id" value="{{$product->id}}">
+@props([
+    'maxDescriptionLength' => 300
+])
 
-        <x-validation-errors class="mb-4" />
+<x-tab>
+    <div class="bg-white rounded-lg shadow-sm max-w-5xl mx-auto p-6 w-[700px]">
+        <form method="POST" action="{{ route('orders.store') }}" class="flex flex-col lg:flex-row gap-8">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-        <img class="w-[500px] mb-4 self-center" src="{{ Storage::url($product->picture) }}" alt="{{ $product->name }}">
-        <h1 class='font-black mb-1 text-2xl'>{{ $product->name }}</h1>
-        <div class="bg-slate-500 rounded-full px-2 py-1 text-white text-sm">{{ $product->category }}</div>
-        <h2 class='font-black mb-1 text-2xl text-blue-500'>₱{{ $product->price }}</h2>
-        <p>{{ $product->description }}</p>
-        <div class="flex gap-2">
+            <x-validation-errors class="mb-4" />
 
-            @can('create-orders')
-                <p class="text-blue-700 font-black">Quantity:</p>
-                <x-counter :product="$product"></x-counter>
-            @endcan
-
-            <p class="text-gray-600">{{$product->quantity}} pieces in stock</p>
-        </div>
-
-        <div class="self-end flex items-center justify-end mt-4">
-            <a class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('products.index') }}">
-                {{ __('Go Back') }}
-            </a>
-
-            @can('create-orders')
-                @if ($product->quantity >= 1)
-                    <x-button class="ms-4">
-                        {{ __('Order') }}
-                    </x-button>
+            <div class="flex-shrink-0 w-full lg:w-2/5 aspect-square relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden">
+                @if(isset($product->picture) && Storage::disk('public')->exists($product->picture))
+                    <img
+                        class="w-full h-full object-cover"
+                        src="{{ Storage::url($product->picture) }}"
+                        alt="{{ $product->name }}"
+                        onload="this.naturalWidth / this.naturalHeight > 1.2 ?
+                            this.classList.replace('object-contain', 'object-cover') :
+                            this.classList.replace('object-contain', 'object-contain')"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                    >
+                    <div class="hidden absolute inset-0 items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                @else
+                    <div class="flex items-center justify-center h-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
                 @endif
-            @endcan
+            </div>
 
-        </div>
-    </form>
+            <div class="flex-grow flex flex-col">
+                <div class="mb-6">
+                    <div class="flex flex-wrap items-center gap-3 mb-2">
+                        <h1 class="font-bold text-2xl text-gray-800">{{ $product->name }}</h1>
+                        <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">{{ $product->category }}</span>
+                    </div>
+
+                    <h2 class="font-bold text-2xl text-blue-600 mb-4">₱{{ number_format($product->price, 2) }}</h2>
+
+                    <p class="text-gray-600 mb-4">
+                        Sold by <span class="font-medium text-blue-600">{{ $product->seller->username }}</span>
+                    </p>
+
+                    <div class="mb-6 text-gray-700">
+                        @php
+                            $truncated = strlen($product->description) > $maxDescriptionLength;
+                            $displayText = $truncated ? substr($product->description, 0, $maxDescriptionLength) . '...' : $product->description;
+                        @endphp
+
+                        <h3 class="font-black mb-2">Description</h3>
+                        <p id="short-description" class="break-words overflow-wrap hyphens-auto">{{ $displayText }}</p>
+
+                        @if($truncated)
+                            <p id="full-description" class="hidden break-words overflow-wrap hyphens-auto">{{ $product->description }}</p>
+                            <button
+                                type="button"
+                                id="read-more-btn"
+                                class="text-blue-600 hover:text-blue-800 text-sm mt-2 focus:outline-none"
+                                onclick="document.getElementById('short-description').classList.toggle('hidden');
+                                        document.getElementById('full-description').classList.toggle('hidden');
+                                        this.textContent = this.textContent === 'Read more' ? 'Read less' : 'Read more';"
+                            >
+                                Read more
+                            </button>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-4 items-center mb-6">
+                    @can('create-orders')
+                        <div class="flex items-center gap-3 w-48">
+                            <span class="text-gray-700 font-black">Quantity:</span>
+                            <x-counter :product="$product"></x-counter>
+                        </div>
+                    @endcan
+
+                    <div class="flex items-center">
+                        <span class="text-gray-600">
+                            <span class="font-medium">{{ $product->quantity }}</span> pieces in stock
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                    <a class="text-gray-600 hover:text-blue-600 transition-colors font-medium flex items-center" href="{{ route('products.index') }}">
+                        <x-eos-arrow-circle-left-o class="h-6 w-6 mr-1 opacity-90" />
+                        Back to Products
+                    </a>
+
+                    @can('create-orders')
+                        @if ($product->quantity >= 1)
+                            <x-button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+                                <x-eos-shopping-cart-o class="h-6 w-6 mr-1 opacity-90" />
+                                Add to Cart
+                            </x-button>
+                        @else
+                            <span class="text-red-500 font-medium">Out of Stock</span>
+                        @endif
+                    @endcan
+                </div>
+            </div>
+        </form>
+    </div>
 </x-tab>

@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    protected $categories = ['Electronics', 'Books', 'Clothing'];
+    protected $categories = ['Books', 'Clothing', 'Electronics', 'Furniture', 'Hardware', 'Health', 'Hobbies', 'Other'];
 
     public function __construct() {
         $this->middleware('permission:create-products')->only(['create', 'store']);
@@ -23,8 +23,8 @@ class ProductController extends Controller
     public function index() {
         $user = auth()->user();
         $products = $user->hasRole('seller')
-                        ? $user->products()->latest()->paginate(10)
-                        : Product::latest()->paginate(10);
+                        ? $user->products()->latest()->paginate(8)
+                        : Product::latest()->paginate(8);
 
         return view('products.index', compact('products'));
     }

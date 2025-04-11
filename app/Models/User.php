@@ -81,4 +81,16 @@ class User extends Authenticatable
         return $this->hasManyThrough(Order::class, Product::class, 'seller_id', 'product_id', 'id', 'id');
     }
 
+
+    public static function booted() {
+        static::deleting(function ($user) {
+            if ($user->isForceDeleting()) {
+                $user->products()->forceDelete();
+                $user->orders()->forceDelete();
+            } else {
+                $user->products()->delete();
+                $user->orders()->delete();
+            }
+        });
+    }
 }
