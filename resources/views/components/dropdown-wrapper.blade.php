@@ -23,11 +23,7 @@
             @foreach ($options as $option)
                 <button
                     type="button"
-                    x-on:click="
-                        selected = '{{ $option }}';
-                        document.getElementById('hiddenRole').value = '{{ $option }}';
-                        document.getElementById('hiddenRole').dispatchEvent(new Event('input'));
-                    "
+                    x-on:click="selected = '{{ $option }}'; if({{ $disableHiddenInput ? 'true' : 'false' }}) { document.getElementById('hiddenRole').value = '{{ $option }}'; document.getElementById('hiddenRole').dispatchEvent(new Event('input')); }"
                     class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
                 >
                     {{ $option }}
@@ -36,7 +32,7 @@
         </x-slot>
     </x-dropdown>
 
-    @if (!$disableHiddenInput)
+    @if ($disableHiddenInput)
         <input
             type="hidden"
             name="{{ $name }}"
@@ -45,5 +41,7 @@
             data-flux-control
             data-flux-group-target
         >
+    @else
+        <input type="hidden" name="{{ $name }}" x-bind:value="selected">
     @endif
 </div>

@@ -92,5 +92,5 @@ class RoleSeeder extends Seeder
 
             $user->assignRole($userData['role']);
         }
-}
+    }
 }

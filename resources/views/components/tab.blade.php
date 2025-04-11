@@ -9,7 +9,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl flex flex-col items-center mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white w-min overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-white w-min shadow-xl sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>
