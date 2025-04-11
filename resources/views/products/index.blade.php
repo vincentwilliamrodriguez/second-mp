@@ -15,9 +15,9 @@
 
                 <x-button
                     onclick="window.location.href='{{ route('products.create') }}'"
-                    :baseColor="'blue'">
+                    :baseColor="'blue'" :iconSize="'w-6 h-6'">
 
-                    <x-slot name='icon' :iconSize="'w-6 h-6'"><x-eos-add-box-o/></x-slot>
+                    <x-slot name='icon'><x-eos-add-box-o/></x-slot>
                     Create
 
                 </x-button>

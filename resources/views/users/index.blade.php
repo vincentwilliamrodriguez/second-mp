@@ -8,7 +8,7 @@
 
     $usersTableColumns = [
         'Name' => function($user) {
-            return $user->name;
+            return "<a class='hover:underline' href='" . route('users.show', $user) . "'>" . $user->name . "</a>";
         },
         'Username' => function($user) {
             return $user->username;
@@ -53,15 +53,15 @@
 
         <x-validation-errors class="mb-4" />
 
-
-
-        <div class="flex justify-between items-center mb-2">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-black text-3xl">All Users</h2>
             @can('create-users')
                 <x-button
-                    onclick="window.location.href='{{ route('users.create') }}'"
-                    class="w-[100px] mb-4">
+                    onclick="window.location.href='{{ route('users.create') }}'" :baseColor="'blue'" :iconSize="'w-6 h-6'">
 
+                    <x-slot name='icon'><x-eos-add-box-o/></x-slot>
                     Create User
+
                 </x-button>
             @endcan
         </div>
