@@ -1,4 +1,5 @@
 <x-app-layout>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div>
         <h3>Contact us via this form, and wait for your Support Ticket!</h3></h3>
 
@@ -32,6 +33,8 @@
     </div>
 
     <script>
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         document.getElementById('ticket-form').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -39,18 +42,27 @@
             const userEmail = document.getElementById('user-email').value;
             const userPhone = document.getElementById('user-phone').value;
 
-            fetch('/submit-ticket', {
+            fetch('/ticket', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userName,
-                    userEmail,
-                    userPhone
-                })
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+    },
+    body: JSON.stringify({
+        userName,
+        userEmail,
+        userPhone,
+        user_description: document.getElementById('user-description').value
+    })
+})
+
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => Promise.reject(error));
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     document.getElementById('ticket-form').style.display = 'none';
@@ -61,8 +73,8 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('There was an error submitting your ticket. Please try again.');
+                alert('Error: ' + (error.message || 'An unexpected error occurred.'));
             });
-        });
     </script>
+
 </x-app-layout>

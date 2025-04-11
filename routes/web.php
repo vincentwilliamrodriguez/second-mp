@@ -19,6 +19,9 @@ Route::redirect('dashboard', 'products');
 
 Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
 
+Route::post('/ticket', [TicketController::class, 'store']);
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
