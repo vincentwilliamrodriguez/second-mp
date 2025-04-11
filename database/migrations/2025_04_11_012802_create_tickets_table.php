@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('user_email');
             $table->string('user_phone')->nullable();
             $table->text('user_description');
+            $table->string('ticket_number')->unique();
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
@@ -21,8 +22,24 @@ class TicketController extends Controller
             'user_description' => 'required|string',
         ]);
 
+        $ticketNumber = $this->generateTicketNumber();
+
+        $validated['ticket_number'] = $ticketNumber;
+
         Ticket::create($validated);
 
-        return redirect()->route('tickets.index')->with('success', 'Your ticket has been submitted successfully. We will contact you shortly!');
+        // Redirect with the ticket number and success status
+        return redirect()->route('tickets.index')->with([
+            'ticket_submitted' => true,
+            'ticket_number' => $ticketNumber
+        ]);
+    }
+
+    private function generateTicketNumber()
+    {
+        $prefix = 'TKT-' . date('Ym') . '-';
+        $randomString = strtoupper(Str::random(6));
+
+        return $prefix . $randomString;
     }
 }
