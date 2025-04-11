@@ -70,8 +70,6 @@ class RoleSeeder extends Seeder
             'create-tickets', 'read-tickets', 'update-tickets', 'delete-tickets',
         ];
 
-
-
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
@@ -94,5 +92,5 @@ class RoleSeeder extends Seeder
 
             $user->assignRole($userData['role']);
         }
-    }
+}
 }
