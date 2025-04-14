@@ -35,6 +35,14 @@ class Product extends Model
         static::creating(function($model) {
             $model->id = Str::uuid();
         });
+
+        static::deleting(function ($product) {
+            if ($product->isForceDeleting()) {
+                $product->orders()->forceDelete();
+            } else {
+                $product->orders()->delete();
+            }
+        });
     }
 
     public function seller() {
@@ -44,4 +52,5 @@ class Product extends Model
     public function orders() {
         return $this->hasMany(Order::class);
     }
+
 }

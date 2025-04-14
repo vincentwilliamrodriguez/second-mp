@@ -1,5 +1,9 @@
 <x-app-layout>
+<<<<<<< HEAD
     @role('customer|admin|seller')
+=======
+    @if (auth()->user()->can('read-tickets') && !auth()->user()->hasRole('support'))
+>>>>>>> e107b4196d0337ee1b8e046698e24b74618acb8e
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
@@ -70,9 +74,9 @@
             @endif
         </div>
     </div>
-    @endrole
+    @endif
 
-    @role('support')
+    @can('update-tickets')
     <div class="max-w-7xl mx-auto my-8">
         <div class="bg-white shadow rounded-lg">
             <div class="bg-blue-600 text-white px-6 py-4">

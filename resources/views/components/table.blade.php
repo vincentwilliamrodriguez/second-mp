@@ -4,7 +4,7 @@
     'widths' => []
 ])
 
-<div class="overflow-x-auto bg-white rounded-lg shadow">
+<div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
     <table class="min-w-full divide-y divide-blue-200">
         <thead class="bg-blue-700">
             <tr>

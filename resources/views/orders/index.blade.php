@@ -9,11 +9,7 @@
         'Product' => function($order) {
             $product = $order->product;
 
-            return "<div class='flex flex-col gap-2'>
-                        <h3 class='font-black'>".$order->product->name."</h3>
-                        <p>".$order->product->quantity." in stock</p>
-                        <img class='w-[200px]' src='".Storage::url($product->picture)."' alt='".$product->name."'>
-                    </div>";
+            return view('components.orders-product-cell', compact('order', 'product'))->render();
         },
         'Price per Piece' => function($order) {
             return Number::currency($order->product->price, 'PHP');
@@ -103,7 +99,10 @@
                 <h2 class="font-black text-3xl">My Shopping Cart</h2>
                 <form action="{{ route('orders.place-all') }}" method="POST" class="inline">
                     @csrf
-                    <x-button type="submit">Place Orders</x-button>
+                    <x-button type="submit" :iconSize="'w-5 h-5'">
+                        <x-slot name="icon"><x-eos-shopping-cart-o /></x-slot>
+                        Place Orders
+                    </x-button>
                 </form>
             </div>
 
@@ -115,7 +114,7 @@
 
             <br/>
 
-            <h2 class="font-black text-3xl mb-2">My Orders</h2>
+            <h2 class="font-black text-3xl mb-4 mt-4">My Orders</h2>
             <x-table
                 :items="$placedOrders"
                 :columns="$customerTableColumns"
