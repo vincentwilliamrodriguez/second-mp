@@ -62,9 +62,7 @@
                                 onclick="document.getElementById('short-description').classList.toggle('hidden');
                                         document.getElementById('full-description').classList.toggle('hidden');
                                         this.textContent = this.textContent === 'Read more' ? 'Read less' : 'Read more';"
-                            >
-                                Read more
-                            </button>
+                            >Read more</button>
                         @endif
                     </div>
                 </div>

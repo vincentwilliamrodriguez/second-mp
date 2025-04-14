@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Http\Controllers\ProductController;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,16 +18,18 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $seller = User::inRandomOrder()->first() ?? User::factory()->create();
+        $seller = User::where('username', 'REGEXP', '^seller[0-9]+')
+                        ->inRandomOrder()
+                        ->first();
 
         return [
             'name' => $this->faker->word(),
             'seller_id' => $seller->id,
-            'description' => $this->faker->sentence(),
-            'category' => $this->faker->randomElement(['Electronics', 'Books', 'Clothing', 'Home', 'Sports']),
-            'quantity' => $this->faker->numberBetween(1, 100),
+            'description' => $this->faker->paragraph(),
+            'category' => $this->faker->randomElement(ProductController::class::$categories),
+            'quantity' => $this->faker->numberBetween(1, 20),
             'price' => $this->faker->randomFloat(2, 10, 1000),
-            'picture' => $this->faker->imageUrl(640, 480, 'products', true), // or null
+            'picture' => $this->faker->imageUrl(640, 480, 'products', true),
         ];
     }
 }

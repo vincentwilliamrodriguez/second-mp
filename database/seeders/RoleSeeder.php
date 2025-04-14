@@ -44,6 +44,23 @@ class RoleSeeder extends Seeder
             ],
         ];
 
+        for ($i = 1; $i <= 3; $i++) {
+            $users[] = [
+                'name' => 'Customer ' . $i,
+                'username' => 'customer' . $i,
+                'email' => 'customer' . $i . '@sample.com',
+                'role' => 'customer'
+            ];
+
+            $users[] = [
+                'name' => 'Seller ' . $i,
+                'username' => 'seller' . $i,
+                'email' => 'seller' . $i . '@sample.com',
+                'role' => 'seller'
+            ];
+        }
+
+
         $roles = [
             'customer' => [
                 'read-products',

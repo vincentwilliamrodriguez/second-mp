@@ -24,7 +24,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:12'],
+            'username' => ['required', 'string', 'max:12', 'regex:/^\S*$/'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'number' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
@@ -120,7 +120,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 id="role"
                 name="role"
                 :defaultText="'customer'"
-                :options="['customer', 'seller', 'support', 'admin']"
+                :options="['customer', 'seller', 'support']"
                 align="left"
                 width="48"
                 :disableHiddenInput='true'

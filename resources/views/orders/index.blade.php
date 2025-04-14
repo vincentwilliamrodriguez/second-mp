@@ -18,8 +18,7 @@
             $product = $order->product;
             $res = '';
 
-            if (auth()->user()->hasRole('admin') ||
-                auth()->user()->hasRole('customer') && !$order->is_placed)
+            if (!$order->is_placed)
             {
                 $init = strval($order->quantity);
                 $order_id = $order->id;
@@ -34,7 +33,7 @@
             return Number::currency($order->product->price * $order->quantity, 'PHP');
         },
         'Date' => function($order) {
-            return date('d-m-Y', strtotime($order->date_placed));
+            return $order->date_placed->format('F j, Y');
         },
         'Status' => function($order) {
             $colors = [
@@ -72,7 +71,7 @@
 
 
 <x-tab title="Orders">
-    <div class="flex flex-col p-8 w-[90vw] max-w-[1200px]">
+    <div class="flex flex-col p-8 w-[90vw] max-w-[1300px]">
         @if(session('message'))
             <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
                 {{ session('message') }}

@@ -23,7 +23,7 @@ class UserController extends Controller
     public function store(Request $request) {
         $validated = $request->validate([
             'name' => 'required|string|max:40',
-            'username' => 'required|string|max:40',
+            'username' => 'required|string|max:40|regex:/^\S*$/',
             'email' => 'required|email|unique:users,email',
             'number' => ['required', 'regex:/[0-9]([0-9]|-(?!-))+/'],
             'password' => 'required|min:8|confirmed',
@@ -52,7 +52,7 @@ class UserController extends Controller
     public function update(Request $request, User $user) {
         $validated = $request->validate([
             'name' => 'required|string|max:40',
-            'username' => 'required|string|max:40',
+            'username' => 'required|string|max:40|regex:/^\S*$/',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'number' => ['required', 'regex:/[0-9]([0-9]|-(?!-))+/'],
             'password' => 'nullable|min:8|confirmed',

@@ -133,5 +133,5 @@
             </div>
         </div>
     </div>
-    @endrole
+    @endcan
 </x-app-layout>
