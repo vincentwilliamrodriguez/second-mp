@@ -8,11 +8,6 @@ use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
-    public function index()
-    {
-        return view('tickets.index');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -22,24 +17,69 @@ class TicketController extends Controller
             'user_description' => 'required|string',
         ]);
 
-        $ticketNumber = $this->generateTicketNumber();
-
-        $validated['ticket_number'] = $ticketNumber;
+        $validated['ticket_number'] = $this->generateTicketNumber();
+        $validated['status'] = 'open';
+        $validated['is_hidden'] = false;
 
         Ticket::create($validated);
 
-        // Redirect with the ticket number and success status
-        return redirect()->route('tickets.index')->with([
+        return back()->with([
             'ticket_submitted' => true,
-            'ticket_number' => $ticketNumber
+            'ticket_number' => $validated['ticket_number'],
         ]);
+    }
+
+    public function update(Request $request, Ticket $ticket)
+    {
+        $validated= $request->validate([
+            'status' => 'required|in:pending,in_progress,done',
+        ]);
+
+        $ticket->status = $validated['status'];
+
+        $ticket->save();
+            return redirect()->route('tickets.index')
+                ->with('message', 'Ticket updated successfully.');
+    }
+
+    public function destroy(Ticket $ticket) {
+        $ticket->delete();
+
+        return redirect()->route('tickets.index')
+        ->with('message', 'Ticket has been removed successfully.');
+    }
+
+    public function index(Request $request)
+    {
+        if ($request->isMethod('post') && $request->has('ticket_id')) {
+            $ticket = Ticket::findOrFail($request->ticket_id);
+
+            if ($request->action === 'delete') {
+                $ticket->update(['is_hidden' => true]);
+            } else {
+                $request->validate([
+                    'status' => 'required|string|in:pending,in_progress,done',
+                ]);
+                $ticket->update(['status' => $request->status]);
+            }
+
+            return back()->with('success', 'Ticket updated.');
+        }
+
+        $query = Ticket::where('is_hidden', false);
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $tickets = $query->oldest()->paginate(10);
+
+        return view('tickets.index', compact('tickets'));
     }
 
     private function generateTicketNumber()
     {
-        $prefix = 'TKT-' . date('Ym') . '-';
-        $randomString = strtoupper(Str::random(6));
-
-        return $prefix . $randomString;
+        return 'TKT-' . date('Ym') . '-' . strtoupper(Str::random(6));
     }
 }
+

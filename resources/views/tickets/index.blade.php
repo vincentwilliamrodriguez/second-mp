@@ -3,7 +3,7 @@
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
-                <div class="bg-green-600 text-white px-6 py-4">
+                <div class="bg-green-600 text-black px-6 py-4">
                     <h3 class="text-xl font-semibold">Thank You for Your Submission!</h3>
                 </div>
                 <div class="p-8 text-center">
@@ -13,7 +13,7 @@
                         </svg>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-800 mb-2">Your ticket has been submitted!</h4>
-                    <p class="text-gray-600 mb-6">We'll contact you shortly regarding your request.</p>
+                    <p class="text-gray-600 mb-6">We'll contact you shortly regarding your request!</p>
 
                     <div class="bg-gray-100 rounded-lg p-6 inline-block">
                         <p class="text-gray-600 mb-1">Your ticket number is:</p>
@@ -73,6 +73,65 @@
     @endrole
 
     @role('support')
-
+    <div class="max-w-7xl mx-auto my-8">
+        <div class="bg-white shadow rounded-lg">
+            <div class="bg-blue-600 text-white px-6 py-4">
+                <h3 class="text-lg font-bold">Support Tickets</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100 text-left">
+                        <tr>
+                            <th class="px-4 py-2">Ticket #</th>
+                            <th class="px-4 py-2">Name</th>
+                            <th class="px-4 py-2">Email</th>
+                            <th class="px-4 py-2">Description</th>
+                            <th class="px-4 py-2">Created</th>
+                            <th class="px-4 py-2">Status</th>
+                            <th class="px-4 py-2">Actions</th>
+                            <th class="px-4 py-2">Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($tickets as $ticket)
+                            <tr class="border-t">
+                                <td class="px-4 py-2 text-blue-600">{{ $ticket->ticket_number }}</td>
+                                <td class="px-4 py-2">{{ $ticket->user_name }}</td>
+                                <td class="px-4 py-2">{{ $ticket->user_email }}</td>
+                                <td class="px-4 py-2 truncate max-w-xs" title="{{ $ticket->user_description }}">{{ $ticket->user_description }}</td>
+                                <td class="px-4 py-2">{{ $ticket->created_at->format('M d, Y') }}</td>
+                                <td class="px-4 py-2">{{ $ticket->user_phone }}</td>
+                                <td class="px-4 py-2">
+                                    <form action="{{ route('tickets.update', $ticket) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                                        <select name="status" onchange="this.form.submit()" class="border rounded px-2 py-1 text-xs">
+                                            <option value="pending" {{ $ticket->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="in_progress" {{ $ticket->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                            <option value="done" {{ $ticket->status == 'done' ? 'selected' : '' }}>Done</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <form action="{{ route('tickets.destroy', $ticket) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button type="submit" class="text-red-500 hover:underline text-xs">Hide</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-4 py-4 text-center text-gray-500">No tickets found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     @endrole
 </x-app-layout>

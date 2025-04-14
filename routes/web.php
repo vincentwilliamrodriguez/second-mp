@@ -23,13 +23,11 @@ Route::get('/dashboard', function () {
 
 Route::redirect('/', 'login');
 
-Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
-Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-
 Route::get('/ticket', function () {
     return view('tickets.index');
 })->middleware('auth');
 
+Route::resource('tickets', TicketController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -46,7 +44,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    
+
     Route::resource('products', ProductController::class)->only(['create', 'store'])
         ->middleware('permission:create-products');
 
