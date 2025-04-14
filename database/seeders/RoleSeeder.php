@@ -65,7 +65,7 @@ class RoleSeeder extends Seeder
             'customer' => [
                 'read-products',
                 'create-orders', 'read-orders', 'update-orders', 'delete-orders',
-                'create-tickets',
+                'create-tickets', 'read-tickets', 'update-tickets',
             ],
 
             'seller' => [
