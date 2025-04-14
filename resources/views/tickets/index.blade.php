@@ -65,7 +65,7 @@
             @endif
         </div>
     </div>
-    @endif
+    @endrole
 
     @role('support|admin')
     <div class="max-w-7xl mx-auto my-8">
@@ -112,9 +112,22 @@
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="action" value="hide">
                                         <button type="submit" class="text-green-600 font-bold text-base hover:underline">Complete</button>
                                     </form>
+
+                                    @role('admin')
+                                    <form action="{{ route('tickets.destroy', $ticket) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button type="submit" class="text-red-600 font-bold text-base hover:underline"
+                                                onclick="return confirm('Are you sure you want to permanently delete this ticket?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    @endrole
                                 </td>
                             </tr>
                             <tr class="border-b bg-gray-50">
@@ -132,5 +145,5 @@
             </div>
         </div>
     </div>
-    @endcan
+    @endrole
 </x-app-layout>

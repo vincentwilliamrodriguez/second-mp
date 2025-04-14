@@ -20,8 +20,7 @@ Route::get('/dashboard', function () {
     $user = auth()->user();
 })->name('dashboard');
 
-
-
+Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

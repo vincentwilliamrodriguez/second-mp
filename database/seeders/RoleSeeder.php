@@ -65,7 +65,7 @@ class RoleSeeder extends Seeder
             'customer' => [
                 'read-products',
                 'create-orders', 'read-orders', 'update-orders', 'delete-orders',
-                'create-tickets', 'read-tickets', 'update-tickets', 'delete-tickets',
+                'create-tickets',
             ],
 
             'seller' => [
@@ -74,7 +74,7 @@ class RoleSeeder extends Seeder
             ],
 
             'support' => [
-                'read-tickets', 'update-tickets',
+                'create-tickets', 'read-tickets', 'update-tickets', 'delete-tickets',
             ],
 
             'admin' => ['all-permissions'],
