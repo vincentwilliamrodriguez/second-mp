@@ -1,5 +1,5 @@
 <x-app-layout>
-    @role('customer')
+    @role('customer|admin|seller')
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
@@ -85,11 +85,10 @@
                             <th class="px-4 py-2">Ticket #</th>
                             <th class="px-4 py-2">Name</th>
                             <th class="px-4 py-2">Email</th>
-                            <th class="px-4 py-2">Description</th>
+                            <th class="px-4 py-2">Phone</th>
                             <th class="px-4 py-2">Created</th>
                             <th class="px-4 py-2">Status</th>
                             <th class="px-4 py-2">Actions</th>
-                            <th class="px-4 py-2">Phone</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -98,9 +97,8 @@
                                 <td class="px-4 py-2 text-blue-600">{{ $ticket->ticket_number }}</td>
                                 <td class="px-4 py-2">{{ $ticket->user_name }}</td>
                                 <td class="px-4 py-2">{{ $ticket->user_email }}</td>
-                                <td class="px-4 py-2 truncate max-w-xs" title="{{ $ticket->user_description }}">{{ $ticket->user_description }}</td>
-                                <td class="px-4 py-2">{{ $ticket->created_at->format('M d, Y') }}</td>
                                 <td class="px-4 py-2">{{ $ticket->user_phone }}</td>
+                                <td class="px-4 py-2">{{ $ticket->created_at->format('M d, Y') }}</td>
                                 <td class="px-4 py-2">
                                     <form action="{{ route('tickets.update', $ticket) }}" method="POST">
                                         @csrf
