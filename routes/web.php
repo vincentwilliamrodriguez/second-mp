@@ -23,12 +23,6 @@ Route::get('/dashboard', function () {
 
 Route::redirect('/', 'login');
 
-Route::get('/ticket', function () {
-    return view('tickets.index');
-})->middleware('auth');
-
-Route::resource('tickets', TicketController::class);
-
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
@@ -80,11 +74,21 @@ Route::middleware([
         ->name('orders.update-quantity');
 
 
+
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
 
-    Route::middleware('permission:read-supports')->group(function () {
-        Route::resource('support', TicketController::class);
-    });
+
+    Route::resource('tickets', TicketController::class)->only(['create', 'store'])
+        ->middleware('permission:create-tickets');
+
+    Route::resource('tickets', TicketController::class)->only(['index'])
+        ->middleware('permission:read-tickets');
+
+    Route::resource('tickets', TicketController::class)->only(['edit', 'update'])
+        ->middleware('permission:update-tickets');
+
+    Route::resource('tickets', TicketController::class)->only(['destroy'])
+        ->middleware('permission:delete-tickets');
 });

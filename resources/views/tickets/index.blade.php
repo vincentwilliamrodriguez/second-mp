@@ -1,5 +1,5 @@
 <x-app-layout>
-    @role('customer')
+    @if (auth()->user()->can('read-tickets') && !auth()->user()->hasRole('support'))
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
@@ -70,9 +70,9 @@
             @endif
         </div>
     </div>
-    @endrole
+    @endif
 
-    @role('support')
+    @can('update-tickets')
     <div class="max-w-7xl mx-auto my-8">
         <div class="bg-white shadow rounded-lg">
             <div class="bg-blue-600 text-white px-6 py-4">
