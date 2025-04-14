@@ -1,10 +1,15 @@
-<div class='flex flex-col gap-2'>
+<div class='flex flex-col'>
     <a href="{{ route('products.show', $product) }}">
         <h3 class='font-black text-lg hover:cursor-pointer hover:underline'>{{ $order->product->name }}</h3>
     </a>
-    <p class="mb-2"><strong>{{ $order->product->quantity }}</strong> in stock</p>
+    <div class="text-blue-600 text-sm mb-3 flex gap-1 items-center">
+        <div class="text-gray-500 w-4 h-4"><x-eos-person/></div>
+        <span class="font-medium">{{ $product->seller->username }}</span>
+    </div>
 
-    <div class="flex-shrink-0 self-center relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden">
+    <p class="mb-1"><strong>{{ $order->product->quantity }}</strong> in stock</p>
+
+    <div class="flex-shrink-0 relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden">
         @if(isset($product->picture) && Storage::disk('public')->exists($product->picture))
             <img
                 class="max-h-[200px] max-w-[150px] object-cover"

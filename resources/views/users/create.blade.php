@@ -8,7 +8,7 @@
 
         <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
             @csrf
-
+            
             <div class="mb-5">
                 <x-label for="name" value="{{ __('Full Name') }}" class="flex items-center gap-1 mb-1">
                     <x-eos-person class="w-4 h-4 text-blue-600" />

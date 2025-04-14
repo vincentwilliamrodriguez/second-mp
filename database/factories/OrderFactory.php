@@ -18,16 +18,22 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $product = Product::inRandomOrder()->first() ?? Product::factory()->create();
-        $customer = User::inRandomOrder()->first() ?? User::factory()->create();
+        $product = Product::inRandomOrder()->first();
+        $customer = User::where('username', 'REGEXP', '^customer[0-9]+')
+                        ->inRandomOrder()
+                        ->first();
+
+
+        $isPlaced = $this->faker->boolean(80);
+        $status = (!$isPlaced) ? 'pending' : $this->faker->randomElement(['pending', 'completed', 'cancelled']);
 
         return [
             'product_id' => $product->id,
             'customer_id' => $customer->id,
-            'quantity' => $this->faker->numberBetween(1, 10),
-            'is_placed' => $this->faker->boolean(),
+            'quantity' => $this->faker->numberBetween(1, $product->quantity),
+            'is_placed' => $isPlaced,
             'date_placed' => $this->faker->date(),
-            'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
+            'status' => $status,
         ];
     }
 }

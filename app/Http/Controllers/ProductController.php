@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    protected $categories = ['Books', 'Clothing', 'Electronics', 'Furniture', 'Hardware', 'Health', 'Hobbies', 'Other'];
+    public static $categories = ['Books', 'Clothing', 'Electronics', 'Furniture', 'Hardware', 'Health', 'Hobbies', 'Other'];
 
     public function __construct() {
         $this->middleware('permission:create-products')->only(['create', 'store']);
@@ -23,8 +23,8 @@ class ProductController extends Controller
     public function index() {
         $user = auth()->user();
         $products = $user->hasRole('seller')
-                        ? $user->products()->latest()->paginate(8)
-                        : Product::latest()->paginate(8);
+                        ? $user->products()->orderBy('updated_at', 'DESC')->paginate(8)
+                        : Product::orderBy('updated_at', 'DESC')->paginate(8);
 
         return view('products.index', compact('products'));
     }
@@ -34,7 +34,7 @@ class ProductController extends Controller
     }
 
     public function create() {
-        $categories = $this->categories;
+        $categories = self::$categories;
         return view('products.create', compact('categories'));
     }
 
@@ -42,7 +42,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:40',
             'description' => 'nullable|string:max:250',
-            'category' => ['required', Rule::in($this->categories)],
+            'category' => ['required', Rule::in(self::$categories)],
             'quantity' => 'required|integer|min:0|max:10000000',
             'price' => 'required|decimal:0,2|min:0|max:100000000',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -62,7 +62,7 @@ class ProductController extends Controller
     }
 
     public function edit(Product $product) {
-        $categories = $this->categories;
+        $categories = self::$categories;
         return view('products.edit', compact('product', 'categories'));
     }
 
@@ -70,7 +70,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:30',
             'description' => 'nullable|string:max:250',
-            'category' => ['required', Rule::in($this->categories)],
+            'category' => ['required', Rule::in(self::$categories)],
             'quantity' => 'required|integer',
             'price' => 'required|decimal:0,2|min:0',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

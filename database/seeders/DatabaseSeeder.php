@@ -35,9 +35,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            RoleSeeder::class,
             ProductSeeder::class,
             OrderSeeder::class,
-            RoleSeeder::class,
         ]);
 
         $superadmin->assignRole('admin');

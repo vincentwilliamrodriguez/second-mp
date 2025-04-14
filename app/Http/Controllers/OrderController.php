@@ -10,8 +10,8 @@ class OrderController extends Controller
     public function index() {
         $user = auth()->user();
         $orders =    $user->hasRole('admin') ? Order::latest()->get()
-                  : ($user->hasRole('customer') ? $user->orders()->latest()->get()
-                  : ($user->hasRole('seller') ? $user->ordersForSeller()->latest()->get() : collect()));
+                  : ($user->hasRole('customer') ? $user->orders()->orderby('updated_at', 'desc')->get()
+                  : ($user->hasRole('seller') ? $user->ordersForSeller()->orderby('updated_at', 'desc')->get() : collect()));
 
         return view('orders.index', compact('orders'));
     }
@@ -38,11 +38,11 @@ class OrderController extends Controller
 
     public function update(Request $request, Order $order) {
         $validated = $request->validate([
-            'status' => 'required|in:completed,cancelled',
+            'status' => 'in:completed,cancelled',
+            'is_placed' => 'boolean',
         ]);
 
-
-        $order->status = $validated['status'];
+        $order->fill($validated);
 
         if ($order->status === 'completed') {
             if ($order->product->quantity < $order->quantity) {
@@ -53,7 +53,7 @@ class OrderController extends Controller
             $order->product->quantity -= $order->quantity;
             $order->product->save();
         }
-        
+
         $order->save();
 
         return redirect()->route('orders.index')

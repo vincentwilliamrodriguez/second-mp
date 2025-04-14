@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return view('welcome');
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect('/login');
 })->name('home');
 
 Route::get('/dashboard', function () {
+    return auth()->user()->hasRole('support')
+        ? redirect()->route('tickets.index')
+        : redirect()->route('products.index');
     $user = auth()->user();
-
-    if ($user->hasRole('support')) {
-        return redirect()->route('tickets.index');
-    }
-
-    return redirect()->route('products.index');
 })->name('dashboard');
 
-Route::redirect('/', 'login');
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
