@@ -15,7 +15,6 @@ class Ticket extends Model
         'user_phone',
         'user_description',
         'ticket_number',
-        'status',
         'is_hidden',
     ];
 }

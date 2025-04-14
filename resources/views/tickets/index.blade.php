@@ -1,9 +1,5 @@
 <x-app-layout>
-<<<<<<< HEAD
-    @role('customer|admin|seller')
-=======
-    @if (auth()->user()->can('read-tickets') && !auth()->user()->hasRole('support'))
->>>>>>> e107b4196d0337ee1b8e046698e24b74618acb8e
+    @role('customer|seller')
     <div class="max-w-2xl mx-auto my-8">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
@@ -24,7 +20,7 @@
                         <p class="text-2xl font-bold text-blue-600">{{ session('ticket_number') }}</p>
                     </div>
 
-                    <p class="mt-6 text-gray-600">Please keep this number for your reference.</p>
+                    <p class="mt-6 text-gray-600">Please keep this number for your reference</p>
 
                     <a href="{{ route('tickets.index') }}" class="mt-6 inline-block bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
                         Submit Another Ticket
@@ -39,7 +35,7 @@
                     <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST">
                         @csrf
                         <div class="mb-5">
-                            <label for="user_name" class="block text-gray-700 font-medium mb-2">Name:</label>
+                            <label for="user_name" class="block text-gray-700 font-black medium mb-2">Name:</label>
                             <input type="text" id="user_name" name="user_name" placeholder="Your Name" required
                                 class="w-full py-2 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
@@ -76,11 +72,12 @@
     </div>
     @endif
 
-    @can('update-tickets')
+    @role('support|admin')
     <div class="max-w-7xl mx-auto my-8">
         <div class="bg-white shadow rounded-lg">
             <div class="bg-blue-600 text-white px-6 py-4">
                 <h3 class="text-lg font-bold">Support Tickets</h3>
+                <h4 class="text-lg font-bold">Update status accordingly</h4>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
@@ -92,7 +89,7 @@
                             <th class="px-4 py-2">Phone</th>
                             <th class="px-4 py-2">Created</th>
                             <th class="px-4 py-2">Status</th>
-                            <th class="px-4 py-2">Actions</th>
+                            <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,8 +118,13 @@
                                         @method('DELETE')
                                         <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
                                         <input type="hidden" name="action" value="delete">
-                                        <button type="submit" class="text-red-500 hover:underline text-xs">Hide</button>
+                                        <button type="submit" class="text-green-600 font-bold text-base hover:underline">Complete</button>
                                     </form>
+                                </td>
+                            </tr>
+                            <tr class="border-b bg-gray-50">
+                                <td colspan="7" class="px-6 py-3 text-sm text-gray-700">
+                                    <strong>Description:</strong><div class="mt-1 max-h-32 overflow-y-auto whitespace-pre-wrap break-words pr-2">{{ $ticket->user_description }}</div>
                                 </td>
                             </tr>
                         @empty
@@ -135,5 +137,5 @@
             </div>
         </div>
     </div>
-    @endrole
+    @endcan
 </x-app-layout>
