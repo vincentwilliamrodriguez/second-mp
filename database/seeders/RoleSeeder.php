@@ -74,7 +74,7 @@ class RoleSeeder extends Seeder
             ],
 
             'support' => [
-                'create-tickets', 'read-tickets', 'update-tickets', 'delete-tickets',
+                'read-tickets', 'update-tickets', 'delete-tickets',
             ],
 
             'admin' => ['all-permissions'],
