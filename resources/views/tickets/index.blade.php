@@ -113,7 +113,10 @@
                                         @method('DELETE')
                                         <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
                                         <input type="hidden" name="action" value="hide">
-                                        <button type="submit" class="text-green-600 font-bold text-base hover:underline">Complete</button>
+                                        <button type="submit" class="text-green-600 font-bold text-base hover:underline"
+                                                onclick="return confirm('Are you sure you want to delete this ticket?')">
+                                            Complete
+                                        </button>
                                     </form>
 
                                     @role('admin')
