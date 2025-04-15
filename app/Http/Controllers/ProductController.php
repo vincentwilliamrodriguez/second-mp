@@ -13,13 +13,6 @@ class ProductController extends Controller
 {
     public static $categories = ['Books', 'Clothing', 'Electronics', 'Furniture', 'Hardware', 'Health', 'Hobbies', 'Other'];
 
-    public function __construct() {
-        $this->middleware('permission:create-products')->only(['create', 'store']);
-        $this->middleware('permission:read-products')->only(['index', 'show']);
-        $this->middleware('permission:update-products')->only(['edit', 'update']);
-        $this->middleware('permission:delete-products')->only(['destroy']);
-    }
-
     public function index() {
         $user = auth()->user();
         $products = $user->hasRole('seller')

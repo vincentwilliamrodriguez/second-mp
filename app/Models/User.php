@@ -84,13 +84,8 @@ class User extends Authenticatable
 
     public static function booted() {
         static::deleting(function ($user) {
-            if ($user->isForceDeleting()) {
-                $user->products()->forceDelete();
-                $user->orders()->forceDelete();
-            } else {
-                $user->products()->delete();
-                $user->orders()->delete();
-            }
+            $user->products()->delete();
+            $user->orders()->delete();
         });
     }
 }
