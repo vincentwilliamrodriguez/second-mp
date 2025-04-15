@@ -1,9 +1,9 @@
-<x-app-layout>
+<x-tab>
     @role('customer|seller')
-    <div class="max-w-2xl mx-auto my-8">
+    <div class="w-[50vw] max-w-[900px] mx-auto">
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             @if(session('ticket_submitted'))
-                <div class="bg-green-600 text-black px-6 py-4">
+                <div class="bg-green-300 text-black px-6 py-4">
                     <h3 class="text-xl font-semibold">Thank You for Your Submission!</h3>
                 </div>
                 <div class="p-8 text-center">
@@ -149,4 +149,4 @@
         </div>
     </div>
     @endrole
-</x-app-layout>
+</x-tab>
