@@ -4,6 +4,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Livewire\Products\Show;
+use App\Livewire\ProductsChild;
+use App\Livewire\ProductsIndex;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -41,14 +45,22 @@ Route::middleware([
     Route::resource('products', ProductController::class)->only(['create', 'store'])
         ->middleware('permission:create-products');
 
-    Route::resource('products', ProductController::class)->only(['index', 'show'])
-        ->middleware('permission:read-products');
+    // Route::resource('products', ProductController::class)->only(['index', 'show'])
+    //     ->middleware('permission:read-products');
 
     Route::resource('products', ProductController::class)->only(['edit', 'update'])
         ->middleware('permission:update-products');
 
     Route::resource('products', ProductController::class)->only(['destroy'])
         ->middleware('permission:delete-products');
+
+    Route::prefix('products')->group(function () {
+        Route::get('/', ProductsIndex::class)
+        ->middleware('permission:read-products')->name('products.index');
+
+        Route::get('/{product}', ProductsChild::class)
+        ->middleware('permission:read-products')->name('products.show');
+    });
 
 
 

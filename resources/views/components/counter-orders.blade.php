@@ -1,3 +1,5 @@
+{{-- This is the old counter that only uses Alpine --}}
+
 @props([
     'product',
     'init' => '1',

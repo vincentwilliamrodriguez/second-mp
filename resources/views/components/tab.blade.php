@@ -1,6 +1,7 @@
-@props(['title' => '', 'backgroundClasses' => ''])
+
 
 <x-app-layout>
+    @props(['title' => '', 'backgroundClasses' => ''])
     {{-- <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $title }}
@@ -15,3 +16,4 @@
         </div>
     </div>
 </x-app-layout>
+

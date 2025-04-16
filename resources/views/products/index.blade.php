@@ -1,3 +1,5 @@
+{{-- This is the old products index page --}}
+
 <x-tab title="Products">
     <div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px]">
         @if(session('message'))

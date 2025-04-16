@@ -1,3 +1,5 @@
+{{-- This is the old show product page --}}
+
 @props([
     'maxDescriptionLength' => 300
 ])

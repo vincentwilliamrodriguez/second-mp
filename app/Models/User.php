@@ -88,4 +88,16 @@ class User extends Authenticatable
             $user->orders()->delete();
         });
     }
+
+    public function initials(): string {
+        $names = explode(' ', $this->name);
+        $initials = '';
+
+        foreach ($names as $n) {
+            $initials .= strtoupper(substr($n, 0, 1));
+        }
+
+        return $initials;
+    }
+
 }

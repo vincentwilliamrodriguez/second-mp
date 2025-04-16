@@ -26,7 +26,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'user_name' => 'required|string|max:255',
             'user_email' => 'required|email|max:255',
-            'user_phone' => 'nullable|string|max:255',
+            'user_phone' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
             'user_description' => 'required|string',
         ]);
 

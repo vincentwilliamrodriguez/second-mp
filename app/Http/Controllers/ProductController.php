@@ -1,5 +1,8 @@
 <?php
 
+// This is the old controller for products
+
+
 namespace App\Http\Controllers;
 
 use App\Models\Product;
