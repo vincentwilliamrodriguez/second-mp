@@ -15,6 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Styles -->
+        @fluxAppearance
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
@@ -40,6 +41,7 @@
 
         @stack('modals')
 
+        @fluxScripts
         @livewireScripts
     </body>
 </html>

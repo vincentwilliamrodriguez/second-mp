@@ -11,7 +11,6 @@
         </h2>
 
         @if(auth()->user()->can('create-products') && !$products->isEmpty())
-
             <x-button
                 onclick="window.location.href='{{ route('products.create') }}'"
                 :baseColor="'blue'" :iconSize="'w-6 h-6'">
@@ -28,7 +27,7 @@
         <div class="col-span-full flex items-center justify-center">
             <a href="{{ route('products.create') }}" class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50">
                 <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                    <x-eos-add class="w-10 h-10 text-blue-600" />
+                    <flux:icon.plus class="w-10 h-10 text-blue-600" />
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2 pointer-events-none select-none">No Products Yet</h3>
                 <p class="text-gray-600 text-center mb-4 pointer-events-none select-none">Add your first product to start selling</p>

@@ -8,6 +8,26 @@ const baseColors = [
     'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose'
 ];
 
+const colorsToCssVariables = ({ addBase, theme }) => {
+    const allColors = theme('colors');
+    const cssVariables = {};
+
+    Object.entries(allColors).forEach(([colorName, colorValues]) => {
+      if (typeof colorValues === 'object') {
+        Object.entries(colorValues).forEach(([shade, value]) => {
+          cssVariables[`--color-${colorName}-${shade}`] = value;
+        });
+      } else {
+        cssVariables[`--color-${colorName}`] = colorValues;
+      }
+    });
+
+    addBase({
+      ':root': cssVariables
+    });
+  };
+
+
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -26,11 +46,16 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+              'accent-foreground': 'var(--color-accent-foreground)',
+              'accent': 'var(--color-accent)',
+              'accent-content': 'var(--color-accent-content)',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [forms, typography, colorsToCssVariables],
 };
