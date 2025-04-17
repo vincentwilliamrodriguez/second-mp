@@ -62,7 +62,7 @@
         </div>
 
 
-        <div class="flex items-center basis-36">
+        <div class="flex items-center basis-40">
             <flux:button variant='subtle' size='sm' class="!px-1" disabled>
                 <flux:icon.funnel />
             </flux:button>
@@ -96,16 +96,16 @@
         <div class="flex justify-end items-center flex-1 gap-2">
             <flux:text class="pt-1 font-medium select-none!" variant="subtle">Price Range:</flux:text>
 
-            <flux:input size='sm' class='max-w-36 pl-1' class:input="!pl-8"
+            <flux:input size='sm' class='max-w-32 pl-1' class:input="!pl-8"
                 wire:model.blur='minPrice' placeholder='Min.' type='number' min='0'
                 max='10000000' pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
 
                 <x-slot name='icon'><flux:icon.philippine-peso class='size-4' /></x-slot>
             </flux:input>
 
-            <flux:text class="pt-1 font-medium select-none!" variant="subtle">to</flux:text>
+            <flux:text class="pt-1 ml-1 font-medium select-none!" variant="subtle">to</flux:text>
 
-            <flux:input size='sm' class='max-w-36 pl-1' class:input="!pl-8"
+            <flux:input size='sm' class='max-w-32 pl-1' class:input="!pl-8"
                 wire:model.blur='maxPrice' placeholder='Max.' type='number' min='0'
                 max='10000000' pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
 
@@ -145,7 +145,11 @@
         <div
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
             @foreach ($products as $product)
-                <x-product-card :product="$product"></x-product-card>
+                {{-- This calls the new Product Card component --}}
+                <livewire:product-card :$product :$categoryValues wire:key='{{ $product->id }}' />
+
+                {{-- This calls the old Product Card component  --}}
+                {{-- <x-product-card :product="$product"></x-product-card> --}}
             @endforeach
         </div>
     @endif

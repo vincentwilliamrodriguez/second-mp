@@ -118,6 +118,7 @@ class ProductsIndex extends Component {
         if ($this->category) {
             $products = $products->where('category', $this->category);
         }
+
         $products = $products->where('price', '>=', $this->minPrice ? (float) $this->minPrice : 0)
                              ->where('price', '<=', $this->maxPrice ? (float) $this->maxPrice : 10000000);
 
