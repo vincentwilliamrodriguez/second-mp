@@ -1,3 +1,5 @@
+{{-- The PHP code below defines the parameters of the admin's users tables --}}
+
 @php
     $usersTableWidths = [
         'Name' => '120px',

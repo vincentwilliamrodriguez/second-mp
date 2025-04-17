@@ -1,3 +1,5 @@
+{{-- The PHP code below defines the parameters of the user's orders tables --}}
+
 @php
     $baseTableWidths = [
         'Product' => '220px',

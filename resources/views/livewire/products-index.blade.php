@@ -1,3 +1,40 @@
+{{-- The PHP code below defines the parameters of the seller's products table --}}
+
+@php
+    $productsTableWidths = [
+        'Name' => '130px',
+        'Quantity' => '70px',
+        'Actions' => '150px',
+    ];
+
+    $productsTableColumns = [
+        'Name' => function($product) {
+            return view('livewire.product-cell', compact('product'))->render();
+        },
+        'Category' => function($product) {
+            return $product->category;
+        },
+        'Quantity' => function($product) {
+            return $product->quantity;
+        },
+        'Price' => function($product) {
+            return Number::currency($product->price, 'PHP');
+        },
+        'Created' => function($product) {
+            return $product->created_at->format('F j, Y');
+        },
+        'Modified' => function($product) {
+            return $product->updated_at->format('F j, Y');
+        },
+        'Actions' => function($product) {
+            return view('livewire.product-actions', compact('product'))->render();
+        }
+    ];
+@endphp
+
+
+
+
 <div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px]">
     @if (session('message'))
         <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
@@ -97,7 +134,7 @@
             <flux:text class="pt-1 font-medium select-none!" variant="subtle">Price Range:</flux:text>
 
             <flux:input size='sm' class='max-w-32 pl-1' class:input="!pl-8"
-                wire:model.blur='minPrice' placeholder='Min.' type='number' min='0'
+                wire:model.live.debounce.500ms='minPrice' placeholder='Min.' type='number' min='0'
                 max='10000000' pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
 
                 <x-slot name='icon'><flux:icon.philippine-peso class='size-4' /></x-slot>
@@ -106,7 +143,7 @@
             <flux:text class="pt-1 ml-1 font-medium select-none!" variant="subtle">to</flux:text>
 
             <flux:input size='sm' class='max-w-32 pl-1' class:input="!pl-8"
-                wire:model.blur='maxPrice' placeholder='Max.' type='number' min='0'
+                wire:model.live.debounce.500ms='maxPrice' placeholder='Max.' type='number' min='0'
                 max='10000000' pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
 
                 <x-slot name='icon'><flux:icon.philippine-peso class='size-4' /></x-slot>
@@ -119,8 +156,9 @@
     @if ($products->isEmpty())
         <div class="col-span-full flex items-center justify-center">
 
-            {{-- Seller's empty view --}}
-            @if (auth()->user()->can('create-products'))
+
+            {{-- Seller's empty view (without quey) --}}
+            @if (auth()->user()->can('create-products') && !($search || $category || $minPrice || $maxPrice))
                 <a href="{{ route('products.create') }}"
                     class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50">
                     <div
@@ -134,14 +172,14 @@
                 </a>
 
 
-                {{-- Customer's empty view --}}
             @else
+                {{-- Customer's empty view --}}
                 <p class="text-gray-500 pb-[400px]">
                     {{ $this->isProductsEmpty() ? 'No products to show.' : 'No products match your query.' }}</p>
             @endif
 
         </div>
-    @else
+    @elseif (auth()->user()->hasRole('customer'))
         <div
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
             @foreach ($products as $product)
@@ -152,6 +190,12 @@
                 {{-- <x-product-card :product="$product"></x-product-card> --}}
             @endforeach
         </div>
+    @else
+        <x-table
+            :items="$products"
+            :columns="$productsTableColumns"
+            :widths="$productsTableWidths"
+        />
     @endif
 
     @if (!$products->isEmpty())
