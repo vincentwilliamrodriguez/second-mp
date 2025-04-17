@@ -17,12 +17,12 @@
                 <x-input id="name" class="block w-full" type="text" name="name" :value="old('name')" required autofocus maxlength="40" placeholder="Enter product name" />
             </div>
 
-            <div class="mb-5">
+            <div class="mb-5" x-data="{description: ''}">
                 <x-label for="description" value="{{ __('Description') }}" class="flex items-center gap-1 mb-1"></x-label>
                 <textarea id="description" class="resize-none block w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
-                    name="description" rows="4" maxlength="250" placeholder="Describe your product">{{ old('description') }}</textarea>
+                    name="description" rows="4" maxlength="250" placeholder="Describe your product" x-model='description'>{{ old('description') }}</textarea>
                 <div class="mt-1 text-xs text-gray-500 flex justify-end">
-                    <span id="char-count">0</span>/250 characters
+                    <span x-text='description.length'></span>/250 characters
                 </div>
             </div>
 
@@ -55,7 +55,46 @@
                 ></x-dropdown-wrapper>
             </div>
 
-            <div class="mb-6">
+            
+            {{-- This is the new way of making a custom file upload using Alpine --}}
+
+            <div x-data="{ fileName: '', fileSelected: false }" class="mb-6">
+                <x-label for="picture" value="{{ __('Product Image (Optional)') }}" class="flex items-center gap-1 mb-1" />
+
+                <div class="mt-1 relative border border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <input
+                        type="file"
+                        id="picture"
+                        wire:model="picture"
+                        accept="image/*"
+                        @change="fileName = $event.target.files[0]?.name || ''; fileSelected = !!fileName;"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    >
+
+                    <div class="p-4 flex items-center justify-center">
+                        <div x-show="!fileSelected" id="file-placeholder" class="text-center">
+                            <x-eos-cloud-upload class="w-8 h-8 mx-auto text-blue-500 mb-2" />
+                            <span class="text-gray-600">Click to upload image</span>
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG or GIF (Max. 2MB)</p>
+                        </div>
+
+                        <div x-show="fileSelected" id="file-selected" class="text-center">
+                            <div class="flex items-center">
+                                <x-eos-check-circle class="w-5 h-5 text-green-500 mr-2" />
+                                <span x-text="fileName" class="text-gray-800 font-medium truncate max-w-xs"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @error('picture') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+
+
+
+            {{-- This is the old way of creating a custom file upload using vanilla JavaScript --}}
+
+            {{-- <div class="mb-6">
                 <x-label for="picture" value="{{ __('Product Image (Optional)') }}" class="flex items-center gap-1 mb-1"></x-label>
 
                 <div class="mt-1 relative border border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
@@ -77,7 +116,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="flex items-center justify-end mt-6 pt-4 border-t border-gray-100">
                 <a class="text-gray-600 hover:text-blue-600 transition-colors flex items-center" href="{{ route('products.index') }}">
@@ -94,32 +133,38 @@
     </div>
 
     <script>
-        function updateFileLabel(input) {
-            const placeholderElement = document.getElementById('file-placeholder');
-            const selectedElement = document.getElementById('file-selected');
-            const fileNameElement = document.getElementById('file-name');
+        // This is the former JavaScript mechanism for handling the custom file upload
 
-            if (input.files && input.files[0]) {
-                const fileName = input.files[0].name;
-                fileNameElement.textContent = fileName;
-                placeholderElement.classList.add('hidden');
-                selectedElement.classList.remove('hidden');
-            } else {
-                placeholderElement.classList.remove('hidden');
-                selectedElement.classList.add('hidden');
-            }
-        }
+        // function updateFileLabel(input) {
+        //     const placeholderElement = document.getElementById('file-placeholder');
+        //     const selectedElement = document.getElementById('file-selected');
+        //     const fileNameElement = document.getElementById('file-name');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const textarea = document.getElementById('description');
-            const charCount = document.getElementById('char-count');
+        //     if (input.files && input.files[0]) {
+        //         const fileName = input.files[0].name;
+        //         fileNameElement.textContent = fileName;
+        //         placeholderElement.classList.add('hidden');
+        //         selectedElement.classList.remove('hidden');
+        //     } else {
+        //         placeholderElement.classList.remove('hidden');
+        //         selectedElement.classList.add('hidden');
+        //     }
+        // }
 
-            function updateCount() {
-                charCount.textContent = textarea.value.length;
-            }
 
-            textarea.addEventListener('input', updateCount);
-            updateCount();
-        });
+
+        // This is the former JavaScript mechanism for displaying the description's character length
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const textarea = document.getElementById('description');
+        //     const charCount = document.getElementById('char-count');
+
+        //     function updateCount() {
+        //         charCount.textContent = textarea.value.length;
+        //     }
+
+        //     textarea.addEventListener('input', updateCount);
+        //     updateCount();
+        // });
     </script>
 </x-tab>
