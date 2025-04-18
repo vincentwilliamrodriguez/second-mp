@@ -1,9 +1,10 @@
 <div class='flex flex-col'>
+    <h3 class='font-black text-md hover:cursor-pointer hover:underline'
+            wire:click.prevent='$dispatchTo("products-child", "openShow", {productId: "{{ $product->id }}" })'
+            x-on:click.prevent="$flux.modal('products-child').show()">
 
-    {{-- TODO: redirect to products-child --}}
-    <a href="{{ route('products.show', $product) }}">
-        <h3 class='font-black text-md hover:cursor-pointer hover:underline'>{{ $product->name }}</h3>
-    </a>
+        {{ $product->name }}
+    </h3>
 
     <div class="hidden flex-shrink-0 relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden">
         @if(isset($product->picture) && Storage::disk('public')->exists($product->picture))

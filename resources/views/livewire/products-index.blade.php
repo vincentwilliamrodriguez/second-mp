@@ -35,21 +35,22 @@
 
 
 
-<div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px]">
+<div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px] min-h-[550px]">
     @if (session('message'))
         <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
             {{ session('message') }}
         </div>
     @endif
 
-    <div class="flex justify-between items-center mb-2">
+    <div class="flex justify-between items-center">
         <h2 class="font-black text-3xl">
             {{ auth()->user()->hasRole('seller') ? 'My Products' : 'All Products' }}
         </h2>
 
-        @if (auth()->user()->can('create-products') && !$products->isEmpty())
-            <x-button onclick="window.location.href='{{ route('products.create') }}'" :baseColor="'blue'"
-                :iconSize="'w-6 h-6'">
+        @if (auth()->user()->can('create-products') && !$this->isProductsEmpty())
+            <x-button baseColor="blue" iconSize="w-6 h-6"
+                    wire:click.prevent="$dispatchTo('products-child', 'openCreate')"
+                    x-on:click.prevent="$flux.modal('products-child').show()">
 
                 <x-slot name='icon'><x-eos-add-box-o /></x-slot>
                 Create
@@ -59,9 +60,16 @@
     </div>
 
     {{-- Search, Sort, and Filter using Livewire --}}
-    <div class="flex gap-6 mb-2">
+    <div class="flex gap-6 mb-4">
+        @php
+            $searchPlaceholder = auth()->user()->hasRole('seller')
+                                    ? 'Search Product, Description, etc...'
+                                    : 'Search Product, Description, Seller, etc...'
+        @endphp
+
+
         <flux:input class="max-w-80 mr-10" wire:model.live='search' icon:trailing='magnifying-glass' type='text'
-            placeholder='Search Product, Description, Seller, etc...' autocomplete='search' autofocus></flux:input>
+            :placeholder='$searchPlaceholder' autocomplete='search' autofocus></flux:input>
 
         <div class="flex items-center basis-36">
             <flux:button variant='subtle' size='sm' class="!px-1"
@@ -174,7 +182,7 @@
 
             @else
                 {{-- Customer's empty view --}}
-                <p class="text-gray-500 pb-[400px]">
+                <p class="text-gray-500">
                     {{ $this->isProductsEmpty() ? 'No products to show.' : 'No products match your query.' }}</p>
             @endif
 
@@ -201,4 +209,10 @@
     @if (!$products->isEmpty())
         {{ $products->links(data: ['scrollTo' => false]) }}
     @endif
+
+
+    {{-- Modal for Products Child (show, create, edit, or delete) --}}
+    <livewire:products-child wire:key='products-child'
+                                :$categoryValues
+                                :categories="array_keys($categoryValues)">
 </div>

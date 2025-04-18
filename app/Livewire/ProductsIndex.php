@@ -97,8 +97,8 @@ class ProductsIndex extends Component {
         $user = auth()->user();
 
         $products = $user->hasRole('seller')
-            ? $user->products()->orderBy('updated_at', 'DESC')
-            : Product::orderBy('updated_at', 'DESC');
+            ? $user->products()
+            : Product::query();
 
         if ($this->search) {
             $products = $products->where(function ($query) {
@@ -113,6 +113,8 @@ class ProductsIndex extends Component {
 
         if ($this->sortBy) {
             $products = $products->orderBy($this->sortBy, $this->sortOrder);
+        } else {
+            $products = $products->orderBy('updated_at', 'DESC');
         }
 
         if ($this->category) {

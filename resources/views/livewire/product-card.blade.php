@@ -68,5 +68,10 @@
         </div> --}}
     </div>
 
-    <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-0" aria-label="View {{ $product->name }}"></a>
+    {{-- This redirects the user to the Products Show page using Livewire events --}}
+    <div class="absolute inset-0 z-0 hover:cursor-pointer" wire:click.prevent='$dispatchTo("products-child", "openShow", {productId: "{{ $product->id }}" })' x-on:click.prevent="$flux.modal('products-child').show()"></div>
+
+
+    {{-- This is the old way of redirecting the user to the Products Show page --}}
+    {{-- <a href="{{ route('products.show', $product) }}" class="absolute inset-0 z-0" aria-label="View {{ $product->name }}"></a> --}}
 </div>
