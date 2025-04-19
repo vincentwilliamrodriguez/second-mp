@@ -1,40 +1,3 @@
-{{-- The PHP code below defines the parameters of the seller's products table --}}
-
-@php
-    $productsTableWidths = [
-        'Name' => '130px',
-        'Quantity' => '70px',
-        'Actions' => '150px',
-    ];
-
-    $productsTableColumns = [
-        'Name' => function($product) {
-            return view('livewire.product-cell', compact('product'))->render();
-        },
-        'Category' => function($product) {
-            return $product->category;
-        },
-        'Quantity' => function($product) {
-            return $product->quantity;
-        },
-        'Price' => function($product) {
-            return Number::currency($product->price, 'PHP');
-        },
-        'Created' => function($product) {
-            return $product->created_at->format('F j, Y');
-        },
-        'Modified' => function($product) {
-            return $product->updated_at->format('F j, Y');
-        },
-        'Actions' => function($product) {
-            return view('livewire.product-actions', compact('product'))->render();
-        }
-    ];
-@endphp
-
-
-
-
 <div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px] min-h-[550px]">
     @if (session('message'))
         <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
@@ -201,11 +164,75 @@
             @endforeach
         </div>
     @else
-        <x-table
+        {{-- This uses the new Livewire component for tables --}}
+        @php
+            $productsTableColumns = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified', 'Actions'];
+            $productsTableWidths = [
+                'Name' => '130px',
+                'Quantity' => '70px',
+                'Actions' => '150px',
+            ];
+
+
+
+            // This is the array of closures used for the old Table component
+
+            // $productsTableColumns = [
+            //     'Name' => function($product) {
+            //         return view('livewire.product-cell', compact('product'))->render();
+            //     },
+            //     'Category' => function($product) {
+            //         return $product->category;
+            //     },
+            //     'Quantity' => function($product) {
+            //         return $product->quantity;
+            //     },
+            //     'Price' => function($product) {
+            //         return Number::currency($product->price, 'PHP');
+            //     },
+            //     'Created' => function($product) {
+            //         return $product->created_at->format('F j, Y');
+            //     },
+            //     'Modified' => function($product) {
+            //         return $product->updated_at->format('F j, Y');
+            //     },
+            //     'Actions' => function($product) {
+            //         return view('livewire.product-actions', compact('product'))->render();
+            //     }
+            // ];
+        @endphp
+
+
+        <livewire:table
             :items="$products"
             :columns="$productsTableColumns"
             :widths="$productsTableWidths"
-        />
+        >
+
+            @foreach ($products->items() as $row => $product)
+                @foreach ($productsTableColumns as $col => $column)
+                    @slot("$row . '_' . $col")
+                        @php
+                            dump($row . '_' . $col);
+                        @endphp
+                        @switch($column)
+                            @case('Name')
+                                Awaw
+                            @break
+                        @endswitch
+                    @endslot
+                @endforeach
+            @endforeach
+        </livewire:table>
+
+
+        {{-- This uses the old Blade component for tables --}}
+
+        {{-- <x-table --}}
+            {{-- :items="$products"
+            :columns="$productsTableColumns"
+            :widths="$productsTableWidths"
+        /> --}}
     @endif
 
     @if (!$products->isEmpty())

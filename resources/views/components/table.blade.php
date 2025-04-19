@@ -1,3 +1,5 @@
+{{-- This is the old table component that only uses basic Blade --}}
+
 @props([
     'items' => [],
     'columns' => [],
