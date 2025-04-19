@@ -4,6 +4,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Livewire\OrdersIndex;
 use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
@@ -42,48 +43,52 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::resource('products', ProductController::class)->only(['create', 'store'])
-        ->middleware('permission:create-products');
+    // These are the old route definitions for the Products, Orders, Users, and Tickets page that used ProductController
+
+    // Route::resource('products', ProductController::class)->only(['create', 'store'])
+        // ->middleware('permission:create-products');
 
     // Route::resource('products', ProductController::class)->only(['index', 'show'])
     //     ->middleware('permission:read-products');
 
-    Route::resource('products', ProductController::class)->only(['edit', 'update'])
-        ->middleware('permission:update-products');
+    // Route::resource('products', ProductController::class)->only(['edit', 'update'])
+    //     ->middleware('permission:update-products');
 
-    Route::resource('products', ProductController::class)->only(['destroy'])
-        ->middleware('permission:delete-products');
-
-    Route::prefix('products')->group(function () {
-        Route::get('/', ProductsIndex::class)
-        ->middleware('permission:read-products')->name('products.index');
-
-        Route::get('/{product}', ProductsChild::class)
-        ->middleware('permission:read-products')->name('products.show');
-    });
+    // Route::resource('products', ProductController::class)->only(['destroy'])
+        // ->middleware('permission:delete-products');
 
 
+    // Route::resource('orders', OrderController::class)->only(['store'])
+    //     ->middleware('permission:create-orders');
 
-    Route::resource('orders', OrderController::class)->only(['store'])
-        ->middleware('permission:create-orders');
+    // Route::resource('orders', OrderController::class)->only(['index'])
+    //     ->middleware('permission:read-orders');
 
-    Route::resource('orders', OrderController::class)->only(['index'])
-        ->middleware('permission:read-orders');
+    // Route::resource('orders', OrderController::class)->only(['update'])
+    //     ->middleware('permission:update-orders');
 
-    Route::resource('orders', OrderController::class)->only(['update'])
-        ->middleware('permission:update-orders');
+    // Route::resource('orders', OrderController::class)->only(['destroy'])
+    //     ->middleware('permission:delete-orders');
 
-    Route::resource('orders', OrderController::class)->only(['destroy'])
-        ->middleware('permission:delete-orders');
+    // Route::post('/orders/place-all', [OrderController::class, 'placeAll'])
+    //     ->middleware('permission:update-orders')
+    //     ->name('orders.place-all');
 
-    Route::post('/orders/place-all', [OrderController::class, 'placeAll'])
-        ->middleware('permission:update-orders')
-        ->name('orders.place-all');
+    // Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
+    //     ->middleware('permission:update-orders')
+    //     ->name('orders.update-quantity');
 
-    Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
-        ->middleware('permission:update-orders')
-        ->name('orders.update-quantity');
 
+
+    // These are the new route definition for the Products, Orders, Users, and Tickets page using Livewire
+
+    Route::get('products', ProductsIndex::class)
+        ->middleware('permission:read-products')
+        ->name('products.index');
+
+    Route::get('orders', OrdersIndex::class)
+        ->middleware('permission:read-orders')
+        ->name('orders.index');
 
 
     Route::middleware('role:admin')->group(function () {

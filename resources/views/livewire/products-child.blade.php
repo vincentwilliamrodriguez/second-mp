@@ -81,7 +81,13 @@
                                         $displayText = $truncated ? substr($product->description, 0, $maxDescriptionLength) . '...' : $product->description;
                                     @endphp
                                     <h3 class="font-black mb-2">Description</h3>
-                                    <p id="short-description" class="break-words overflow-wrap hyphens-auto">{{ $displayText }}</p>
+                                    <p id="short-description" class="break-words overflow-wrap hyphens-auto">
+                                        {{ $displayText }}
+
+                                        @if (!$displayText)
+                                            <span class="italic text-zinc-400">No description available.</span>
+                                        @endif
+                                    </p>
                                     @if($truncated)
                                         <p id="full-description" class="hidden break-words overflow-wrap hyphens-auto">{{ $product->description }}</p>
                                         <button

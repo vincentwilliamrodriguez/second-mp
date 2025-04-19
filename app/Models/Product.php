@@ -38,9 +38,9 @@ class Product extends Model
 
         static::deleting(function ($product) {
             if ($product->isForceDeleting()) {
-                $product->orders()->forceDelete();
+                $product->orderItems()->forceDelete();
             } else {
-                $product->orders()->delete();
+                $product->orderItems()->delete();
             }
         });
     }
@@ -49,8 +49,7 @@ class Product extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function orders() {
-        return $this->hasMany(Order::class);
+    public function orderItems() {
+        return $this->hasMany(OrderItem::class);
     }
-
 }
