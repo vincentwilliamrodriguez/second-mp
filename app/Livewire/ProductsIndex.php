@@ -100,6 +100,7 @@ class ProductsIndex extends Component {
             ? $user->products()
             : Product::query();
 
+
         if ($this->search) {
             $products = $products->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')

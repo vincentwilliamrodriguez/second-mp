@@ -42,7 +42,7 @@
         </div>
     @endif
 
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mb-2">
         <h2 class="font-black text-3xl">
             {{ auth()->user()->hasRole('seller') ? 'My Products' : 'All Products' }}
         </h2>
@@ -60,7 +60,7 @@
     </div>
 
     {{-- Search, Sort, and Filter using Livewire --}}
-    <div class="flex gap-6 mb-4">
+    <div class="flex gap-6">
         @php
             $searchPlaceholder = auth()->user()->hasRole('seller')
                                     ? 'Search Product, Description, etc...'
@@ -167,8 +167,10 @@
 
             {{-- Seller's empty view (without quey) --}}
             @if (auth()->user()->can('create-products') && !($search || $category || $minPrice || $maxPrice))
-                <a href="{{ route('products.create') }}"
-                    class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50">
+                <a class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50"
+                    wire:click.prevent="$dispatchTo('products-child', 'openCreate')"
+                    x-on:click.prevent="$flux.modal('products-child').show()">
+
                     <div
                         class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
                         <flux:icon.plus class="w-10 h-10 text-blue-600" />

@@ -40,7 +40,7 @@ class ProductController extends Controller
             'description' => 'nullable|string:max:250',
             'category' => ['required', Rule::in(self::$categories)],
             'quantity' => 'required|integer|min:0|max:10000000',
-            'price' => 'required|decimal:0,2|min:0|max:100000000',
+            'price' => 'required|decimal:0,2|min:0|max:10000000',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

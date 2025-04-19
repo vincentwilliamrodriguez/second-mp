@@ -39,7 +39,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span class="text-gray-500">₱</span>
                         </div>
-                        <x-input id="price" class="block w-full pl-8" type="number" min='0' max='100000000' name="price"
+                        <x-input id="price" class="block w-full pl-8" type="number" min='0' max='10000000' name="price"
                             pattern="[0-9]+([\.,][0-9]+)?" step="0.01" :value="$product->price" required placeholder="0.00" />
                     </div>
                 </div>
