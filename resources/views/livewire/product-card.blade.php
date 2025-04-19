@@ -1,22 +1,7 @@
 {{-- This is the new Product Card component that uses Livewire --}}
 
 <div class="relative flex flex-col bg-white rounded-lg shadow-sm border-2 border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md hover:transform hover:translate-y-[-4px] hover:border-blue-300">
-    <div class="h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-gray-100 border-b border-gray-200">
-        <a href="{{ route('products.show', $product) }}" class="block h-full">
-
-            @if(isset($product->picture) && Storage::disk('public')->exists($product->picture))
-                <img class="w-full h-full object-cover"
-                     src="{{ Storage::url($product->picture) }}"
-                     alt="{{ $product->name }}">
-            @else
-                <div class="w-full h-full flex items-center justify-center">
-                    <div class="text-center p-4 flex flex-col justify-center">
-                        <flux:icon.photo class="size-28 text-gray-200"/>
-                    </div>
-                </div>
-            @endif
-        </a>
-    </div>
+    <livewire:product-image :$product classes='h-48 border-b border-gray-200'></livewire:product-image>
 
     <div class="p-4 flex-1 flex flex-col">
         <h3 class="font-bold text-lg text-gray-800 mb-1">{{ $product->name }}</h3>

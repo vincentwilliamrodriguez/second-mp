@@ -93,9 +93,19 @@
                     </div>
                 @endif
 
-                <!-- Settings Dropdown -->
+
+                {{-- Cart Flyout Toggle --}}
+                @can('create-orders')
+                    <div class="relative mr-8 mb-1">
+                        @livewire('cart-button')
+                    </div>
+                @endcan
+
+                {{-- Name Display --}}
                 <div class="font-medium text-base text-gray-600">{{ Auth::user()->name }}</div>
-                <div class="ms-3 relative">
+
+                <!-- Settings Dropdown -->
+                <div class="relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())

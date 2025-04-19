@@ -137,6 +137,20 @@ class ProductsChild extends Component {
         $this->redirectRoute('products.index');
     }
 
+    public function addToCart() {
+        $cartKey = 'cart.' . auth()->user()->id;
+        $cartData = [
+            'product_id' => $this->product->id,
+            'product_name' => $this->product->name,
+            'product_price' => $this->product->price,
+            'order_quantity' => $this->orderQuantity,
+        ];
+
+        session()->push($cartKey, $cartData);
+        session()->flash('message', 'Product added to cart successfully.');
+        $this->redirectRoute('products.index');
+    }
+
     private function savePicture() {
         if ($this->isPictureUploaded()) {
             if ($this->product->picture) {

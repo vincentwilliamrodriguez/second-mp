@@ -1,6 +1,6 @@
 {{-- This is the new show/create/edit product page with Livewire --}}
 
-<flux:modal name='products-child' class="relative !max-w-none" wire:close="$dispatchTo('products-child', 'resetForm')">
+<flux:modal name='products-child' class="fixed !max-w-none" wire:close="$dispatchTo('products-child', 'resetForm')">
 
     @if ($state === 'Delete')
         <div class="bg-white rounded-lg shadow-sm max-w-5xl mx-auto pt-4 min-w-[400px] min-h-[150px] flex flex-col">
@@ -44,27 +44,10 @@
 
                 {{-- Show --}}
                 @if ($state === 'Show' && $product !== null)
-                    <form method="POST" action="{{ route('orders.store') }}" class="flex-1 flex flex-row gap-8 max-w-[750px]">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <div class="flex-shrink-0 w-2/5 aspect-square relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden">
-                            @if(isset($product->picture) && Storage::disk('public')->exists($product->picture))
-                                <img
-                                    class="w-full h-full object-cover"
-                                    src="{{ Storage::url($product->picture) }}"
-                                    alt="{{ $product->name }}"
-                                    onload="this.classList.replace('object-contain', 'object-contain')"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-                                >
-                                <div class="hidden absolute inset-0 items-center justify-center">
-                                    <x-eos-image class="h-28 w-28 text-gray-200"/>
-                                </div>
-                            @else
-                                <div class="flex items-center justify-center h-full">
-                                    <x-eos-image class="h-28 w-28 text-gray-200"/>
-                                </div>
-                            @endif
-                        </div>
+                    <form class="flex-1 flex flex-row gap-8 max-w-[750px]" wire:submit.prevent='addToCart'>
+
+                        <livewire:product-image classes='flex-shrink-0 !min-w-[40%] aspect-square relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden' :$product></livewire:product-image>
+
                         <div class="flex-grow flex flex-col">
                             <div class="mb-6">
                                 <div class="flex flex-wrap items-center gap-3 mb-2">
@@ -124,7 +107,7 @@
                                 </a>
                                 @can('create-orders')
                                     @if ($product->quantity >= 1)
-                                        <x-button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+                                        <x-button type='submit' class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
                                             <x-eos-shopping-cart-o class="h-6 w-6 mr-1 opacity-90" />
                                             Add to Cart
                                         </x-button>
