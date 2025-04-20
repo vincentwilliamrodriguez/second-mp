@@ -166,15 +166,6 @@
     @else
         {{-- This uses the new Livewire component for tables --}}
         @php
-            $productsTableColumns = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified', 'Actions'];
-            $productsTableWidths = [
-                'Name' => '130px',
-                'Quantity' => '70px',
-                'Actions' => '150px',
-            ];
-
-
-
             // This is the array of closures used for the old Table component
 
             // $productsTableColumns = [
@@ -203,26 +194,59 @@
         @endphp
 
 
+        @php
+            $productsTableColumns = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified', 'Actions'];
+            $columnsWithSorting = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified'];
+
+            $productsTableWidths = [
+                'Name' => '130px',
+                'Category' => '100px',
+                'Quantity' => '70px',
+                'Actions' => '150px',
+            ];
+            $items = $products->items();
+            $cells = [];
+
+            foreach ($items as $rowIndex => $product) {
+                $cells[] = [];
+
+                foreach ($productsTableColumns as $colIndex => $column) {
+                    switch ($column) {
+                        case 'Name':
+                            $cells[$rowIndex][] = view('livewire.product-cell', compact('product'))->render();
+                            break;
+
+                        case 'Price':
+                            $cells[$rowIndex][] = Number::currency($product->price, 'PHP');
+                            break;
+
+                        case 'Created':
+                            $cells[$rowIndex][] = $product->created_at->format('F j, Y');
+                            break;
+
+                        case 'Modified':
+                            $cells[$rowIndex][] = $product->updated_at->format('F j, Y');
+                            break;
+
+                        case 'Actions':
+                            $cells[$rowIndex][] = view('livewire.product-actions', compact('product'))->render();
+                            break;
+
+                        default:
+                            $cells[$rowIndex][] = $product->{Str::snake($column)} ?? '';
+                            break;
+                    }
+                }
+            }
+        @endphp
+
         <livewire:table
-            :items="$products"
+            :items="$products->items()"
             :columns="$productsTableColumns"
             :widths="$productsTableWidths"
+            :$cells
+            :$columnsWithSorting
         >
-
-            @foreach ($products->items() as $row => $product)
-                @foreach ($productsTableColumns as $col => $column)
-                    @slot("$row . '_' . $col")
-                        @php
-                            dump($row . '_' . $col);
-                        @endphp
-                        @switch($column)
-                            @case('Name')
-                                Awaw
-                            @break
-                        @endswitch
-                    @endslot
-                @endforeach
-            @endforeach
         </livewire:table>
 
 

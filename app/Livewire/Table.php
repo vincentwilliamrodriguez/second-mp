@@ -12,9 +12,17 @@ class Table extends Component {
     public $items;
     public $columns;
     public $widths;
+    public $slots = [];
+    public $cells;
 
-    public function mount($items) {
-        $this->items = $items->items();
+    public $columnsWithSorting = [];
+    public $sort = '';
+    public $sortOrder = '';
+
+    public function mount($items, $columns, $widths = []) {
+        $this->items = $items;
+        $this->columns = $columns;
+        $this->widths = $widths;
     }
 
     public function render() {
