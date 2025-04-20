@@ -8,27 +8,27 @@
     ];
 
     $productsTableColumns = [
-        'Name' => function($product) {
+        'Name' => function ($product) {
             return view('livewire.product-cell', compact('product'))->render();
         },
-        'Category' => function($product) {
+        'Category' => function ($product) {
             return $product->category;
         },
-        'Quantity' => function($product) {
+        'Quantity' => function ($product) {
             return $product->quantity;
         },
-        'Price' => function($product) {
+        'Price' => function ($product) {
             return Number::currency($product->price, 'PHP');
         },
-        'Created' => function($product) {
+        'Created' => function ($product) {
             return $product->created_at->format('F j, Y');
         },
-        'Modified' => function($product) {
+        'Modified' => function ($product) {
             return $product->updated_at->format('F j, Y');
         },
-        'Actions' => function($product) {
+        'Actions' => function ($product) {
             return view('livewire.product-actions', compact('product'))->render();
-        }
+        },
     ];
 @endphp
 
@@ -48,14 +48,18 @@
         </h2>
 
         @if (auth()->user()->can('create-products') && !$this->isProductsEmpty())
-            <x-button baseColor="blue" iconSize="w-6 h-6"
-                    wire:click.prevent="$dispatchTo('products-child', 'openCreate')"
-                    x-on:click.prevent="$flux.modal('products-child').show()">
+            <x-modal-handler name='products-child' method='openCreate'
+                            :data="[
+                                'categoryValues' => $categoryValues,
+                                'categories' => array_keys($categoryValues)
+                            ]">
 
-                <x-slot name='icon'><x-eos-add-box-o /></x-slot>
-                Create
+                <x-button baseColor="blue" iconSize="w-6 h-6">
+                    <x-slot name='icon'><x-eos-add-box-o /></x-slot>
+                    Create
+                </x-button>
 
-            </x-button>
+            </x-modal-handler>
         @endif
     </div>
 
@@ -63,8 +67,8 @@
     <div class="flex gap-6">
         @php
             $searchPlaceholder = auth()->user()->hasRole('seller')
-                                    ? 'Search Product, Description, etc...'
-                                    : 'Search Product, Description, Seller, etc...'
+                ? 'Search Product, Description, etc...'
+                : 'Search Product, Description, Seller, etc...';
         @endphp
 
 
@@ -180,8 +184,6 @@
                     <p class="text-gray-600 text-center mb-4 pointer-events-none select-none">Add your first product to
                         start selling</p>
                 </a>
-
-
             @else
                 {{-- Customer's empty view --}}
                 <p class="text-gray-500">
@@ -201,11 +203,7 @@
             @endforeach
         </div>
     @else
-        <x-table
-            :items="$products"
-            :columns="$productsTableColumns"
-            :widths="$productsTableWidths"
-        />
+        <x-table :items="$products" :columns="$productsTableColumns" :widths="$productsTableWidths" />
     @endif
 
     @if (!$products->isEmpty())
@@ -214,7 +212,7 @@
 
 
     {{-- Modal for Products Child (show, create, edit, or delete) --}}
-    <livewire:products-child wire:key='products-child'
+    {{-- <livewire:products-child wire:key='products-child'
                                 :$categoryValues
-                                :categories="array_keys($categoryValues)">
+                                :categories="array_keys($categoryValues)"> --}}
 </div>

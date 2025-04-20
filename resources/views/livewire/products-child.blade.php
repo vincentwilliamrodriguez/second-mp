@@ -1,6 +1,6 @@
 {{-- This is the new show/create/edit product page with Livewire --}}
 
-<flux:modal name='products-child' class="fixed !max-w-none" wire:close="$dispatchTo('products-child', 'resetForm')">
+<flux:modal name='products-child' class="fixed !max-w-none" x-on:close="$wire.closeModal()">
 
     @if ($state === 'Delete')
         <div class="bg-white rounded-lg shadow-sm max-w-5xl mx-auto pt-4 min-w-[400px] min-h-[150px] flex flex-col">
@@ -46,7 +46,7 @@
                 @if ($state === 'Show' && $product !== null)
                     <form class="flex-1 flex flex-row gap-8 max-w-[750px]" wire:submit.prevent='addToCart'>
 
-                        <livewire:product-image classes='flex-shrink-0 !min-w-[40%] aspect-square relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden' :$product></livewire:product-image>
+                        <livewire:product-image classes='flex-shrink-0 !w-[40%] aspect-square relative bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg overflow-hidden' :$product></livewire:product-image>
 
                         <div class="flex-grow flex flex-col">
                             <div class="mb-6">

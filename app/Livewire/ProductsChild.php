@@ -28,7 +28,7 @@ class ProductsChild extends Component {
     public $categories;
     public $categoryValues;
 
-    protected $listeners = ['openShow', 'openCreate', 'openEdit', 'openDelete', 'resetForm'];
+    protected $listeners = ['openShow', 'openCreate', 'openEdit', 'openDelete', 'closeModal'];
     public $validationAttributes = [
         'item.name' => 'Name',
         'item.description' => 'Description',
@@ -43,9 +43,10 @@ class ProductsChild extends Component {
         return view('livewire.products-child');
     }
 
-    public function resetForm() {
-        $this->reset('state', 'item', 'orderQuantity');
-        $this->resetErrorBag();
+    public function closeModal() {
+        $this->dispatch('modal-closed-' . $this->id);
+        // $this->reset('state', 'item', 'orderQuantity');
+        // $this->resetErrorBag();
     }
 
     public function openShow($productId) {
@@ -153,7 +154,7 @@ class ProductsChild extends Component {
 
     private function savePicture() {
         if ($this->isPictureUploaded()) {
-            if ($this->product->picture) {
+            if (isset($this->product) && $this->product->picture) {
                 FacadesStorage::disk('public')->delete($this->product->picture);
             }
 
