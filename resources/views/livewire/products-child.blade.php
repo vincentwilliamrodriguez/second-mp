@@ -56,7 +56,7 @@
                                 </div>
                                 <h2 class="font-bold text-2xl text-blue-600 mb-4">₱{{ number_format($product->price, 2) }}</h2>
                                 <p class="text-gray-600 mb-4">
-                                    Sold by <span class="font-medium text-blue-600">{{ $product->seller->username }}</span>
+                                    Sold by <span class="font-medium text-blue-600">{{ $product->seller->name }}</span>
                                 </p>
                                 <div class="mb-6 text-gray-700">
                                     @php

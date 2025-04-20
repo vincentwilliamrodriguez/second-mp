@@ -1,4 +1,4 @@
-<flux:modal variant='flyout' name='cart-flyout' class="fixed !max-w-none !pb-6 h-screen"  x-if="open">
+<flux:modal variant='flyout' name='cart-flyout' class="fixed !max-w-none !pb-6 h-screen">
     <div class="bg-white shadow-sm max-w-5xl mx-auto pt-4 min-w-[500px] h-full flex-1 flex flex-col">
         <div class="flex flex-col flex-1 -mt-6">
             <div class="mb-2 flex items-center">

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use Illuminate\Support\Number;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -37,6 +38,10 @@ class ProductsIndex extends Component {
         'quantity' => [
             'Quantity',
             'cube',
+        ],
+        'category' => [
+            'Category',
+            'tag',
         ],
     ];
 
@@ -112,7 +117,7 @@ class ProductsIndex extends Component {
             });
         }
 
-        if ($this->sortBy) {
+        if ($this->sortBy && $this->sortOrder) {
             $products = $products->orderBy($this->sortBy, $this->sortOrder);
         } else {
             $products = $products->orderBy('updated_at', 'DESC');

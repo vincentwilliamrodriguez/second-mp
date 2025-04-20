@@ -34,10 +34,13 @@
         <flux:input class="max-w-80 mr-10" wire:model.live='search' icon:trailing='magnifying-glass' type='text'
             :placeholder='$searchPlaceholder' autocomplete='search' autofocus></flux:input>
 
-        <div class="flex items-center basis-36">
+        <div class="flex items-center basis-[9.5rem]">
             <flux:button variant='subtle' size='sm' class="!px-1"
-                @click=" $wire.set('sortOrder', ($wire.sortOrder === 'asc') ? 'desc' : 'asc')"
-                x-bind:disabled="$wire.sortOrder === ''">
+                x-on:click=" $wire.set('sortOrder', ($wire.sortOrder === 'asc') ? 'desc' : 'asc')"
+                x-bind:disabled="$wire.sortOrder === ''"
+                x-on:sortchanged.window="$wire.set('sortBy', $event.detail.sortBy);
+                                         $wire.set('sortOrder', $event.detail.sortOrder);"
+            >
                 <flux:icon.arrow-long-up x-show="$wire.sortOrder === 'asc'" x-cloak />
                 <flux:icon.arrow-long-down x-show="$wire.sortOrder === 'desc'" x-cloak />
                 <flux:icon.arrows-up-down x-show="!['asc', 'desc'].includes($wire.sortOrder)" x-cloak />
@@ -197,13 +200,33 @@
         @php
             $productsTableColumns = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified', 'Actions'];
             $columnsWithSorting = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified'];
-
+            $columnsToProperty = [
+                'Created' => 'created_at',
+                'Modified' => 'updated_at',
+                'Actions' => '',
+            ];
             $productsTableWidths = [
                 'Name' => '130px',
                 'Category' => '100px',
                 'Quantity' => '70px',
                 'Actions' => '150px',
             ];
+
+            if (auth()->user()->hasRole('admin')) {
+                array_splice($productsTableColumns, 1, 0, 'Seller');
+            }
+
+            $customClasses = [
+                'container' => '',
+                'table' => '',
+                'thead' => '',
+                'th' => '',
+                'tbody' => '',
+                'tr' => '',
+                'td' => '',
+                'tdNoData' => '',
+            ];
+
             $items = $products->items();
             $cells = [];
 
@@ -214,6 +237,10 @@
                     switch ($column) {
                         case 'Name':
                             $cells[$rowIndex][] = view('livewire.product-cell', compact('product'))->render();
+                            break;
+
+                        case 'Seller':
+                            $cells[$rowIndex][] = $product->seller->username;
                             break;
 
                         case 'Price':
@@ -241,11 +268,16 @@
         @endphp
 
         <livewire:table
+            wire:key="{{ now() }}"
             :items="$products->items()"
             :columns="$productsTableColumns"
             :widths="$productsTableWidths"
             :$cells
+            :$columnsToProperty
             :$columnsWithSorting
+            :$sortBy
+            :$sortOrder
+            :$customClasses
         >
         </livewire:table>
 
