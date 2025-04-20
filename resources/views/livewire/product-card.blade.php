@@ -54,7 +54,7 @@
     </div>
 
     {{-- This redirects the user to the Products Show page using Livewire events --}}
-    <div class="absolute inset-0 z-0 hover:cursor-pointer" wire:click.prevent='$dispatchTo("products-child", "openShow", {productId: "{{ $product->id }}" })' x-on:click.prevent="$flux.modal('products-child').show()"></div>
+    <div class="absolute inset-0 z-0 hover:cursor-pointer" wire:click.prevent='$dispatchTo("products-child", "open", {method: "Show", productId: "{{ $product->id }}" })' x-on:click.prevent="$flux.modal('products-child').show()"></div>
 
 
     {{-- This is the old way of redirecting the user to the Products Show page --}}

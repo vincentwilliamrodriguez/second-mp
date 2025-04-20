@@ -1,6 +1,6 @@
 <div class='flex flex-col'>
     <h3 class='font-black text-md hover:cursor-pointer hover:underline'
-            wire:click.prevent='$dispatchTo("products-child", "openShow", {productId: "{{ $product->id }}" })'
+            wire:click.prevent='$dispatchTo("products-child", "open", {method: "Show", productId: "{{ $product->id }}" })'
             x-on:click.prevent="$flux.modal('products-child').show()">
 
         {{ $product->name }}
