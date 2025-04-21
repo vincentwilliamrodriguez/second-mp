@@ -21,6 +21,11 @@ class TicketController extends Controller
         return view('tickets.index', compact('tickets'));
     }
 
+    public function create()
+    {
+        return view('tickets.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -35,6 +40,8 @@ class TicketController extends Controller
         $validated['is_hidden'] = false;
 
         Ticket::create($validated);
+
+        Log::info('Ticket Submitted: ', $validated);
 
         return back()->with([
             'ticket_submitted' => true,

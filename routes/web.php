@@ -21,10 +21,12 @@ Route::get('/dashboard', function () {
     return auth()->user()->hasRole('support')
         ? redirect()->route('tickets.index')
         : redirect()->route('products.index');
-    $user = auth()->user();
 })->name('dashboard');
 
-Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
+Route::get('/tickets', function () {
+    return view('tickets.index');
+})->name('tickets.index');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -45,9 +47,6 @@ Route::middleware([
     Route::resource('products', ProductController::class)->only(['create', 'store'])
         ->middleware('permission:create-products');
 
-    // Route::resource('products', ProductController::class)->only(['index', 'show'])
-    //     ->middleware('permission:read-products');
-
     Route::resource('products', ProductController::class)->only(['edit', 'update'])
         ->middleware('permission:update-products');
 
@@ -56,13 +55,11 @@ Route::middleware([
 
     Route::prefix('products')->group(function () {
         Route::get('/', ProductsIndex::class)
-        ->middleware('permission:read-products')->name('products.index');
+            ->middleware('permission:read-products')->name('products.index');
 
         Route::get('/{product}', ProductsChild::class)
-        ->middleware('permission:read-products')->name('products.show');
+            ->middleware('permission:read-products')->name('products.show');
     });
-
-
 
     Route::resource('orders', OrderController::class)->only(['store'])
         ->middleware('permission:create-orders');
@@ -84,22 +81,21 @@ Route::middleware([
         ->middleware('permission:update-orders')
         ->name('orders.update-quantity');
 
-
-
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
 
+    Route::get('/tickets', [TicketController::class, 'index'])
+        ->middleware(['auth', 'role:support|admin'])
+        ->name('tickets.index');
 
-    Route::resource('tickets', TicketController::class)->only(['create', 'store'])
-        ->middleware('permission:create-tickets');
+    Route::middleware(['auth', 'role:customer|seller'])->group(function () {
+        Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+        Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    });
 
-    Route::resource('tickets', TicketController::class)->only(['index'])
-        ->middleware('permission:read-tickets');
-
-    Route::resource('tickets', TicketController::class)->only(['edit', 'update'])
-        ->middleware('permission:update-tickets');
-
-    Route::resource('tickets', TicketController::class)->only(['destroy'])
-        ->middleware('permission:delete-tickets');
+    Route::middleware(['auth', 'role:support|admin'])->group(function () {
+        Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+        Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    });
 });
