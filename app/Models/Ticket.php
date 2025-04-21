@@ -17,5 +17,11 @@ class Ticket extends Model
         'ticket_number',
         'is_hidden',
     ];
+
+    public function replies()
+    {
+        return $this->hasMany(TicketReply::class);
+    }
+
 }
 

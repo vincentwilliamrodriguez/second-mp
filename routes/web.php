@@ -29,8 +29,9 @@ Route::get('/dashboard', function () {
         : redirect()->route('products.index');
 })->name('dashboard');
 
-Route::get('/tickets/index', TicketsIndex::class)->name('tickets.index');
-Route::get('/tickets/create', TicketsCreate::class)->name('tickets.create');
+Route::get('/tickets', function () {
+    return view('tickets.index');
+})->middleware('auth')->name('tickets.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -108,10 +109,6 @@ Route::middleware([
         ->middleware('permission:read-orders')
         ->name('orders.index');
 
-    Route::get('tickets', TicketsIndex::class)
-        ->middleware('permission:read-tickets')
-        ->name('tickets.index');
-
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
@@ -127,8 +124,6 @@ Route::middleware([
 
     Route::resource('tickets', TicketController::class)->only(['destroy'])
         ->middleware('permission:delete-tickets');
-
-
 
     // These are newly added routes for the Shopping Cart and Checkout pages
 

@@ -2,8 +2,8 @@
     @role('support|admin')
         <livewire:tickets-index />
     @endrole
-
-    @role('seller|customer')
+    
+    @role('customer|seller')
         <livewire:tickets-create />
     @endrole
 </x-app-layout>

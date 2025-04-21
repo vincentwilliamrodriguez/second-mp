@@ -25,7 +25,7 @@
             </div>
 
             <div class="p-6">
-                <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST">
+                <form id="ticket-form" action="{{ route('tickets.index') }}" method="POST">
                     @csrf
                     <div class="mb-5">
                         <label for="user_name" class="block text-gray-700 font-black medium mb-2">Name:</label>
