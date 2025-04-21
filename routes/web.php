@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require _DIR_.'/auth.php';
+require __DIR__.'/auth.php';
 
 Route::middleware([
     'auth:sanctum',
@@ -79,7 +79,7 @@ Route::middleware([
     // Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
     //     ->middleware('permission:update-orders')
     //     ->name('orders.update-quantity');
-    
+
 
     // Route::resource('tickets', TicketController::class)->only(['create', 'store'])
     //     ->middleware('permission:create-tickets');

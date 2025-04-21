@@ -17,6 +17,8 @@ class Cart extends Component
     use CartTrait;
     use WithPagination, WithoutUrlPagination;
 
+    protected $listeners = ['counterchanged'];
+
 
     public function render()
     {
@@ -24,21 +26,12 @@ class Cart extends Component
 
         return view('livewire.cart', compact('cartItems'));
     }
-    // public function updateQuantity($orderId, $quantity)
-    // {
-    //     $cartItems = session('cart.' . auth()->id(), []);
 
-    //     foreach ($cartItems as $key => $item) {
-    //         if ($item['id'] == $orderId) {
-    //             $cartItems[$key]['quantity'] = $quantity;
-    //             break;
-    //         }
-    //     }
-
-    //     session(['cart.' . auth()->id() => $cartItems]);
-
-    //     $this->dispatch('cart-updated');
-    // }
+    public function counterchanged($count, $cartItem)
+    {
+        $cartItem['order_quantity'] = $count;
+        $this->updateItemInCart($cartItem['id'], $cartItem);
+    }
 
     // public function removeFromCart($orderId)
     // {

@@ -16,6 +16,7 @@ class Table extends Component {
     public $columnsToProperty = [];
     public $widths;
     public $cells;
+    public $cellData = [];
 
     public $customClasses = [
         'container' => '',

@@ -26,6 +26,7 @@
             'Product' => '300px',
             'Seller' => '70px',
             'Quantity' => '100px',
+            'Total' => '100px',
             'Actions' => '150px',
         ];
 
@@ -44,8 +45,8 @@
             'thead' => '',
             'th' => '',
             'tbody' => '',
-            'tr' => '',
-            'td' => '',
+            'tr' => 'hover:bg-transparent',
+            'td' => 'first:bg-transparent',
             'tdNoData' => '',
         ];
 
@@ -59,6 +60,7 @@
 
         $items = collect($cartItems);
         $cells = [];
+        $cellData = [];
 
         foreach ($items as $rowIndex => $item) {
             $cells[] = [];
@@ -67,32 +69,40 @@
             foreach ($cartTableColumns as $colIndex => $column) {
                 switch ($column) {
                     case 'Product':
-                        $cells[$rowIndex][] = <<<HTML
+                        $cells[$rowIndex][] = view('components.cart-product-cell', compact('product'))->render();
 
-                            <div class="flex flex-col gap-1 hover:cursor-pointer" wire:click.prevent='\$dispatchTo("products-child", "open", {method: "Show", productId: "$product->id" })' x-on:click.prevent="\$flux.modal('products-child').show()">
-                                <h3 class='font-black text-lg hover:cursor-pointer hover:underline'>$product->name</h3>
-                            </div>
-HTML;
                         break;
 
                     case 'Seller':
-                        $cells[$rowIndex][] = $product->seller->name;
+                        $cells[$rowIndex][] = "<div class='flex justify-center'>{$product->seller->name}</div>";
                         break;
 
                     case 'Price per Piece':
-                        $cells[$rowIndex][] = Number::currency($item['product_price'], 'PHP');
+                        $cells[$rowIndex][] = "<div class='flex justify-center'>" . Number::currency($item['product_price'], 'PHP') . "</div>";
                         break;
 
-                    // case 'Quantity':
-                    //     $product = \App\Models\Product::find($item['product_id']);
-                    //     $init = strval($item['quantity']);
-                    //     $order_id = $item['id'];
-                    //     $res = view('components.counter-orders', compact(['product', 'init', 'order_id']))->render();
-                    //     $cells[$rowIndex][] = "<div class='flex justify-center w-[100px]'>{$res}</div>";
-                    //     break;
+                    case 'Quantity':
+                        $cellData[$rowIndex][$colIndex] = [
+                            'count' => $item['order_quantity'],
+                            'max' => $product->quantity,
+                            'cartItem' => $item,
+                        ];
+                        $cells[$rowIndex][] = "<livewire:counter>";
+                        break;
 
                     case 'Total':
-                        $cells[$rowIndex][] = Number::currency($item['product_price'] * $item['order_quantity'], 'PHP');
+                        $total = '₱' . number_format($item['product_price'] * $item['order_quantity'], 2);
+                        $cells[$rowIndex][$colIndex] = <<<HTML
+                            <div class='flex justify-center'
+                                x-data="{
+                                    total: '$total',
+                                }"
+                                x-text='total'
+                                x-on:counterchanged.window="if (\$event.detail.cartItem.id === '${item['id']}') {
+                                    total = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', }).format(\$event.detail.count * \$event.detail.cartItem.product_price);
+                                }"
+                            ></div>
+HTML;
                         break;
 
                     // case 'Actions':
@@ -109,18 +119,21 @@ HTML;
     @endphp
 
 
-    <livewire:table
-        wire:key="{{ now() }}"
-        :items="$items"
-        :columns="$cartTableColumns"
-        :widths="$cartTableWidths"
-        :$cells
-        :$columnsToProperty
-        :$columnsWithRowspan
-        :$columnsWithSorting
-        :$sortBy
-        :$sortOrder
-        :$customClasses
-    >
-    </livewire:table>
+    <div wire:loading.class="pointer-events-none select-none">
+        <livewire:table
+            wire:key="{{ now() }}"
+            :items="$items"
+            :columns="$cartTableColumns"
+            :widths="$cartTableWidths"
+            :$cells
+            :$cellData
+            :$columnsToProperty
+            :$columnsWithRowspan
+            :$columnsWithSorting
+            :$sortBy
+            :$sortOrder
+            :$customClasses
+        >
+        </livewire:table>
+    </div>
 </div>

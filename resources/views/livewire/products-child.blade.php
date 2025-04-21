@@ -67,7 +67,10 @@
                                     <span class="text-gray-700 font-black">Quantity:</span>
                                     <livewire:counter wire:model="orderQuantity"
                                                     :max="$product->quantity"
-                                                    :key='$product->id' />
+                                                    wire:cartItem="$curCartItem"
+                                                    wire:count="$curCartCount"
+                                                    wire:key="'counter-' . $product->id"
+                                                    :inProductsChild="true" />
                                 </div>
                             @endcan
                             <div class="flex items-center">

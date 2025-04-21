@@ -1,4 +1,4 @@
-{{-- This is in resources/views/livewire/table.blade.php --}}
+{{-- This is the new table component using Livewire --}}
 <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 {{ $customClasses['container'] }}">
     <table class="min-w-full divide-y divide-blue-200 {{ $customClasses['table'] }}">
         <thead class="bg-blue-700 {{ $customClasses['thead'] }}" x-on:sortchanged="$el.classList.add('pointer-events-none')">
@@ -47,6 +47,19 @@
                     <tr class="hover:bg-blue-50 {{ $customClasses['tr'] }}">
                         @foreach ($columns as $colIndex => $column)
                             @php
+                                $cellContent = $cells[$rowIndex][$colIndex];
+                                $isLivewire = Str::contains($cellContent, 'livewire:');
+                                $componentName = '';
+                                $componentKey = '';
+                                $componentData = [];
+
+                                if ($isLivewire) {
+                                    $component = explode(':', $cellContent)[1] ?? '';
+                                    $componentName = preg_match('/^([\w\-]+)/', $component, $matches) ? $matches[1] : '';
+                                    $componentKey = $componentName . '$rowIndex' . '$colIndex';
+                                    $componentData = $cellData[$rowIndex][$colIndex] ?? [];
+                                }
+
                                 if (array_key_exists($column, $columnsWithRowspan)) {
                                     $rowspanValue = $item[$columnsWithRowspan[$column]];
                                     $rowspanClasses = ($rowspanValue === 0) ? 'hidden' : '';
@@ -57,7 +70,13 @@
                             @endphp
 
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 first:font-medium first:text-blue-900 first:bg-blue-50 {{ $rowspanClasses }} {{ $customClasses['td'] }}" @if ($rowspanValue) rowspan="{{ $rowspanValue }}" @endif>
-                                {!! $cells[$rowIndex][$colIndex] !!}
+
+                                @if (!$isLivewire)
+                                    {!! $cellContent !!}
+                                @else
+                                    @livewire($componentName, $componentData, key($componentKey))
+                                @endif
+
                             </td>
                         @endforeach
                     </tr>

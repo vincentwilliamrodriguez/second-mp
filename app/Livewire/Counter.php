@@ -14,6 +14,12 @@ class Counter extends Component
     #[Modelable]
     public $count = 1;
 
+    public $cartItem;
+    public $inProductsChild;
+
+
+    public $listeners = ['updatecountercartitem'];
+
 
     public function render()
     {

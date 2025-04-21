@@ -45,7 +45,7 @@
                         </x-nav-link>
                     @endcan
 
-                    @can('read-tickets')
+                    {{-- @can('read-tickets')
                         @role('support|admin')
                             <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
                                 {{ __('Support') }}
@@ -55,7 +55,7 @@
                                 {{ __('Support') }}
                             </x-nav-link>
                         @endrole
-                    @endcan
+                    @endcan --}}
                 </div>
             </div>
 

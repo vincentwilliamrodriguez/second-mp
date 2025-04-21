@@ -29,6 +29,9 @@ class ProductsChild extends Component {
     public $categories = [];
     public $categoryValues = [];
 
+    public $curCartItem;
+    public $curCartCount;
+
     protected $listeners = ['open', 'resetform'];
     public $validationAttributes = [
         'item.name' => 'Name',
@@ -38,6 +41,7 @@ class ProductsChild extends Component {
         'item.price' => 'Price',
         'item.picture' => 'Picture',
     ];
+
 
     public function render() {
         return view('livewire.products-child');
@@ -60,6 +64,10 @@ class ProductsChild extends Component {
         switch ($method) {
             case 'Show':
                 $this->authorize('view', $this->product);
+                $this->curCartItem = $this->retrieveItemByProductId($this->product->id) ?? ['id' => 'new', 'order_quantity' => 1];
+                $this->curCartCount = $this->curCartItem['order_quantity'];
+                $this->orderQuantity = $this->curCartCount;
+
                 break;
 
             case 'Create':
@@ -147,10 +155,10 @@ class ProductsChild extends Component {
             'seller_id' => $this->product->seller->id,
         ];
 
-        $this->addItemToCart($cartData);
+        $wasAdded = $this->addItemToCart($cartData);
 
-        session()->flash('message', 'Product added to cart successfully.');
-        $this->redirectRoute('products.index');
+        session()->flash('message', $wasAdded ? 'Product added to cart successfully.' : 'Cart updated successfully.');
+        $this->redirectRoute('cart');
     }
 
     private function savePicture() {
