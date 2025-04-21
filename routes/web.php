@@ -11,9 +11,11 @@ use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
 use App\Livewire\TicketsIndex;
+use App\Livewire\TicketsCreate;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+
 
 Route::get('/', function () {
     return auth()->check()
@@ -27,7 +29,8 @@ Route::get('/dashboard', function () {
         : redirect()->route('products.index');
 })->name('dashboard');
 
-Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
+Route::get('/tickets/index', TicketsIndex::class)->name('tickets.index');
+Route::get('/tickets/create', TicketsCreate::class)->name('tickets.create');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
