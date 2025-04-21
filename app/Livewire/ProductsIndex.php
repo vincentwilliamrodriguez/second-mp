@@ -46,44 +46,17 @@ class ProductsIndex extends Component {
     ];
 
     public $category = '';
-    public $categoryValues = [
-        'Books' => [
-            'Books',
-            'book-open'
-        ],
-        'Clothing' => [
-            'Clothing',
-            'shirt',
-        ],
-        'Electronics' => [
-            'Electronics',
-            'bolt',
-        ],
-        'Furniture' => [
-            'Furniture',
-            'armchair',
-        ],
-        'Hardware' => [
-            'Hardware',
-            'cpu-chip',
-        ],
-        'Health' => [
-            'Health',
-            'activity',
-        ],
-        'Hobbies' => [
-            'Hobbies',
-            'puzzle-piece',
-        ],
-        'Other' => [
-            'Other',
-            'ellipsis-horizontal',
-        ],
-    ];
+    public $categoryValues;
 
 
     public $minPrice = '';
     public $maxPrice = '';
+
+
+    public function mount() {
+        $this->categoryValues = config('products-categories.categoryValues');
+    }
+
 
     public function rules() {
         return [

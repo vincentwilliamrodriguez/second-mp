@@ -297,11 +297,5 @@
     @endif
 
 
-    {{-- Modal for Products Child (show, create, edit, or delete) --}}
-    <livewire:products-child
-        wire:key="products-child"
-        :$categoryValues
-        :categories="array_keys($categoryValues)"
-    />
 
 </div>

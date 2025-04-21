@@ -4,6 +4,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Livewire\Cart;
+use App\Livewire\Checkout;
 use App\Livewire\OrdersIndex;
 use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
@@ -22,7 +24,6 @@ Route::get('/dashboard', function () {
     return auth()->user()->hasRole('support')
         ? redirect()->route('tickets.index')
         : redirect()->route('products.index');
-    $user = auth()->user();
 })->name('dashboard');
 
 Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
@@ -107,4 +108,15 @@ Route::middleware([
 
     Route::resource('tickets', TicketController::class)->only(['destroy'])
         ->middleware('permission:delete-tickets');
+
+
+
+    // These are newly added routes for the Shopping Cart and Checkout pages
+
+    Route::middleware('permission:create-orders')->group(function () {
+        Route::get('cart', Cart::class)->name('cart');
+        Route::get('checkout', Checkout::class)->name('checkout');
+    });
+
+
 });

@@ -1,4 +1,17 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-200 shadow-sm relative z-50">
+    {{-- Global Modals --}}
+
+    <div>
+        {{-- Modal for Products Child (show, create, edit, or delete) --}}
+        <livewire:products-child
+            wire:key="products-child"
+            :categoryValues="config('products-categories.categoryValues')"
+            :categories="config('products-categories.categories')"
+        />
+        <livewire:cart-flyout :cartItems="session('cart.' . auth()->id(), [])" wire:key="cart-flyout"/>
+    </div>
+
+
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">

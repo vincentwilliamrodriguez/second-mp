@@ -13,7 +13,7 @@ class Table extends Component {
 
     public $items;
     public $columns;
-    public $columnsToProperty;
+    public $columnsToProperty = [];
     public $widths;
     public $cells;
 
@@ -28,6 +28,7 @@ class Table extends Component {
         'tdNoData' => '',
     ];
 
+    public $columnsWithRowspan = [];
     public $columnsWithSorting = [];
     public $sortBy = '';
     public $sortOrder = '';

@@ -1,7 +1,13 @@
 {{-- This is the new show/create/edit product page with Livewire --}}
 
-<flux:modal name='products-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('resetform'); method=''" x-data="{method: ''}">
-    <div class="bg-white rounded-lg shadow-sm max-w-5xl mx-auto pt-4 flex flex-col" x-bind:class="$wire.defaultSizes[method]">
+<flux:modal name='products-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('resetform'); method=''" x-data="{method: '', defaultSizes: {
+            'Show': '!min-w-[750px] !min-h-[400px]',
+            'Create': '!min-w-[750px] !min-h-[400px]',
+            'Edit': '!min-w-[750px] !min-h-[400px]',
+            'Delete': '!min-w-[400px] !min-h-[150px]',
+        }}">
+
+    <div x-bind:class="'bg-white rounded-lg shadow-sm max-w-5xl mx-auto pt-4 flex flex-col ' + defaultSizes[method]">
         {{-- Loading Indicator --}}
         <div x-cloak x-show="$wire.state === null" class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
             <div class="flex gap-4 justify-center items-center">

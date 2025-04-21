@@ -8,8 +8,5 @@
             @endif
         </flux:button>
     </flux:modal>
-
-
-    <livewire:cart-flyout :$cartItems/>
 </div>
 

@@ -46,7 +46,17 @@
                 @foreach ($items as $rowIndex => $item)
                     <tr class="hover:bg-blue-50 {{ $customClasses['tr'] }}">
                         @foreach ($columns as $colIndex => $column)
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 first:font-medium first:text-blue-900 first:bg-blue-50 {{ $customClasses['td'] }}">
+                            @php
+                                if (array_key_exists($column, $columnsWithRowspan)) {
+                                    $rowspanValue = $item[$columnsWithRowspan[$column]];
+                                    $rowspanClasses = ($rowspanValue === 0) ? 'hidden' : '';
+                                } else {
+                                    $rowspanClasses = '';
+                                    $rowspanValue = null;
+                                }
+                            @endphp
+
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 first:font-medium first:text-blue-900 first:bg-blue-50 {{ $rowspanClasses }} {{ $customClasses['td'] }}" @if ($rowspanValue) rowspan="{{ $rowspanValue }}" @endif>
                                 {!! $cells[$rowIndex][$colIndex] !!}
                             </td>
                         @endforeach
