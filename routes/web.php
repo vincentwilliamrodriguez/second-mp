@@ -4,6 +4,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Livewire\Cart;
+use App\Livewire\Checkout;
+use App\Livewire\OrdersIndex;
 use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
@@ -21,12 +24,10 @@ Route::get('/dashboard', function () {
     return auth()->user()->hasRole('support')
         ? redirect()->route('tickets.index')
         : redirect()->route('products.index');
+    $user = auth()->user();
 })->name('dashboard');
 
-Route::get('/tickets', function () {
-    return view('tickets.index');
-})->name('tickets.index');
-
+Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -36,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require __DIR__.'/auth.php';
+require _DIR_.'/auth.php';
 
 Route::middleware([
     'auth:sanctum',
@@ -44,58 +45,81 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::resource('products', ProductController::class)->only(['create', 'store'])
-        ->middleware('permission:create-products');
+    // These are the old route definitions for the Products, Orders, Users, and Tickets page that used ProductController
 
-    Route::resource('products', ProductController::class)->only(['edit', 'update'])
-        ->middleware('permission:update-products');
+    // Route::resource('products', ProductController::class)->only(['create', 'store'])
+        // ->middleware('permission:create-products');
 
-    Route::resource('products', ProductController::class)->only(['destroy'])
-        ->middleware('permission:delete-products');
+    // Route::resource('products', ProductController::class)->only(['index', 'show'])
+    //     ->middleware('permission:read-products');
 
-    Route::prefix('products')->group(function () {
-        Route::get('/', ProductsIndex::class)
-            ->middleware('permission:read-products')->name('products.index');
+    // Route::resource('products', ProductController::class)->only(['edit', 'update'])
+    //     ->middleware('permission:update-products');
 
-        Route::get('/{product}', ProductsChild::class)
-            ->middleware('permission:read-products')->name('products.show');
-    });
+    // Route::resource('products', ProductController::class)->only(['destroy'])
+        // ->middleware('permission:delete-products');
 
-    Route::resource('orders', OrderController::class)->only(['store'])
-        ->middleware('permission:create-orders');
 
-    Route::resource('orders', OrderController::class)->only(['index'])
-        ->middleware('permission:read-orders');
+    // Route::resource('orders', OrderController::class)->only(['store'])
+    //     ->middleware('permission:create-orders');
 
-    Route::resource('orders', OrderController::class)->only(['update'])
-        ->middleware('permission:update-orders');
+    // Route::resource('orders', OrderController::class)->only(['index'])
+    //     ->middleware('permission:read-orders');
 
-    Route::resource('orders', OrderController::class)->only(['destroy'])
-        ->middleware('permission:delete-orders');
+    // Route::resource('orders', OrderController::class)->only(['update'])
+    //     ->middleware('permission:update-orders');
 
-    Route::post('/orders/place-all', [OrderController::class, 'placeAll'])
-        ->middleware('permission:update-orders')
-        ->name('orders.place-all');
+    // Route::resource('orders', OrderController::class)->only(['destroy'])
+    //     ->middleware('permission:delete-orders');
 
-    Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
-        ->middleware('permission:update-orders')
-        ->name('orders.update-quantity');
+    // Route::post('/orders/place-all', [OrderController::class, 'placeAll'])
+    //     ->middleware('permission:update-orders')
+    //     ->name('orders.place-all');
+
+    // Route::post('/orders/{order}/quantity', [OrderController::class, 'updateQuantity'])
+    //     ->middleware('permission:update-orders')
+    //     ->name('orders.update-quantity');
+
+
+
+    // These are the new route definition for the Products, Orders, Users, and Tickets page using Livewire
+
+    Route::get('products', ProductsIndex::class)
+        ->middleware('permission:read-products')
+        ->name('products.index');
+
+    Route::get('orders', OrdersIndex::class)
+        ->middleware('permission:read-orders')
+        ->name('orders.index');
+
+    Route::get('tickets', TicketsIndex::class)
+        ->middleware('permission:read-tickets')
+        ->name('tickets.index');
 
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
 
-    Route::get('/tickets', [TicketController::class, 'index'])
-        ->middleware(['auth', 'role:support|admin'])
-        ->name('tickets.index');
+    // Old tickets routes
 
-    Route::middleware(['auth', 'role:customer|seller'])->group(function () {
-        Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
-        Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    // Route::resource('tickets', TicketController::class)->only(['create', 'store'])
+    //     ->middleware('permission:create-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['index'])
+    //     ->middleware('permission:read-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['edit', 'update'])
+    //     ->middleware('permission:update-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['destroy'])
+    //     ->middleware('permission:delete-tickets');
+
+    // These are newly added routes for the Shopping Cart and Checkout pages
+
+    Route::middleware('permission:create-orders')->group(function () {
+        Route::get('cart', Cart::class)->name('cart');
+        Route::get('checkout', Checkout::class)->name('checkout');
     });
 
-    Route::middleware(['auth', 'role:support|admin'])->group(function () {
-        Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-        Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
-    });
+
 });
