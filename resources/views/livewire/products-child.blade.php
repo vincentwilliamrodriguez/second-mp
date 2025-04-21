@@ -89,7 +89,7 @@
                                 @if ($product->quantity >= 1)
                                     <x-button type='submit' class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
                                         <x-eos-shopping-cart-o class="h-6 w-6 mr-1 opacity-90" />
-                                        Add to Cart
+                                        {{ ($this->retrieveItemByProductId($product->id) === null) ? 'Add to Cart' : 'Update Cart'}}
                                     </x-button>
                                 @else
                                     <span class="text-red-500 font-medium">Out of Stock</span>

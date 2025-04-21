@@ -8,7 +8,8 @@
             :categoryValues="config('products-categories.categoryValues')"
             :categories="config('products-categories.categories')"
         />
-        <livewire:cart-flyout :cartItems="session('cart.' . auth()->id(), [])" wire:key="cart-flyout"/>
+        <livewire:cart-flyout wire:key="cart-flyout"/>
+        <livewire:cart-child wire:key="cart-child"/>
     </div>
 
 

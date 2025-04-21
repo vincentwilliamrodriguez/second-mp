@@ -34,6 +34,9 @@ class Table extends Component {
     public $sortBy = '';
     public $sortOrder = '';
 
+    public $noDataText = 'No data available';
+    
+
     public function mount($items, $columns, $widths = [], $columnsToProperty) {
         $this->items = $items;
         $this->columns = $columns;

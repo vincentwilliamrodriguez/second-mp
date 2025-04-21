@@ -26,7 +26,7 @@
             'Product' => '300px',
             'Seller' => '70px',
             'Quantity' => '100px',
-            'Total' => '100px',
+            'Total' => '120px',
             'Actions' => '150px',
         ];
 
@@ -57,6 +57,8 @@
         $columnsWithSorting = [];
         $sortBy = null;
         $sortOrder = null;
+
+        $noDataText = 'Your cart is empty.';
 
         $items = collect($cartItems);
         $cells = [];
@@ -105,9 +107,9 @@
 HTML;
                         break;
 
-                    // case 'Actions':
-                        // $cells[$rowIndex][] = view('components.order-actions', ['order' => (object)$item])->render();
-                        // break;
+                    case 'Actions':
+                        $cells[$rowIndex][] = view('components.cart-actions', compact('item'))->render();
+                        break;
 
                     default:
                         // dd($item, $column, $columnsToProperty);
@@ -132,8 +134,32 @@ HTML;
             :$columnsWithSorting
             :$sortBy
             :$sortOrder
+            :$noDataText
             :$customClasses
         >
         </livewire:table>
+    </div>
+
+    <div class="flex flex-col justify-end gap-6 mt-auto pt-8">
+        <div class="flex flex-col justify-end items-end">
+            <flux:text variant='subtle' class="text-md">
+                Subtotal Estimate (<span wire:text='totalCount'></span> items):
+            </flux:text>
+            <flux:text variant='stong' class="text-2xl text-accent font-bold" wire:text='totalPrice'></flux:text>
+        </div>
+
+        <div class="flex items-center justify-end">
+            <flux:button variant='subtle' icon="trash"
+                wire:click.prevent="$dispatchTo('cart-child', 'open', {method: 'Clear'})"
+                x-on:click.prevent="$flux.modal('cart-child').show()"
+            >
+                Clear Cart
+            </flux:button>
+            <a href="{{ route('checkout') }}">
+                <flux:button class="ml-6" type='submit' variant='primary' icon='shopping-bag'>
+                    {{ __('Check Out') }}
+                </flux:button>
+            </a>
+        </div>
     </div>
 </div>

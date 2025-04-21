@@ -1,6 +1,6 @@
 @props([
     'product',
-    'classes',
+    'classes' => '',
     'placeholderSize' => 'size-28'
 ])
 

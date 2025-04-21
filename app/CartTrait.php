@@ -3,13 +3,22 @@
 namespace App;
 
 use App\Models\Product;
+use Illuminate\Support\Number;
 
 trait CartTrait
 {
     public $cartKey;
 
+    public $totalCount = 0;
+    public $totalPrice = 0;
+
+
     public function mount() {
         $this->cartKey = 'cart.' . auth()->user()->id;
+    }
+
+    public function retrieveProduct($cartItem) {
+        return Product::where('id', $cartItem['product_id'])->first();
     }
 
     public function getUnsortedCart() {
@@ -49,6 +58,18 @@ trait CartTrait
         $sortedCart[$curSellerIndex]['seller_rowspan'] = count($sortedCart) - $curSellerIndex;
 
         return $sortedCart;
+    }
+
+    public function retrieveItemById($id) {
+        $cart = $this->getUnsortedCart();
+
+        foreach ($cart as $item) {
+            if ($item['id'] === $id) {
+                return $item;
+            }
+        }
+
+        return null;
     }
 
     public function retrieveItemByProductId($productId) {
@@ -99,8 +120,20 @@ trait CartTrait
         session()->put($this->cartKey, $updatedCart);
     }
 
+    public function clearAllCartItems() {
+        session()->put($this->cartKey, []);
+    }
 
-    public function retrieveProduct($cartItem) {
-        return Product::where('id', $cartItem['product_id'])->first();
+    public function updateTotals() {
+        $cart = $this->getSortedCart();
+
+        $this->reset('totalCount', 'totalPrice');
+
+        foreach ($cart as $cartItem) {
+            $this->totalCount += $cartItem['order_quantity'];
+            $this->totalPrice += $cartItem['order_quantity'] * $cartItem['product_price'];
+        }
+
+        $this->totalPrice = Number::currency($this->totalPrice, 'PHP');
     }
 }

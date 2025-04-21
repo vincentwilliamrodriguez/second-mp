@@ -8,7 +8,7 @@
             <div class="flex-1 flex flex-col divide-y divide-zinc-100 max-h-[70vh] overflow-y-auto @if(empty($cartItems)) max-h-none @endif">
                 @forelse ($cartItems as $cartItem)
                     <div class="grid grid-cols-[100px_1fr_auto] gap-4 py-4">
-                        <livewire:product-image :product='$this->retrieveProduct($cartItem)' placeholderSize='size-16' />
+                        <x-product-image :product='$this->retrieveProduct($cartItem)' placeholderSize='size-16' />
 
                         <div class="flex flex-col justify-center">
                             <h2 class="max-w-[250px] text-lg font-medium text-gray-800 truncate whitespace-nowrap overflow-hidden">

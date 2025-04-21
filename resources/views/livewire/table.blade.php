@@ -1,7 +1,7 @@
 {{-- This is the new table component using Livewire --}}
 <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 {{ $customClasses['container'] }}">
     <table class="min-w-full divide-y divide-blue-200 {{ $customClasses['table'] }}">
-        <thead class="bg-blue-700 {{ $customClasses['thead'] }}" x-on:sortchanged="$el.classList.add('pointer-events-none')">
+        <thead class="bg-indigo-600 {{ $customClasses['thead'] }}" x-on:sortchanged="$el.classList.add('pointer-events-none')">
             <tr>
                 @foreach($columns as $column)
                     @php
@@ -84,7 +84,7 @@
             @else
                 <tr>
                     <td colspan="{{ count($columns) }}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center {{ $customClasses['tdNoData'] }}">
-                        No data available
+                        {{ $noDataText }}
                     </td>
                 </tr>
             @endif
