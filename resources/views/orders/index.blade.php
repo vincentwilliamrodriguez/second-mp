@@ -1,3 +1,6 @@
+{{-- This is the old index file for the Orders Page --}}
+
+
 {{-- The PHP code below defines the parameters of the user's orders tables --}}
 
 @php

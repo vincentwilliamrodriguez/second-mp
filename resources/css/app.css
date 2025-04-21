@@ -51,5 +51,31 @@
 
 html {
     padding-right: 0 !important;
+    overflow-x: hidden;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #6c7b91;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #6c7b91;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #6c7b91 transparent;
+}

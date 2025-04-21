@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
     use HasFactory;
+    use HasUuids;
     use SoftDeletes;
 
     protected $table = 'orders';
@@ -24,11 +27,33 @@ class Order extends Model
         'date_placed' => 'date',
     ];
 
-    public function product() {
-        return $this->belongsTo(Product::class);
+    public function orderItems() {
+        return $this->hasMany(OrderItem::class);
     }
 
     public function customer() {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function getDisplayNameAttribute() {
+        return 'ORD-' . $this->created_at->format('Ymd') . '-' . strtoupper(substr($this->id, 0, 8));
+    }
+
+
+
+    public static function booted() {
+        parent::boot();
+
+        static::creating(function($model) {
+            $model->id = Str::uuid();
+        });
+
+        static::deleting(function ($order) {
+            if ($order->isForceDeleting()) {
+                $order->orderItems()->forceDelete();
+            } else {
+                $order->orderItems()->delete();
+            }
+        });
     }
 }

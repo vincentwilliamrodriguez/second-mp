@@ -15,7 +15,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $number = '';
     public string $password = '';
     public string $password_confirmation = '';
-    public string $role = '';
+    // public string $role = '';
 
     /**
      * Handle an incoming registration request.
@@ -28,14 +28,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'number' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:customer,seller,support,admin'],
+            // 'role' => ['required', 'string', 'in:customer,seller,support,admin'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
         event(new Registered(($user = User::create($validated))));
 
-        $user->assignRole($validated['role']);
+        $user->assignRole('customer');
 
         Auth::login($user);
 
@@ -114,7 +114,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
             :placeholder="__('Confirm password')"
         />
 
-        <div>
+
+        {{-- This is the old role selection option in register --}}
+
+        {{-- <div>
             <x-label for="role" value="{{ __('Role') }}" class="!text-[#27272A]" />
             <x-dropdown-wrapper
                 id="role"
@@ -135,6 +138,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
             autocomplete="role"
             :placeholder="__('Role')"
         />
+
+         --}}
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
