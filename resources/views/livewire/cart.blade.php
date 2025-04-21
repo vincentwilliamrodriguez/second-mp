@@ -145,7 +145,7 @@ HTML;
             <flux:text variant='subtle' class="text-md">
                 Subtotal Estimate (<span wire:text='totalCount'></span> items):
             </flux:text>
-            <flux:text variant='stong' class="text-2xl text-accent font-bold" wire:text='totalPrice'></flux:text>
+            <flux:text variant='stong' class="text-2xl text-accent font-bold" wire:text='subtotalFormatted'></flux:text>
         </div>
 
         <div class="flex items-center justify-end">
