@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,15 +18,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        DB::table('orders')->delete();
-        DB::table('products')->delete();
-        DB::table('users')->delete();
+        OrderItem::truncate();
+        Order::truncate();
+        Product::truncate();
+        User::truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
 
         $superadmin = User::create([
             'name' => 'Super Admin',

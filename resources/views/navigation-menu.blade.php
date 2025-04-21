@@ -1,4 +1,18 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-200 shadow-sm relative z-50">
+    {{-- Global Modals --}}
+
+    <div>
+        {{-- Modal for Products Child (show, create, edit, or delete) --}}
+        <livewire:products-child
+            wire:key="products-child"
+            :categoryValues="config('products-categories.categoryValues')"
+            :categories="config('products-categories.categories')"
+        />
+        <livewire:cart-flyout wire:key="cart-flyout"/>
+        <livewire:cart-child wire:key="cart-child"/>
+    </div>
+
+
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -32,7 +46,7 @@
                         </x-nav-link>
                     @endcan
 
-                    @can('read-tickets')
+                    {{-- @can('read-tickets')
                         @role('support|admin')
                             <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.index')">
                                 {{ __('Support') }}
@@ -42,7 +56,7 @@
                                 {{ __('Support') }}
                             </x-nav-link>
                         @endrole
-                    @endcan
+                    @endcan --}}
                 </div>
             </div>
 
@@ -99,9 +113,19 @@
                     </div>
                 @endif
 
-                <!-- Settings Dropdown -->
+
+                {{-- Cart Flyout Toggle --}}
+                @can('create-orders')
+                    <div class="relative mr-8 mb-1">
+                        @livewire('cart-button')
+                    </div>
+                @endcan
+
+                {{-- Name Display --}}
                 <div class="font-medium text-base text-gray-600">{{ Auth::user()->name }}</div>
-                <div class="ms-3 relative">
+
+                <!-- Settings Dropdown -->
+                <div class="relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())

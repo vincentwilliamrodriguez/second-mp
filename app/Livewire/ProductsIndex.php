@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use Illuminate\Support\Number;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -38,47 +39,24 @@ class ProductsIndex extends Component {
             'Quantity',
             'cube',
         ],
+        'category' => [
+            'Category',
+            'tag',
+        ],
     ];
 
     public $category = '';
-    public $categoryValues = [
-        'Books' => [
-            'Books',
-            'book-open'
-        ],
-        'Clothing' => [
-            'Clothing',
-            'shirt',
-        ],
-        'Electronics' => [
-            'Electronics',
-            'bolt',
-        ],
-        'Furniture' => [
-            'Furniture',
-            'armchair',
-        ],
-        'Hardware' => [
-            'Hardware',
-            'cpu-chip',
-        ],
-        'Health' => [
-            'Health',
-            'activity',
-        ],
-        'Hobbies' => [
-            'Hobbies',
-            'puzzle-piece',
-        ],
-        'Other' => [
-            'Other',
-            'ellipsis-horizontal',
-        ],
-    ];
+    public $categoryValues;
 
 
     public $minPrice = '';
     public $maxPrice = '';
+
+
+    public function mount() {
+        $this->categoryValues = config('products-categories.categoryValues');
+    }
+
 
     public function rules() {
         return [
@@ -112,7 +90,7 @@ class ProductsIndex extends Component {
             });
         }
 
-        if ($this->sortBy) {
+        if ($this->sortBy && $this->sortOrder) {
             $products = $products->orderBy($this->sortBy, $this->sortOrder);
         } else {
             $products = $products->orderBy('updated_at', 'DESC');

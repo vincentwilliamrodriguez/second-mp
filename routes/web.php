@@ -10,6 +10,7 @@ use App\Livewire\OrdersIndex;
 use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
+use App\Livewire\TicketsIndex;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -24,7 +25,6 @@ Route::get('/dashboard', function () {
     return auth()->user()->hasRole('support')
         ? redirect()->route('tickets.index')
         : redirect()->route('products.index');
-    $user = auth()->user();
 })->name('dashboard');
 
 Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require _DIR_.'/auth.php';
+require __DIR__.'/auth.php';
 
 Route::middleware([
     'auth:sanctum',
@@ -81,6 +81,19 @@ Route::middleware([
     //     ->name('orders.update-quantity');
 
 
+    // Route::resource('tickets', TicketController::class)->only(['create', 'store'])
+    //     ->middleware('permission:create-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['index'])
+    //     ->middleware('permission:read-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['edit', 'update'])
+    //     ->middleware('permission:update-tickets');
+
+    // Route::resource('tickets', TicketController::class)->only(['destroy'])
+    //     ->middleware('permission:delete-tickets');
+
+
 
     // These are the new route definition for the Products, Orders, Users, and Tickets page using Livewire
 
@@ -100,19 +113,19 @@ Route::middleware([
         Route::resource('users', UserController::class);
     });
 
-    // Old tickets routes
 
-    // Route::resource('tickets', TicketController::class)->only(['create', 'store'])
-    //     ->middleware('permission:create-tickets');
+    // These are newly added routes for the Shopping Cart and Checkout pages
 
-    // Route::resource('tickets', TicketController::class)->only(['index'])
-    //     ->middleware('permission:read-tickets');
+    Route::middleware('permission:create-orders')->group(function () {
+        Route::get('cart', Cart::class)->name('cart');
+        Route::get('checkout', Checkout::class)->name('checkout');
+    });
 
-    // Route::resource('tickets', TicketController::class)->only(['edit', 'update'])
-    //     ->middleware('permission:update-tickets');
 
-    // Route::resource('tickets', TicketController::class)->only(['destroy'])
-    //     ->middleware('permission:delete-tickets');
+    Route::resource('tickets', TicketController::class)->only(['destroy'])
+        ->middleware('permission:delete-tickets');
+
+
 
     // These are newly added routes for the Shopping Cart and Checkout pages
 

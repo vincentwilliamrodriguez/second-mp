@@ -1,40 +1,3 @@
-{{-- The PHP code below defines the parameters of the seller's products table --}}
-
-@php
-    $productsTableWidths = [
-        'Name' => '130px',
-        'Quantity' => '70px',
-        'Actions' => '150px',
-    ];
-
-    $productsTableColumns = [
-        'Name' => function($product) {
-            return view('livewire.product-cell', compact('product'))->render();
-        },
-        'Category' => function($product) {
-            return $product->category;
-        },
-        'Quantity' => function($product) {
-            return $product->quantity;
-        },
-        'Price' => function($product) {
-            return Number::currency($product->price, 'PHP');
-        },
-        'Created' => function($product) {
-            return $product->created_at->format('F j, Y');
-        },
-        'Modified' => function($product) {
-            return $product->updated_at->format('F j, Y');
-        },
-        'Actions' => function($product) {
-            return view('livewire.product-actions', compact('product'))->render();
-        }
-    ];
-@endphp
-
-
-
-
 <div class="flex flex-col p-8 gap-4 w-[90vw] max-w-[1200px] min-h-[550px]">
     @if (session('message'))
         <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
@@ -43,13 +6,13 @@
     @endif
 
     <div class="flex justify-between items-center mb-2">
-        <h2 class="font-black text-3xl">
+        <h2 class="font-black text-3xl text-gray-800">
             {{ auth()->user()->hasRole('seller') ? 'My Products' : 'All Products' }}
         </h2>
 
         @if (auth()->user()->can('create-products') && !$this->isProductsEmpty())
             <x-button baseColor="blue" iconSize="w-6 h-6"
-                    wire:click.prevent="$dispatchTo('products-child', 'openCreate')"
+                    wire:click.prevent="$dispatchTo('products-child', 'open', {method: 'Create'})"
                     x-on:click.prevent="$flux.modal('products-child').show()">
 
                 <x-slot name='icon'><x-eos-add-box-o /></x-slot>
@@ -71,10 +34,13 @@
         <flux:input class="max-w-80 mr-10" wire:model.live='search' icon:trailing='magnifying-glass' type='text'
             :placeholder='$searchPlaceholder' autocomplete='search' autofocus></flux:input>
 
-        <div class="flex items-center basis-36">
+        <div class="flex items-center basis-[9.5rem]">
             <flux:button variant='subtle' size='sm' class="!px-1"
-                @click=" $wire.set('sortOrder', ($wire.sortOrder === 'asc') ? 'desc' : 'asc')"
-                x-bind:disabled="$wire.sortOrder === ''">
+                x-on:click=" $wire.set('sortOrder', ($wire.sortOrder === 'asc') ? 'desc' : 'asc')"
+                x-bind:disabled="$wire.sortOrder === ''"
+                x-on:sortchanged.window="$wire.set('sortBy', $event.detail.sortBy);
+                                         $wire.set('sortOrder', $event.detail.sortOrder);"
+            >
                 <flux:icon.arrow-long-up x-show="$wire.sortOrder === 'asc'" x-cloak />
                 <flux:icon.arrow-long-down x-show="$wire.sortOrder === 'desc'" x-cloak />
                 <flux:icon.arrows-up-down x-show="!['asc', 'desc'].includes($wire.sortOrder)" x-cloak />
@@ -168,7 +134,7 @@
             {{-- Seller's empty view (without quey) --}}
             @if (auth()->user()->can('create-products') && !($search || $category || $minPrice || $maxPrice))
                 <a class="group w-full md:w-2/3 lg:w-1/2 h-64 border-2 border-dashed border-blue-300 rounded-lg flex flex-col items-center justify-center p-6 transition-all hover:border-blue-500 hover:bg-blue-50"
-                    wire:click.prevent="$dispatchTo('products-child', 'openCreate')"
+                    wire:click.prevent="$dispatchTo('products-child', 'open', {method: 'Create'})"
                     x-on:click.prevent="$flux.modal('products-child').show()">
 
                     <div
@@ -201,11 +167,129 @@
             @endforeach
         </div>
     @else
-        <x-table
-            :items="$products"
+        {{-- This uses the new Livewire component for tables --}}
+        @php
+            // This is the array of closures used for the old Table component
+
+            // $productsTableColumns = [
+            //     'Name' => function($product) {
+            //         return view('livewire.product-cell', compact('product'))->render();
+            //     },
+            //     'Category' => function($product) {
+            //         return $product->category;
+            //     },
+            //     'Quantity' => function($product) {
+            //         return $product->quantity;
+            //     },
+            //     'Price' => function($product) {
+            //         return Number::currency($product->price, 'PHP');
+            //     },
+            //     'Created' => function($product) {
+            //         return $product->created_at->format('F j, Y');
+            //     },
+            //     'Modified' => function($product) {
+            //         return $product->updated_at->format('F j, Y');
+            //     },
+            //     'Actions' => function($product) {
+            //         return view('livewire.product-actions', compact('product'))->render();
+            //     }
+            // ];
+        @endphp
+
+
+        {{-- This is the new implementation of the Livewire-based table component --}}
+        @php
+            $productsTableColumns = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified', 'Actions'];
+            $columnsWithSorting = ['Name', 'Category', 'Quantity', 'Price', 'Created', 'Modified'];
+            $columnsToProperty = [
+                'Created' => 'created_at',
+                'Modified' => 'updated_at',
+                'Actions' => '',
+            ];
+            $productsTableWidths = [
+                'Name' => '130px',
+                'Category' => '100px',
+                'Quantity' => '70px',
+                'Actions' => '150px',
+            ];
+
+            if (auth()->user()->hasRole('admin')) {
+                array_splice($productsTableColumns, 1, 0, 'Seller');
+            }
+
+            $customClasses = [
+                'container' => '',
+                'table' => '',
+                'thead' => '',
+                'th' => '',
+                'tbody' => '',
+                'tr' => '',
+                'td' => '',
+                'tdNoData' => '',
+            ];
+
+            $items = $products->items();
+            $cells = [];
+
+            foreach ($items as $rowIndex => $product) {
+                $cells[] = [];
+
+                foreach ($productsTableColumns as $colIndex => $column) {
+                    switch ($column) {
+                        case 'Name':
+                            $cells[$rowIndex][] = view('livewire.product-cell', compact('product'))->render();
+                            break;
+
+                        case 'Seller':
+                            $cells[$rowIndex][] = $product->seller->username;
+                            break;
+
+                        case 'Price':
+                            $cells[$rowIndex][] = Number::currency($product->price, 'PHP');
+                            break;
+
+                        case 'Created':
+                            $cells[$rowIndex][] = $product->created_at->format('F j, Y');
+                            break;
+
+                        case 'Modified':
+                            $cells[$rowIndex][] = $product->updated_at->format('F j, Y');
+                            break;
+
+                        case 'Actions':
+                            $cells[$rowIndex][] = view('livewire.product-actions', compact('product'))->render();
+                            break;
+
+                        default:
+                            $cells[$rowIndex][] = $product->{Str::snake($column)} ?? '';
+                            break;
+                    }
+                }
+            }
+        @endphp
+
+        <livewire:table
+            wire:key="{{ now() }}"
+            :items="$products->items()"
             :columns="$productsTableColumns"
             :widths="$productsTableWidths"
-        />
+            :$cells
+            :$columnsToProperty
+            :$columnsWithSorting
+            :$sortBy
+            :$sortOrder
+            :$customClasses
+        >
+        </livewire:table>
+
+
+        {{-- This uses the old Blade component for tables --}}
+
+        {{-- <x-table --}}
+            {{-- :items="$products"
+            :columns="$productsTableColumns"
+            :widths="$productsTableWidths"
+        /> --}}
     @endif
 
     @if (!$products->isEmpty())
@@ -213,8 +297,5 @@
     @endif
 
 
-    {{-- Modal for Products Child (show, create, edit, or delete) --}}
-    <livewire:products-child wire:key='products-child'
-                                :$categoryValues
-                                :categories="array_keys($categoryValues)">
+
 </div>

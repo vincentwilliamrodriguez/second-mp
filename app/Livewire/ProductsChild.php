@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\CartTrait;
 use App\Models\Product;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
@@ -14,7 +15,7 @@ use Livewire\WithFileUploads;
 
 
 class ProductsChild extends Component {
-    use WithFileUploads;
+    use WithFileUploads, CartTrait;
 
     public Product $product;
 
@@ -25,10 +26,13 @@ class ProductsChild extends Component {
     public $orderQuantity = 1;
     public $maxDescriptionLength = 250;
 
-    public $categories;
-    public $categoryValues;
+    public $categories = [];
+    public $categoryValues = [];
 
-    protected $listeners = ['openShow', 'openCreate', 'openEdit', 'openDelete', 'resetForm'];
+    public $curCartItem;
+    public $curCartCount;
+
+    protected $listeners = ['open', 'resetform'];
     public $validationAttributes = [
         'item.name' => 'Name',
         'item.description' => 'Description',
@@ -43,39 +47,44 @@ class ProductsChild extends Component {
         return view('livewire.products-child');
     }
 
-    public function resetForm() {
+    public function resetform() {
         $this->reset('state', 'item', 'orderQuantity');
         $this->resetErrorBag();
     }
 
-    public function openShow($productId) {
+
+
+    public function open($method, $productId = null) {
         $this->state = null;
-        $this->product = Product::findOrFail($productId);
-        $this->authorize('view', $this->product);
-        $this->state = 'Show';
-    }
 
-    public function openCreate() {
-        $this->state = null;
-        $this->authorize('create', Product::class);
-        $this->state = 'Create';
-    }
+        if ($productId) {
+            $this->product = Product::findOrFail($productId);
+        }
 
-    public function openEdit($productId) {
-        $this->state = null;
-        $this->product = Product::findOrFail($productId);
-        $this->authorize('update', $this->product);
+        switch ($method) {
+            case 'Show':
+                $this->authorize('view', $this->product);
+                $this->curCartItem = $this->retrieveItemByProductId($this->product->id) ?? ['id' => 'new', 'order_quantity' => 1];
+                $this->curCartCount = $this->curCartItem['order_quantity'];
+                $this->orderQuantity = $this->curCartCount;
 
-        $this->item = $this->product->only(['name', 'description', 'quantity', 'price', 'category', 'picture']);
-        $this->state = 'Edit';
-    }
+                break;
 
-    public function openDelete($productId) {
-        $this->state = null;
-        $this->product = Product::findOrFail($productId);
-        $this->authorize('delete', $this->product);
+            case 'Create':
+                $this->authorize('create', Product::class);
+                break;
 
-        $this->state = 'Delete';
+            case 'Edit':
+                $this->authorize('update', $this->product);
+                $this->item = $this->product->only(['name', 'description', 'quantity', 'price', 'category', 'picture']);
+                break;
+
+            case 'Delete':
+                $this->authorize('delete', $this->product);
+                break;
+        }
+
+        $this->state = $method;
     }
 
     public function rules() {
@@ -135,6 +144,21 @@ class ProductsChild extends Component {
 
         session()->flash('message', 'Product deleted successfully.');
         $this->redirectRoute('products.index');
+    }
+
+    public function addToCart() {
+        $cartData = [
+            'product_id' => $this->product->id,
+            'product_name' => $this->product->name,
+            'product_price' => $this->product->price,
+            'order_quantity' => $this->orderQuantity,
+            'seller_id' => $this->product->seller->id,
+        ];
+
+        $wasAdded = $this->addItemToCart($cartData);
+
+        session()->flash('message', $wasAdded ? 'Product added to cart successfully.' : 'Cart updated successfully.');
+        $this->redirectRoute('cart');
     }
 
     private function savePicture() {
