@@ -17,7 +17,7 @@ class OrderSeeder extends Seeder {
 
         foreach ($customers as $customer) {
             for ($i = 0; $i < $ordersNum; $i++) {
-                $order = Order::factory()->create(['customer_id' => $customer->id]);
+                $order = Order::factory()->create(['customer_id' => $customer->id, 'full_name' => $customer->name]);
 
                 for ($j = 0; $j < $orderItemsNum; $j++) {
                     OrderItem::factory()->create(['order_id' => $order->id]);

@@ -16,15 +16,20 @@ class Order extends Model
 
     protected $table = 'orders';
     protected $fillable = [
-        'product_id',
         'customer_id',
-        'quantity',
-        'is_placed',
-        'date_placed',
-        'status',
-    ];
-    protected $casts = [
-        'date_placed' => 'date',
+        'full_name',
+        'phone_number',
+        'address',
+        'barangay',
+        'city',
+        'province',
+        'postal_code',
+        'delivery_method',
+        'payment_method',
+        'subtotal',
+        'shipping_fee',
+        'tax',
+        'total_amount',
     ];
 
     public function orderItems() {

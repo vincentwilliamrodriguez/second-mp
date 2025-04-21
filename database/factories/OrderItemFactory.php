@@ -27,7 +27,8 @@ class OrderItemFactory extends Factory {
 
         return [
             'product_id' => $product->id,
-            'quantity' => $this->faker->numberBetween(1, $product->quantity),
+            'order_quantity' => $this->faker->numberBetween(1, $product->quantity),
+            'product_price' => $product->price,
             'date_placed' => $datePlaced,
             'date_accepted' => $dateAccepted,
             'date_shipped' => $dateShipped,
@@ -35,15 +36,4 @@ class OrderItemFactory extends Factory {
             'status' => $status,
         ];
     }
-
-
-
-    // 'order_id',
-    // 'product_id',
-    // 'quantity',
-    // 'date_placed',
-    // 'date_accepted',
-    // 'date_shipped',
-    // 'date_delivered',
-    // 'status',
 }

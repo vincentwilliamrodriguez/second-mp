@@ -38,8 +38,24 @@ class OrderFactory extends Factory
 
     // This is the new version, which passes work onto the Order Item Factory
     public function definition(): array {
+        $subtotal = $this->faker->randomFloat(2, 100, 5000);
+        $shippingFee = $this->faker->randomFloat(2, 50, 250);
+        $tax = $subtotal * 0.12;
+        $totalAmount = $subtotal + $shippingFee + $tax;
+
         return [
-            
+            'phone_number' => $this->faker->regexify('09\d{9}'),
+            'address' => $this->faker->streetAddress(),
+            'barangay' => $this->faker->word(),
+            'city' => $this->faker->city(),
+            'province' => $this->faker->state(),
+            'postal_code' => $this->faker->postcode(),
+            'delivery_method' => $this->faker->randomElement(['standard','express','same_day']),
+            'payment_method' => $this->faker->randomElement(['cod','e_wallet']),
+            'subtotal' => 0,
+            'shipping_fee' => 0,
+            'tax' => 0,
+            'total_amount' =>0,
         ];
     }
 }

@@ -179,7 +179,7 @@
                                     <p class="text-sm text-gray-600">2-3 business days</p>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <span class="font-semibold text-indigo-700">₱80</span>
+                                    <span class="font-semibold text-indigo-700">₱20</span>
                                     <div class="w-5 h-5 rounded-full border-2"
                                          x-bind:class="($wire.deliveryMethod === 'standard') ? 'border-indigo-600' : ''">
                                         <div class="w-3 h-3 bg-indigo-600 rounded-full m-0.5"
@@ -199,7 +199,7 @@
                                     <p class="text-sm text-gray-600">1 business day</p>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <span class="font-semibold text-indigo-700">₱150</span>
+                                    <span class="font-semibold text-indigo-700">₱30</span>
                                     <div class="w-5 h-5 rounded-full border-2"
                                          x-bind:class="($wire.deliveryMethod === 'express' ) ? 'border-indigo-600' : ''">
                                         <div class="w-3 h-3 bg-indigo-600 rounded-full m-0.5"
@@ -219,7 +219,7 @@
                                     <p class="text-sm text-gray-600">Metro Manila only</p>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <span class="font-semibold text-indigo-700">₱200</span>
+                                    <span class="font-semibold text-indigo-700">₱50</span>
                                     <div class="w-5 h-5 rounded-full border-2"
                                          x-bind:class="($wire.deliveryMethod === 'same_day' ) ? 'border-indigo-600' : ''">
                                         <div class="w-3 h-3 bg-indigo-600 rounded-full m-0.5"

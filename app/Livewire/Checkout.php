@@ -43,17 +43,17 @@ class Checkout extends Component {
             $this->phoneNumber = $user->number ?? '';
 
             // If the user has previous orders, pre-fill with the latest shipping address
-            // $latestOrder = Order::where('user_id', $user->id)
-            //     ->latest()
-            //     ->first();
+            $latestOrder = Order::where('customer_id', $user->id)
+                ->latest()
+                ->first();
 
-            // if ($latestOrder) {
-            //     $this->address = $latestOrder->address ?? '';
-            //     $this->barangay = $latestOrder->barangay ?? '';
-            //     $this->city = $latestOrder->city ?? '';
-            //     $this->province = $latestOrder->province ?? '';
-            //     $this->postalCode = $latestOrder->postal_code ?? '';
-            // }
+            if ($latestOrder) {
+                $this->address = $latestOrder->address ?? '';
+                $this->barangay = $latestOrder->barangay ?? '';
+                $this->city = $latestOrder->city ?? '';
+                $this->province = $latestOrder->province ?? '';
+                $this->postalCode = $latestOrder->postal_code ?? '';
+            }
         }
 
         // Calculate initial totals
@@ -71,7 +71,7 @@ class Checkout extends Component {
             'standard' => 20,
             'express' => 30,
             'same_day' => 50,
-            default => 80
+            default => 20
         };
 
         $this->updateTotals();
@@ -132,7 +132,7 @@ class Checkout extends Component {
         try {
             // Create order
             $order = Order::create([
-                'user_id' => Auth::id(),
+                'customer_id' => Auth::id(),
                 'full_name' => $this->fullName,
                 'phone_number' => $this->phoneNumber,
                 'address' => $this->address,
@@ -150,33 +150,33 @@ class Checkout extends Component {
             ]);
 
             // Create order items
-            // foreach ($this->cartItems as $item) {
-            //     OrderItem::create([
-            //         'order_id' => $order->id,
-            //         'product_id' => $item['product_id'],
-            //         'quantity' => $item['order_quantity'],
-            //         'price' => $item['product_price'],
-            //         'total' => $item['product_price'] * $item['order_quantity']
-            //     ]);
+            foreach ($this->cartItems as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'order_quantity' => $item['order_quantity'],
+                    'product_price' => $item['product_price'],
+                ]);
 
-            // Update product quantity
-            // $product = Product::find($item['product_id']);
-            // if ($product) {
-            //     $product->quantity -= $item['order_quantity'];
-            //     $product->save();
-            // }
-            // }
+                // Update product quantity
+                $product = Product::find($item['product_id']);
+                if ($product) {
+                    $product->quantity -= $item['order_quantity'];
+                    $product->save();
+                }
+            }
 
             // Clear cart
             $this->clearAllCartItems();
 
             // Flash success message
-            session()->flash('message', 'Order placed successfully! Your order number is #' . $order->id);
+            session()->flash('message', 'Order placed successfully! Your order number is ' . $order->getDisplayNameAttribute());
 
             // Redirect to order confirmation page
-            return redirect()->route('orders.show', $order);
+            return redirect()->route('orders.index', $order);
+            
         } catch (\Exception $e) {
-            session()->flash('error', 'An error occurred while placing your order. Please try again.');
+            session()->flash('error', 'An error occurred while placing your order. Please try again.\n' . $e);
             return false;
         }
     }

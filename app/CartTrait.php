@@ -132,6 +132,7 @@ trait CartTrait
     }
 
     public function clearAllCartItems() {
+        $this->cartKey = 'cart.' . auth()->user()->id;
         session()->put($this->cartKey, []);
     }
 
