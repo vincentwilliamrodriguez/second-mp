@@ -40,7 +40,7 @@ export default {
 
     safelist: [
         {
-            pattern: new RegExp(`^(bg|hover:bg|focus:bg|active:bg)-(${baseColors.join('|')})-(700|800|900)$`)
+            pattern: new RegExp(`^(bg|hover:bg|focus:bg|active:bg)-(${baseColors.join('|')})-(100|200|300|400|500|600|700|800|900)$`)
         }
     ],
 

@@ -47,12 +47,13 @@
                     <tr class="hover:bg-blue-50 {{ $customClasses['tr'] }}">
                         @foreach ($columns as $colIndex => $column)
                             @php
+                                // dd($items);
                                 $cellContent = $cells[$rowIndex][$colIndex];
+
                                 $isLivewire = Str::contains($cellContent, 'livewire:');
                                 $componentName = '';
                                 $componentKey = '';
                                 $componentData = [];
-
                                 if ($isLivewire) {
                                     $component = explode(':', $cellContent)[1] ?? '';
                                     $componentName = preg_match('/^([\w\-]+)/', $component, $matches) ? $matches[1] : '';

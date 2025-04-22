@@ -20,7 +20,6 @@
             <x-validation-errors class=" p-4"></x-validation-errors>
         </div>
 
-        <!-- Accordion Steps -->
         <div class="flex flex-col gap-4" x-data="{
             activeSection: 'shipping',
             isCompleted: {
@@ -36,9 +35,8 @@
                 this.activeSection = nextSection;
             }
         }">
-            <!-- Shipping Address Section -->
+            <!-- Shipping Address -->
             <div class="border border-indigo-200 rounded-lg overflow-hidden">
-                <!-- Section Header -->
                 <div class="bg-indigo-50 p-4 flex justify-between items-center cursor-pointer"
                      x-on:click="toggleSection('shipping')"
                      x-bind:class="(activeSection === 'shipping' || isCompleted.shipping) ? 'bg-indigo-100' : ''">
@@ -58,7 +56,6 @@
                                             x-bind:class="(activeSection === 'shipping') ? 'rotate-180' : ''" />
                 </div>
 
-                <!-- Section Content -->
                 <div class="p-6" x-show="activeSection === 'shipping'" x-transition>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
@@ -143,9 +140,8 @@
                 </div>
             </div>
 
-            <!-- Delivery Method Section -->
+            <!-- Delivery Method -->
             <div class="border border-indigo-200 rounded-lg overflow-hidden">
-                <!-- Section Header -->
                 <div class="bg-indigo-50 p-4 flex justify-between items-center cursor-pointer"
                      x-on:click="toggleSection('delivery')"
                      x-bind:class="(activeSection === 'delivery' || isCompleted.delivery) ? 'bg-indigo-100' : ''" x-bind:class="(!isCompleted.shipping) ? 'opacity-75' : ''">
@@ -166,7 +162,6 @@
                                             x-bind:class="(activeSection === 'delivery') ? 'rotate-180' : ''" />
                 </div>
 
-                <!-- Section Content -->
                 <div class="p-6" x-show="activeSection === 'delivery'" x-transition>
                     <div class="flex flex-col gap-4">
                         <!-- Standard Delivery -->
@@ -311,7 +306,6 @@
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
         <div class="flex justify-between mt-8">
             <a href="{{ route('cart') }}">
                 <flux:button variant="subtle" icon="arrow-left">

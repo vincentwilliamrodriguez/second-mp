@@ -16,8 +16,13 @@ class OrderItemFactory extends Factory {
      * @return array<string, mixed>
      */
     public function definition(): array {
+        $product = Product::find($this->faker->randomElement(Product::pluck('id')));
 
-        $product = Product::inRandomOrder()->first();
+        if (!$product) {
+            $product = Product::inRandomOrder()->first();
+        }
+        
+
         $status = $this->faker->randomElement(['pending', 'accepted', 'shipped', 'delivered', 'cancelled']);
 
         $datePlaced = Carbon::now()->subDays(rand(15, 40));

@@ -4,6 +4,7 @@
 {{-- The PHP code below defines the parameters of the user's orders tables --}}
 
 @php
+
     $baseTableWidths = [
         'Product' => '220px',
         'Status' => '120px',
@@ -90,67 +91,36 @@
 
     <x-validation-errors class="mb-4" />
 
+    <h2 class="font-black text-3xl mb-4 mt-4">
+        {{ match (auth()->user()->getRoleNames()->first()) {
+            'customer' => 'My Orders',
+            'seller' => 'Pending Orders',
+            'admin' => 'All Orders',
+        } }}
+    </h2>
+
+    <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-80">
+        <livewire:table
+            wire:key="{{ now() }}"
+            :items="collect($orders)['data']"
+            :$columns
+            :$widths
+            :$cells
+            :$cellData
+            :$columnsToProperty
+            :$columnsWithSorting
+            :$sortBy
+            :$sortOrder
+            :$noDataText
+            :$customClasses
+        >
+        </livewire:table>
+    </div>
 
 
-    @role('customer')
-        @php
-            $unplacedOrders = $orders->filter(fn($order) => !$order->is_placed);
-            $placedOrders = $orders->filter(fn($order) => $order->is_placed);
-        @endphp
-
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="font-black text-3xl">My Shopping Cart</h2>
-            {{-- <form action="{{ route('orders.place-all') }}" method="POST" class="inline">
-                @csrf
-                <x-button type="submit" :iconSize="'w-5 h-5'">
-                    <x-slot name="icon"><x-eos-shopping-cart-o /></x-slot>
-                    Place Orders
-                </x-button>
-            </form> --}}
+    @if (!$orders->isEmpty())
+        <div class="mt-8">
+            {{ $orders->links(data: ['scrollTo' => false]) }}
         </div>
-
-        {{-- <x-table
-            :items="$unplacedOrders"
-            :columns="$customerTableColumns"
-            :widths="$baseTableWidths"
-        /> --}}
-
-        <br/>
-
-        <h2 class="font-black text-3xl mb-4 mt-4">My Orders</h2>
-        {{-- <x-table
-            :items="$placedOrders"
-            :columns="$customerTableColumns"
-            :widths="$baseTableWidths"
-        /> --}}
-    @endrole
-
-    @role('seller')
-        <h2 class="font-black text-3xl mb-2">Pending Order Requests</h2>
-        <x-table
-            :items="$orders->filter(fn($order) => $order->is_placed && $order->status === 'pending')"
-            :columns="$sellerTableColumns"
-            :widths="$baseTableWidths"
-        />
-
-        <br/>
-
-        <h2 class="font-black text-3xl mb-2">Past Order Requests</h2>
-        <x-table
-            :items="$orders->filter(fn($order) => $order->is_placed && $order->status !== 'pending')"
-            :columns="$sellerTableColumns"
-            :widths="$baseTableWidths"
-        />
-    @endrole
-
-    @role('admin')
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="font-black text-3xl">All Orders</h2>
-        </div>
-        <x-table
-            :items="$orders"
-            :columns="$adminTableColumns"
-            :widths="$baseTableWidths"
-        />
-    @endrole
+    @endif
 </div>

@@ -13,7 +13,6 @@ use Livewire\Component;
 class Checkout extends Component {
     use CartTrait;
 
-    // Shipping Address Fields
     public string $fullName = '';
     public string $phoneNumber = '';
     public string $address = '';
@@ -22,27 +21,22 @@ class Checkout extends Component {
     public string $province = '';
     public string $postalCode = '';
 
-    // Delivery Method
     public string $deliveryMethod = 'standard';
 
-    // Payment Method
     public string $paymentMethod = 'cod';
 
-    // Cart Items
     public array $cartItems = [];
 
 
     public function mount() {
-        // Get user's cart items
         $this->cartItems = $this->getSortedCart();
 
-        // Pre-fill shipping address with user details if available
+        // Pre-filling
         $user = Auth::user();
         if ($user) {
             $this->fullName = $user->name ?? '';
             $this->phoneNumber = $user->number ?? '';
 
-            // If the user has previous orders, pre-fill with the latest shipping address
             $latestOrder = Order::where('customer_id', $user->id)
                 ->latest()
                 ->first();
@@ -56,7 +50,6 @@ class Checkout extends Component {
             }
         }
 
-        // Calculate initial totals
         $this->calculateTotals();
     }
 
@@ -65,8 +58,6 @@ class Checkout extends Component {
     }
 
     public function calculateTotals() {
-
-        // Set shipping fee based on delivery method
         $this->shippingFee = match ($this->deliveryMethod) {
             'standard' => 20,
             'express' => 30,
@@ -115,7 +106,6 @@ class Checkout extends Component {
     }
 
     public function placeOrder() {
-        // Validate all sections
         $this->validateShippingAddress();
         $this->validateDeliveryMethod();
 
@@ -123,14 +113,12 @@ class Checkout extends Component {
             'paymentMethod' => ['required', 'string', 'in:cod,e_wallet'],
         ]);
 
-        // Check if cart is not empty
         if (empty($this->cartItems)) {
             session()->flash('error', 'Your cart is empty. Please add items to your cart before checkout.');
             return redirect()->route('cart');
         }
 
         try {
-            // Create order
             $order = Order::create([
                 'customer_id' => Auth::id(),
                 'full_name' => $this->fullName,
@@ -159,6 +147,7 @@ class Checkout extends Component {
                 ]);
 
                 // Update product quantity
+
                 $product = Product::find($item['product_id']);
                 if ($product) {
                     $product->quantity -= $item['order_quantity'];
@@ -166,15 +155,13 @@ class Checkout extends Component {
                 }
             }
 
-            // Clear cart
             $this->clearAllCartItems();
 
-            // Flash success message
-            session()->flash('message', 'Order placed successfully! Your order number is ' . $order->getDisplayNameAttribute());
+            $order->refresh();
+            session()->flash('message', 'Order placed successfully! Your order number is ' . $order->display_name . '.');
 
-            // Redirect to order confirmation page
             return redirect()->route('orders.index', $order);
-            
+
         } catch (\Exception $e) {
             session()->flash('error', 'An error occurred while placing your order. Please try again.\n' . $e);
             return false;

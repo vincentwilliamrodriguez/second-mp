@@ -121,7 +121,7 @@ HTML;
     @endphp
 
 
-    <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-90">
+    <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-80">
         <livewire:table
             wire:key="{{ now() }}"
             :items="$items"

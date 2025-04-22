@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,12 +16,27 @@ class OrderSeeder extends Seeder {
         $ordersNum = rand(2, 4);
         $orderItemsNum = rand(1, 7);
 
+        $allProductIds = Product::pluck('id')->toArray();
+
         foreach ($customers as $customer) {
             for ($i = 0; $i < $ordersNum; $i++) {
-                $order = Order::factory()->create(['customer_id' => $customer->id, 'full_name' => $customer->name]);
+                $order = Order::factory()->create([
+                    'customer_id' => $customer->id,
+                    'full_name' => $customer->name
+                ]);
 
-                for ($j = 0; $j < $orderItemsNum; $j++) {
-                    OrderItem::factory()->create(['order_id' => $order->id]);
+
+                $availableProductIds = $allProductIds;
+
+                for ($j = 0; $j < min($orderItemsNum, count($availableProductIds)); $j++) {
+                    $randomKey = array_rand($availableProductIds);
+                    $productId = $availableProductIds[$randomKey];
+                    unset($availableProductIds[$randomKey]);
+
+                    OrderItem::factory()->create([
+                        'order_id' => $order->id,
+                        'product_id' => $productId,
+                    ]);
                 }
             }
         }

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('display_name')
+                ->storedAs("CONCAT('ORD-', UPPER(LEFT(id, 8)))");
             $table->foreignId('customer_id')
                 ->constrained('users')
                 ->onDelete('cascade');

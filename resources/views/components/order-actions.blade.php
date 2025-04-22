@@ -1,6 +1,50 @@
 @props(['order'])
 
-<div class="flex flex-col gap-2 justify-center items-center">
+{{-- This is the new code for managing orders --}}
+<div class='flex flex-col justify-center items-center gap-2'>
+    <flux:button variant='primary' icon='eye' size='xs' class="!h-min !text-blue-600 hover:!text-blue-900 !px-2 !py-1 !bg-blue-100 !hover:bg-blue-200 rounded-md text-xs flex gap-1 items-center transition-all"
+        wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Show', orderId: '{{ $order->id }}' })"
+        x-on:click.prevent="$flux.modal('orders-child').show()"
+    >
+        View
+    </flux:button>
+
+
+    @hasanyrole(['customer'])
+        <flux:button variant='primary' icon='x-mark' size='xs' class="!h-min !text-red-600 hover:!text-red-900 !px-2 !py-1 !bg-red-100 !hover:bg-red-200 rounded-md text-xs flex gap-1 items-center transition-all"
+            wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Cancel', orderId: '{{ $order->id }}' })"
+            x-on:click.prevent="$flux.modal('orders-child').show()"
+        >
+            Cancel
+        </flux:button>
+    @endhasanyrole
+
+
+    @hasanyrole(['seller', 'admin'])
+        <flux:button variant='primary' icon='pencil-square' size='xs' class="!h-min !text-amber-600 hover:!text-amber-900 !px-2 !py-1 !bg-amber-100 !hover:bg-amber-200 rounded-md text-xs flex gap-1 items-center transition-all"
+            wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Edit', orderId: '{{ $order->id }}' })"
+            x-on:click.prevent="$flux.modal('orders-child').show()"
+        >
+            Manage
+        </flux:button>
+    @endhasanyrole
+
+
+    @role('admin')
+        <flux:button variant='primary' icon='trash' size='xs' class="!h-min !text-red-600 hover:!text-red-900 !px-2 !py-1 !bg-red-100 !hover:bg-red-200 rounded-md text-xs flex gap-1 items-center transition-all"
+            wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Delete', orderId: '{{ $order->id }}' })"
+            x-on:click.prevent="$flux.modal('orders-child').show()"
+        >
+            Delete
+        </flux:button>
+    @endrole
+</div>
+
+
+
+{{-- This is the old code for managing orders --}}
+
+{{-- <div class="flex flex-col gap-2 justify-center items-center">
     @can('update-orders') @unlessrole('customer')
         @if ($order->is_placed && $order->status === 'pending')
             <form action="{{ route('orders.update', $order) }}" method='POST' class='inline z-20 relative pointer-events-auto'>
@@ -54,4 +98,4 @@
             </button>
         </form>
     @endcan
-</div>
+</div> --}}
