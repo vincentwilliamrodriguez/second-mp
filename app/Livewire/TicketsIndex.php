@@ -12,6 +12,7 @@ class TicketsIndex extends Component
     public $archivedTickets;
     public $activeTab = 'list';
     public $replies = [];
+    public $search = '';
 
     public function mount()
     {

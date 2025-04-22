@@ -31,11 +31,6 @@
                         class="w-full py-2 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black">
                 </div>
                 <div class="mb-5">
-                    <label for="user_email" class="block text-gray-700 font-medium mb-2">Email:</label>
-                    <input wire:model="user_email" type="email" id="user_email" name="user_email" placeholder="Your Email" required
-                        class="w-full py-2 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black">
-                </div>
-                <div class="mb-5">
                     <label for="user_phone" class="block text-gray-700 font-medium mb-2">Phone Number:</label>
                     <input wire:model="user_phone" type="text" id="user_phone" name="user_phone" placeholder="Your Phone Number"
                         class="w-full py-2 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black">
