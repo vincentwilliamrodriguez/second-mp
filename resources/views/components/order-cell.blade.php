@@ -1,7 +1,7 @@
 @props(['order'])
 
-<div class='flex flex-col justify-center items-start'>
-    <h3 class='font-black text-lg hover:cursor-pointer hover:underline'>{{$order->display_name}}</h3>
+<div class='flex flex-col justify-center items-start hover:cursor-pointer'>
+    <h3 class='font-black text-lg hover:underline hover:cursor-pointer'>{{$order->display_name}}</h3>
     <ul class='pl-2'>
         @foreach ($order->orderItemsWrapper() as $orderItem)
             @php

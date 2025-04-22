@@ -243,7 +243,7 @@ HTML;
 
                     case 'Date Placed':
                     case 'Date Updated':
-                        $datum = $order->{$this->columnsToProperty[$column]};
+                        $datum = $order->{$this->columnsToProperty[$column]}->timezone('Asia/Manila');
                         $this->cells[$rowIndex][] = <<<HTML
 
                         <div class='flex flex-col items-center'>

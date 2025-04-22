@@ -93,13 +93,17 @@
                 </flux:button>
 
                 <flux:menu class="shadow-xl">
-                    <flux:menu.radio.group wire:model.live='statusFilter'>
+                    <flux:menu.radio.group wire:model.live='statusFilter' x-data="{oldStatusFilter: ''}">
                         @foreach ($statusFilterValues as $filterName => $filterData)
                             <flux:menu.radio
-                                :class="'hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden '.(($statusFilter ===
-                                    $filterName) ? '!text-blue-500' : '')"
+                                class="hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden" x-bind:class="($wire.statusFilter === '{{ $filterName }}') ? '!text-blue-500' : ''"
                                 :value='$filterName' :icon:trailing='$filterData[1]'
-                                x-on:click="if ({{ $statusFilter === $filterName }}) { $wire.set('statusFilter', '') }">
+                                x-on:click="if ($wire.statusFilter === oldStatusFilter) {
+                                                oldStatusFilter = '';
+                                                $wire.set('statusFilter', '');
+                                            } else {
+                                                oldStatusFilter = $wire.statusFilter;
+                                            }">
                                 {{ $filterData[0] }}
                             </flux:menu.radio>
                         @endforeach
@@ -113,7 +117,7 @@
         </div>
     </div>
 
-    <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-80">
+    <div class="transition-all" wire:loading.class="pointer-events-none select-none animate-pulse">
         <livewire:table
             wire:key="{{ now() }}"
             :items="collect($orders)['data']"

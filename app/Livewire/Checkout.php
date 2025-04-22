@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -68,8 +69,8 @@ class Checkout extends Component {
         $this->updateTotals();
     }
 
-    public function validateShippingAddress() {
-        $validated = $this->validate([
+    public function rules() {
+        return [
             'fullName' => ['required', 'string', 'max:255'],
             'phoneNumber' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
             'address' => ['required', 'string', 'max:255'],
@@ -77,24 +78,59 @@ class Checkout extends Component {
             'city' => ['required', 'string', 'max:100'],
             'province' => ['required', 'string', 'max:100'],
             'postalCode' => ['required', 'string', 'regex:/^\d{4}$/'],
-        ]);
+            'paymentMethod' => ['required', 'string', 'in:cod,e_wallet'],
+            'deliveryMethod' => [
+                'required',
+                'string',
+                'in:standard,express,same_day',
+                function ($attribute, $value, $fail) {
+                    if ($value === 'same_day') {
+                        $allowedProvinces = [
+                            'Metro Manila',
+                            'NCR',
+                            'National Capital Region',
+                        ];
+
+                        if (!in_array(trim(strtolower($this->province)), array_map('strtolower', $allowedProvinces))) {
+                            $fail("Same-day delivery is only available within Metro Manila.");
+                        }
+                    }
+                }
+            ],
+        ];
+    }
+
+    public function validateShippingAddress() {
+        $this->validate(Arr::only($this->rules(), [
+            'fullName',
+            'phoneNumber',
+            'address',
+            'barangay',
+            'city',
+            'province',
+            'postalCode',
+        ]));
 
         return true;
     }
 
-    public function validateDeliveryMethod() {
-        $this->validate([
-            'deliveryMethod' => ['required', 'string', 'in:standard,express,same_day'],
-        ]);
 
-        // Re-calculate totals when delivery method changes
+    public function validateDeliveryMethod() {
+        $this->validate(Arr::only($this->rules(), [
+            'deliveryMethod',
+        ]));
+
         $this->calculateTotals();
 
         return true;
     }
 
     public function updated($propertyName) {
-        // Recalculate totals when delivery method is updated
+        if (in_array($propertyName, ['fullName', 'phoneNumber', 'address', 'barangay', 'city', 'province', 'postalCode'])) {
+            $this->validateOnly($propertyName);
+        }
+
+
         if ($propertyName === 'deliveryMethod') {
             $this->calculateTotals();
         }
@@ -154,7 +190,6 @@ class Checkout extends Component {
             session()->flash('message', 'Order placed successfully! Your order number is ' . $order->display_name . '.');
 
             return redirect()->route('orders.index', $order);
-
         } catch (\Exception $e) {
             session()->flash('error', 'An error occurred while placing your order. Please try again.\n' . $e);
             return false;

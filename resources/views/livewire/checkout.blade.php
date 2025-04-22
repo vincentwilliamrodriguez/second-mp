@@ -60,7 +60,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Full Name -->
                         <flux:input
-                            wire:model="fullName"
+                            wire:model.live.debounce.500ms="fullName"
                             :label="__('Full Name')"
                             type="text"
                             required
@@ -70,7 +70,7 @@
 
                         <!-- Phone Number -->
                         <flux:input
-                            wire:model="phoneNumber"
+                            wire:model.live.debounce.500ms="phoneNumber"
                             :label="__('Phone Number')"
                             type="tel"
                             required
@@ -81,7 +81,7 @@
                         <!-- Complete Address -->
                         <div class="md:col-span-2">
                             <flux:input
-                                wire:model="address"
+                                wire:model.live.debounce.500ms="address"
                                 :label="__('Complete Address')"
                                 type="text"
                                 required
@@ -91,7 +91,7 @@
 
                         <!-- Barangay -->
                         <flux:input
-                            wire:model="barangay"
+                            wire:model.live.debounce.500ms="barangay"
                             :label="__('Barangay')"
                             type="text"
                             required
@@ -100,7 +100,7 @@
 
                         <!-- City/Municipality -->
                         <flux:input
-                            wire:model="city"
+                            wire:model.live.debounce.500ms="city"
                             :label="__('City/Municipality')"
                             type="text"
                             required
@@ -109,7 +109,7 @@
 
                         <!-- Province -->
                         <flux:input
-                            wire:model="province"
+                            wire:model.live.debounce.500ms="province"
                             :label="__('Province')"
                             type="text"
                             required
@@ -118,7 +118,7 @@
 
                         <!-- Postal Code -->
                         <flux:input
-                            wire:model="postalCode"
+                            wire:model.live.debounce.500ms="postalCode"
                             :label="__('Postal Code')"
                             type="text"
                             required
@@ -211,7 +211,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <h4 class="font-medium text-gray-900">Same-day Delivery</h4>
-                                    <p class="text-sm text-gray-600">Metro Manila only</p>
+                                    <p class="text-sm text-gray-600">Within the day</p>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <span class="font-semibold text-indigo-700">₱50</span>

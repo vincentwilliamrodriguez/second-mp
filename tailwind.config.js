@@ -54,6 +54,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            keyframes: {
+                pulse: {
+                    '50%': { opacity: '0.8' },
+                },
+            },
         },
     },
 
