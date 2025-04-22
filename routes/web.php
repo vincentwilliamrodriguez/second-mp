@@ -11,9 +11,11 @@ use App\Livewire\Products\Show;
 use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
 use App\Livewire\TicketsIndex;
+use App\Livewire\TicketsCreate;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+
 
 Route::get('/', function () {
     return auth()->check()
@@ -27,7 +29,12 @@ Route::get('/dashboard', function () {
         : redirect()->route('products.index');
 })->name('dashboard');
 
-Route::get('/tickets', 'TicketController@tickets.index')->middleware('role:support,admin');
+Route::get('/tickets', function () {
+    return view('tickets.index');
+})->middleware('auth')->name('tickets.index');
+
+// Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -105,10 +112,6 @@ Route::middleware([
         ->middleware('permission:read-orders')
         ->name('orders.index');
 
-    Route::get('tickets', TicketsIndex::class)
-        ->middleware('permission:read-tickets')
-        ->name('tickets.index');
-
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
     });
@@ -124,8 +127,6 @@ Route::middleware([
 
     Route::resource('tickets', TicketController::class)->only(['destroy'])
         ->middleware('permission:delete-tickets');
-
-
 
     // These are newly added routes for the Shopping Cart and Checkout pages
 

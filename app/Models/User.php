@@ -100,4 +100,10 @@ class User extends Authenticatable
         return $initials;
     }
 
+    public function ticketReplies()
+    {
+        return $this->hasMany(TicketReply::class);
+    }
+
+
 }
