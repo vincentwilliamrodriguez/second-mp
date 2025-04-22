@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-tab>
     @role('support|admin')
         <livewire:tickets-index />
     @endrole
@@ -6,7 +6,7 @@
     @role('customer|seller')
         <livewire:tickets-create />
     @endrole
-</x-app-layout>
+</x-tab>
 
 {{-- This is the old index file --}}
 

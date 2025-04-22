@@ -70,8 +70,7 @@
 
                 @forelse($userTickets as $ticket)
                     <div class="border rounded-lg p-4 mb-3 shadow-sm">
-                        <p class="text-gray-800 font-semibold">Ticket #: {{ $ticket->ticket_number }}</p>
-                        <p class="text-sm text-gray-600">Status: {{ ucfirst($ticket->status) }}</p>
+                        <p class="text-gray-800 font-semibold">Ticket Number: {{ $ticket->ticket_number }}</p>
                         <p class="text-sm text-gray-600 mt-1">Submitted: {{ $ticket->created_at->format('F j, Y g:i A') }}</p>
                         <p class="text-gray-700 mt-2">{{ $ticket->user_description }}</p>
                     </div>
