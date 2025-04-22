@@ -53,8 +53,39 @@
                         Submit Ticket
                     </button>
                 </div>
+
+                <div class="text-center mt-4">
+                    <div class="inline-block bg-white border border-blue-600 rounded-lg px-6 py-4">
+                        <button wire:click="showUserTickets"
+                            type="button"
+                            class="text-blue-600 font-semibold hover:underline">
+                            View My Submitted Tickets
+                        </button>
+                    </div>
+                </div>
             </form>
         @endif
     </div>
+
+    @if($showTicketsModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-[700px] max-h-[80vh] overflow-y-auto relative">
+                <button wire:click="closeModal" class="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+                <h2 class="text-2xl font-bold mb-4 text-center text-blue-600">Your Submitted Tickets</h2>
+
+                @forelse($userTickets as $ticket)
+                    <div class="border rounded-lg p-4 mb-3 shadow-sm">
+                        <p class="text-gray-800 font-semibold">Ticket #: {{ $ticket->ticket_number }}</p>
+                        <p class="text-sm text-gray-600">Status: {{ ucfirst($ticket->status) }}</p>
+                        <p class="text-sm text-gray-600 mt-1">Submitted: {{ $ticket->created_at->format('F j, Y g:i A') }}</p>
+                        <p class="text-gray-700 mt-2">{{ $ticket->user_description }}</p>
+                    </div>
+                @empty
+                    <p class="text-center text-gray-600">No previous tickets found for this email.</p>
+                @endforelse
+            </div>
+        </div>
+    @endif
 </div>
+
 

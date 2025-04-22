@@ -11,6 +11,8 @@ class TicketsCreate extends Component
     public $user_name, $user_email, $user_phone, $user_description;
     public $ticket_submitted = false;
     public $ticket_number;
+    public $showTicketsModal = false;
+    public $userTickets = [];
 
     protected $rules = [
         'user_name' => 'required|string|max:255',
@@ -54,4 +56,19 @@ class TicketsCreate extends Component
             'ticket_number',
         ]);
     }
+
+    public function showUserTickets()
+    {
+        $this->validateOnly('user_email');
+        $this->userTickets = Ticket::where('user_email', $this->user_email)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+        $this->showTicketsModal = true;
+    }
+
+    public function closeModal()
+    {
+        $this->showTicketsModal = false;
+    }
+
 }
