@@ -2,7 +2,7 @@
     @role('support|admin')
         <livewire:tickets-index />
     @endrole
-    
+
     @role('customer|seller')
         <livewire:tickets-create />
     @endrole

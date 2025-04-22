@@ -33,6 +33,9 @@ Route::get('/tickets', function () {
     return view('tickets.index');
 })->middleware('auth')->name('tickets.index');
 
+// Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

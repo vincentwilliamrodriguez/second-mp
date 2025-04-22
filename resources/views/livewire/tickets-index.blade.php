@@ -12,7 +12,6 @@
         <div class="bg-white shadow rounded-lg overflow-x-auto">
             <div class="bg-blue-600 text-white px-6 py-4">
                 <h3 class="text-lg font-bold">Support Tickets</h3>
-                <h4 class="text-sm">Publicly visible to all admins/support staff</h4>
             </div>
             <table class="w-full text-sm">
                 <thead class="bg-gray-100 text-left">
@@ -114,5 +113,4 @@
             </table>
         </div>
     @endif
-
 </div>
