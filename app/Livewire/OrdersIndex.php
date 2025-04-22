@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Order;
 use App\Models\Product;
 use Dom\HTMLElement;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
@@ -14,12 +15,43 @@ class OrdersIndex extends Component
     use WithPagination, WithoutUrlPagination;
 
     // Filter and sorting
+    public $search;
+    public $statusFilter;
+
     public $sortBy;
     public $sortOrder;
 
-    public $search;
 
-    public $status;
+    // Filter and sorting config
+    public $sortValues = [
+        'display_name' => [
+            'Order Name',
+            'case-sensitive',
+        ],
+        'created_at' => [
+            'Date Placed',
+            'clock',
+        ],
+        'updated_at' => [
+            'Date Updated',
+            'arrow-path',
+        ],
+    ];
+
+    public $statusFilterValues = [
+        'pending' => [
+            'Pending',
+            'question-mark-circle'
+        ],
+        'in_progress' => [
+            'In Progress',
+            'clock'
+        ],
+        'completed' => [
+            'Completed',
+            'check-badge'
+        ],
+    ];
 
 
     // Table data
@@ -34,7 +66,7 @@ class OrdersIndex extends Component
 
 
     public function render() {
-        $orders = $this->fetchOrders()->paginate(5);
+        $orders = $this->fetchOrders();
         $this->updateTableData($orders);
 
         return view('livewire.orders-index', compact('orders'));
@@ -61,9 +93,7 @@ class OrdersIndex extends Component
         $ordersQuery = Order::query()->when($mainFilter, $mainFilter);
 
 
-
         // Search
-
         if ($this->search) {
             $ordersQuery = $ordersQuery->where(function ($query) {
                 $query
@@ -85,10 +115,7 @@ class OrdersIndex extends Component
         }
 
 
-
-
         // Sorting
-
         if ($this->sortBy && $this->sortOrder) {
             $ordersQuery = $ordersQuery->orderBy($this->sortBy, $this->sortOrder);
         } else {
@@ -96,7 +123,26 @@ class OrdersIndex extends Component
         }
 
 
-        return $ordersQuery;
+
+        $orders = $ordersQuery->get();
+
+        // Filter based on status
+        if ($this->statusFilter) {
+            $orders = $orders->filter(fn ($order) => $order->overall_status === $this->statusFilter);
+        }
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 5;
+
+        $orders = new LengthAwarePaginator(
+            $orders->forPage($currentPage, $perPage)->values(),
+            $orders->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return $orders;
     }
 
 
@@ -195,12 +241,18 @@ HTML;
                         $this->cells[$rowIndex][] = "<div class='flex justify-center'><div class='rounded-full px-2 py-1 text-xs " . $statusColor . "'>" . ucwords(str_replace('_', ' ', $status)) . "</div></div>";
                         break;
 
-
                     case 'Date Placed':
                     case 'Date Updated':
                         $datum = $order->{$this->columnsToProperty[$column]};
-                        $this->cells[$rowIndex][] ="<div class='flex justify-center'>" . $datum->format('F j, Y') . "</div>";
+                        $this->cells[$rowIndex][] = <<<HTML
+
+                        <div class='flex flex-col items-center'>
+                            <span> {$datum->format('F j, Y')} </span>
+                            <span class='text-xs text-zinc-400'> {$datum->format('g:i A')} </span>
+                        </div>
+HTML;
                         break;
+
 
                     case 'Actions':
                         $this->cells[$rowIndex][] = view('components.order-actions', compact('order'))->render();

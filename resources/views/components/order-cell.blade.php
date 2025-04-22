@@ -6,7 +6,7 @@
         @foreach ($order->orderItemsWrapper() as $orderItem)
             @php
                 $statusColor = match ($orderItem->status) {
-                    'pending' => 'bg-orange-300',
+                    'pending' => 'bg-orange-400',
                     'accepted' => 'bg-yellow-300',
                     'shipped' => 'bg-blue-400',
                     'delivered' => 'bg-green-400',

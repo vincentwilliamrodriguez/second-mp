@@ -3,79 +3,6 @@
 
 {{-- The PHP code below defines the parameters of the user's orders tables --}}
 
-@php
-
-    $baseTableWidths = [
-        'Product' => '220px',
-        'Status' => '120px',
-        'Actions' => '150px',
-    ];
-
-    $baseTableColumns = [
-        // 'Product' => function($order) {
-        //     $product = $order->product;
-
-        //     return view('components.orders-product-cell', compact('order', 'product'))->render();
-        // },
-        // 'Price per Piece' => function($order) {
-        //     return Number::currency($order->product->price, 'PHP');
-        // },
-        // 'Quantity' => function($order) {
-        //     $product = $order->product;
-        //     $res = '';
-
-        //     if (!$order->is_placed)
-        //     {
-        //         $init = strval($order->quantity);
-        //         $order_id = $order->id;
-        //         $res = view('components.counter-orders', compact(['product', 'init', 'order_id']))->render();
-        //     } else {
-        //         $res = $order->quantity;
-        //     }
-
-        //     return "<div class='flex justify-center w-[100px]'>{$res}</div>";
-        // },
-        // 'Total' => function($order) {
-        //     return Number::currency($order->product->price * $order->quantity, 'PHP');
-        // },
-        // 'Date' => function($order) {
-        //     return $order->date_placed->format('F j, Y');
-        // },
-        // 'Status' => function($order) {
-        //     $colors = [
-        //         'pending' => 'yellow',
-        //         'completed' => 'green',
-        //         'cancelled' => 'red',
-        //     ];
-        //     $color = $colors[$order->status] ?? 'gray';
-
-        //     return "<div class='flex justify-center'><span class='px-2 py-1 text-xs font-semibold rounded-full bg-{$color}-100 text-{$color}-800'>{$order->status}</span></div>";
-        // },
-        // 'Actions' => function($order) {
-        //     return view('components.order-actions', compact('order'))->render();
-        // }
-    ];
-
-    $customerTableColumns = $baseTableColumns;
-
-    $sellerTableColumns = [];
-
-    foreach ($baseTableColumns as $key => $value) {
-        $sellerTableColumns[$key] = $value;
-
-        if ($key === 'Product') {
-            // $sellerTableColumns['Customer'] = function($order) {
-            //     return $order->customer->username;
-            // };
-        }
-    }
-
-
-    $adminTableColumns = $sellerTableColumns;
-
-@endphp
-
-
 <div class="flex flex-col p-8 w-[90vw] max-w-[1300px]">
     @if(session('message'))
         <div class="mb-4 rounded bg-green-100 p-4 text-green-700">
@@ -91,13 +18,100 @@
 
     <x-validation-errors class="mb-4" />
 
-    <h2 class="font-black text-3xl mb-4 mt-4">
+    <h2 class="font-black text-3xl mb-6">
         {{ match (auth()->user()->getRoleNames()->first()) {
             'customer' => 'My Orders',
             'seller' => 'Pending Orders',
             'admin' => 'All Orders',
         } }}
     </h2>
+
+
+    {{-- Search, Sort, and Filter using Livewire --}}
+    <div class="flex gap-6 mb-4">
+        @php
+            $searchPlaceholder =
+            match(auth()->user()->getRoleNames()->first()){
+                                    'customer' => 'Search Product, Seller, etc...',
+                                    'seller' => 'Search Product, Customer, etc...',
+                                    'admin' => 'Search Product, Seller, Customer, etc...',
+                                };
+        @endphp
+
+
+        <flux:input class="max-w-80 mr-10" wire:model.live='search' icon:trailing='magnifying-glass' type='text'
+            :placeholder='$searchPlaceholder' autocomplete='search' autofocus></flux:input>
+
+        <div class="flex items-center basis-[9.5rem]">
+            <flux:button variant='subtle' size='sm' class="!px-1"
+                x-on:click=" $wire.set('sortOrder', ($wire.sortOrder === 'asc') ? 'desc' : 'asc')"
+                x-bind:disabled="$wire.sortOrder === ''"
+                x-on:sortchanged.window="$wire.set('sortBy', $event.detail.sortBy);
+                                         $wire.set('sortOrder', $event.detail.sortOrder);"
+            >
+                <flux:icon.arrow-long-up x-show="$wire.sortOrder === 'asc'" x-cloak />
+                <flux:icon.arrow-long-down x-show="$wire.sortOrder === 'desc'" x-cloak />
+                <flux:icon.arrows-up-down x-show="!['asc', 'desc'].includes($wire.sortOrder)" x-cloak />
+            </flux:button>
+
+            <flux:dropdown>
+                <flux:button variant='subtle' icon:trailing="chevron-down" size='sm' class="pl-2">
+                    <span class="!select-none"
+                        x-text='$wire.sortBy ? $wire.sortValues[$wire.sortBy][0] : "Sort by"'></span>
+                </flux:button>
+
+                <flux:menu class="shadow-xl">
+                    <flux:menu.radio.group wire:model.live='sortBy'>
+                        @foreach ($sortValues as $sortName => $sortData)
+                            <flux:menu.radio
+                                :class="'hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden '.(($sortBy ===
+                                    $sortName) ? '!text-blue-500' : '')"
+                                :value='$sortName' :icon:trailing='$sortData[1]'
+                                x-on:click="$wire.sortOrder = 'asc';">
+                                {{ $sortData[0] }}
+                            </flux:menu.radio>
+                        @endforeach
+                </flux:menu>
+                </flux:menu>
+            </flux:dropdown>
+
+            <div wire:loading.delay wire:target="sortBy, sortOrder" class="inline-block">
+                <flux:icon.arrow-path class="w-4 h-4 animate-spin text-zinc-400" />
+            </div>
+        </div>
+
+
+        <div class="flex items-center basis-40">
+            <flux:button variant='subtle' size='sm' class="!px-1" disabled>
+                <flux:icon.funnel />
+            </flux:button>
+
+            <flux:dropdown>
+                <flux:button variant='subtle' icon:trailing="chevron-down" size='sm' class="pl-2">
+                    <span class="!select-none"
+                        x-text='$wire.statusFilter ? $wire.statusFilterValues[$wire.statusFilter][0] : "Filter Status"'></span>
+                </flux:button>
+
+                <flux:menu class="shadow-xl">
+                    <flux:menu.radio.group wire:model.live='statusFilter'>
+                        @foreach ($statusFilterValues as $filterName => $filterData)
+                            <flux:menu.radio
+                                :class="'hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden '.(($statusFilter ===
+                                    $filterName) ? '!text-blue-500' : '')"
+                                :value='$filterName' :icon:trailing='$filterData[1]'
+                                x-on:click="if ({{ $statusFilter === $filterName }}) { $wire.set('statusFilter', '') }">
+                                {{ $filterData[0] }}
+                            </flux:menu.radio>
+                        @endforeach
+                </flux:menu>
+                </flux:menu>
+            </flux:dropdown>
+
+            <div wire:loading.delay wire:target="statusFilter" class="inline-block">
+                <flux:icon.arrow-path class="w-4 h-4 animate-spin text-zinc-400" />
+            </div>
+        </div>
+    </div>
 
     <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-80">
         <livewire:table

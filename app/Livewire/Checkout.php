@@ -87,11 +87,6 @@ class Checkout extends Component {
             'deliveryMethod' => ['required', 'string', 'in:standard,express,same_day'],
         ]);
 
-        if ($this->deliveryMethod === 'same_day' && !in_array($this->province, ['Metro Manila', 'Manila', 'Maynila', 'NCR', 'National Capital Region', 'Kalakhang Maynila'])) {
-            $this->addError('deliveryMethod', 'We\'re sorry, but same-day delivery is only available for Metro Manila addresses for now.');
-            return false;
-        }
-
         // Re-calculate totals when delivery method changes
         $this->calculateTotals();
 
@@ -156,8 +151,6 @@ class Checkout extends Component {
             }
 
             $this->clearAllCartItems();
-
-            $order->refresh();
             session()->flash('message', 'Order placed successfully! Your order number is ' . $order->display_name . '.');
 
             return redirect()->route('orders.index', $order);

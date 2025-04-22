@@ -222,10 +222,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            @error('deliveryMethod')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="flex justify-end mt-4">

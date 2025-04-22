@@ -27,17 +27,40 @@ class OrderSeeder extends Seeder {
 
 
                 $availableProductIds = $allProductIds;
+                $subtotal = 0;
 
                 for ($j = 0; $j < min($orderItemsNum, count($availableProductIds)); $j++) {
                     $randomKey = array_rand($availableProductIds);
                     $productId = $availableProductIds[$randomKey];
                     unset($availableProductIds[$randomKey]);
 
-                    OrderItem::factory()->create([
+                    $orderItem = OrderItem::factory()->create([
                         'order_id' => $order->id,
                         'product_id' => $productId,
                     ]);
+
+                    $subtotal += $orderItem['product_price'] * $orderItem['order_quantity'];
                 }
+
+
+                $shippingFee = match ($order->delivery_method) {
+                    'standard' => 20,
+                    'express' => 30,
+                    'same_day' => 50,
+                    default => 20,
+                };
+
+
+                $tax = round($subtotal * 0.12, 2);
+                $total = round($subtotal + $shippingFee + $tax, 2);
+
+                $order->update([
+                    'subtotal' => $subtotal,
+                    'shipping_fee' => $shippingFee,
+                    'tax' => $tax,
+                    'total_amount' => $total,
+                ]);
+
             }
         }
     }
