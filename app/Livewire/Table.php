@@ -35,9 +35,9 @@ class Table extends Component {
     public $sortOrder = '';
 
     public $noDataText = 'No data available';
-    
 
-    public function mount($items, $columns, $widths = [], $columnsToProperty) {
+
+    public function mount($items, $columns, $widths = [], $columnsToProperty, $customClasses) {
         $this->items = $items;
         $this->columns = $columns;
         $this->widths = $widths;
@@ -49,6 +49,9 @@ class Table extends Component {
                 $this->columnsToProperty[$column] = Str::snake($column);
             }
         }
+
+        $this->reset('customClasses');
+        $this->customClasses = array_merge($this->customClasses, $customClasses);
     }
 
     public function render() {

@@ -2,7 +2,6 @@
     {{-- Global Modals --}}
 
     <div>
-        {{-- Modal for Products Child (show, create, edit, or delete) --}}
         <livewire:products-child
             wire:key="products-child"
             :categoryValues="config('products-categories.categoryValues')"
@@ -10,6 +9,8 @@
         />
         <livewire:cart-flyout wire:key="cart-flyout"/>
         <livewire:cart-child wire:key="cart-child"/>
+        <livewire:orders-child wire:key="orders-child"/>
+        <livewire:orders-child-confirm wire:key="orders-child-confirm"/>
     </div>
 
 

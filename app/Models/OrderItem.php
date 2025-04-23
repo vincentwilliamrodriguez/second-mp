@@ -19,7 +19,8 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'quantity',
+        'order_quantity',
+        'product_price',
         'date_placed',
         'date_accepted',
         'date_shipped',
@@ -27,11 +28,12 @@ class OrderItem extends Model
         'status',
     ];
     protected $casts = [
-        'date_placed' => 'date',
-        'date_accepted' => 'date',
-        'date_shipped' => 'date',
-        'date_delivered' => 'date',
+        'date_placed' => 'datetime',
+        'date_accepted' => 'datetime',
+        'date_shipped' => 'datetime',
+        'date_delivered' => 'datetime',
     ];
+    protected $touches = ['order'];
 
 
     public function order() {

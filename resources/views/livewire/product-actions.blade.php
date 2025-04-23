@@ -1,5 +1,4 @@
 {{-- This is the actions part of the Products table, upgraded using Livewire and flux --}}
-{{-- TODO: redirect to products-child --}}
 
 <div class="flex gap-2 justify-center items-center">
     @can('read-products')

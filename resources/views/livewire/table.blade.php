@@ -1,7 +1,7 @@
 {{-- This is the new table component using Livewire --}}
 <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 {{ $customClasses['container'] }}">
     <table class="min-w-full divide-y divide-blue-200 {{ $customClasses['table'] }}">
-        <thead class="bg-indigo-600 {{ $customClasses['thead'] }}" x-on:sortchanged="$el.classList.add('pointer-events-none')">
+        <thead class="bg-indigo-500 {{ $customClasses['thead'] }}" x-on:sortchanged="$el.classList.add('pointer-events-none')">
             <tr>
                 @foreach($columns as $column)
                     @php
@@ -47,12 +47,13 @@
                     <tr class="hover:bg-blue-50 {{ $customClasses['tr'] }}">
                         @foreach ($columns as $colIndex => $column)
                             @php
+                                // dd($items);
                                 $cellContent = $cells[$rowIndex][$colIndex];
+
                                 $isLivewire = Str::contains($cellContent, 'livewire:');
                                 $componentName = '';
                                 $componentKey = '';
                                 $componentData = [];
-
                                 if ($isLivewire) {
                                     $component = explode(':', $cellContent)[1] ?? '';
                                     $componentName = preg_match('/^([\w\-]+)/', $component, $matches) ? $matches[1] : '';

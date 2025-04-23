@@ -85,13 +85,17 @@
                 </flux:button>
 
                 <flux:menu class="shadow-xl">
-                    <flux:menu.radio.group wire:model.live='category'>
+                    <flux:menu.radio.group wire:model.live='category' x-data="{oldCategory: ''}">
                         @foreach ($categoryValues as $categoryName => $categoryData)
                             <flux:menu.radio
-                                :class="'hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden '.(($category ===
-                                    $categoryName) ? '!text-blue-500' : '')"
+                                class="hover:bg-zinc-100 hover:cursor-pointer [&>*:first-child]:hidden" x-bind:class="($wire.category === '{{ $categoryName }}') ? '!text-blue-500' : ''"
                                 :value='$categoryName' :icon:trailing='$categoryData[1]'
-                                x-on:click="if ({{ $category === $categoryName }}) { $wire.set('category', '') }">
+                                x-on:click="if ($wire.category === oldCategory) {
+                                                oldCategory = '';
+                                                $wire.set('category', '');
+                                            } else {
+                                                oldCategory = $wire.category;
+                                            }">
                                 {{ $categoryData[0] }}
                             </flux:menu.radio>
                         @endforeach
@@ -157,7 +161,7 @@
         </div>
     @elseif (auth()->user()->hasRole('customer'))
         <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8">
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[400px] justify-center gap-6 mb-8" wire:loading.class="pointer-events-none select-none animate-pulse">
             @foreach ($products as $product)
                 {{-- This calls the new Product Card component --}}
                 <livewire:product-card :$product :$categoryValues wire:key='{{ $product->id }}' />
@@ -268,19 +272,21 @@
             }
         @endphp
 
-        <livewire:table
-            wire:key="{{ now() }}"
-            :items="$products->items()"
-            :columns="$productsTableColumns"
-            :widths="$productsTableWidths"
-            :$cells
-            :$columnsToProperty
-            :$columnsWithSorting
-            :$sortBy
-            :$sortOrder
-            :$customClasses
-        >
-        </livewire:table>
+        <div wire:loading.class="pointer-events-none select-none animate-pulse">
+            <livewire:table
+                wire:key="{{ now() }}"
+                :items="$products->items()"
+                :columns="$productsTableColumns"
+                :widths="$productsTableWidths"
+                :$cells
+                :$columnsToProperty
+                :$columnsWithSorting
+                :$sortBy
+                :$sortOrder
+                :$customClasses
+            >
+            </livewire:table>
+        </div>
 
 
         {{-- This uses the old Blade component for tables --}}

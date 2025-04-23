@@ -121,7 +121,7 @@ HTML;
     @endphp
 
 
-    <div wire:loading.class="pointer-events-none select-none">
+    <div class="transition-all opacity-100" wire:loading.class="pointer-events-none select-none opacity-80">
         <livewire:table
             wire:key="{{ now() }}"
             :items="$items"
@@ -145,7 +145,7 @@ HTML;
             <flux:text variant='subtle' class="text-md">
                 Subtotal Estimate (<span wire:text='totalCount'></span> items):
             </flux:text>
-            <flux:text variant='stong' class="text-2xl text-accent font-bold" wire:text='totalPrice'></flux:text>
+            <flux:text variant='stong' class="text-2xl text-accent font-bold" wire:text='subtotalFormatted'></flux:text>
         </div>
 
         <div class="flex items-center justify-end">
