@@ -165,7 +165,7 @@ class Checkout extends Component {
                 'shipping_fee' => $this->shippingFee,
                 'tax' => $this->taxAmount,
                 'total_amount' => $this->totalAmount,
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
 
             // Create order items

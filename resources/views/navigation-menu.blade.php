@@ -48,9 +48,9 @@
                     @endcan
 
                     @can('read-tickets')
-                            <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
-                                {{ __('Support') }}
-                            </x-nav-link>
+                        <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
+                            {{ __('Support') }}
+                        </x-nav-link>
                     @endcan
                 </div>
             </div>

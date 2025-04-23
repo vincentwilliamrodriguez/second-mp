@@ -2,26 +2,37 @@
 
 namespace App\Jobs;
 
+use App\Models\OrderItem;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class MarkOrderItemAsShipped implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
+    public $itemId;
+
+    public function __construct($itemId)
     {
-        //
+        $this->itemId = $itemId;
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
+    public function handle()
     {
-        //
+        $item = OrderItem::findOrFail($this->itemId);
+
+        if (!($item && $item->status === 'accepted')) {
+            return false;
+        }
+
+        $item->status = 'shipped';
+        $item->date_shipped = now();
+        $item->save();
+
+        MarkOrderItemAsDelivered::dispatch($item->id)->delay(now()->addMinute());
     }
 }
+
