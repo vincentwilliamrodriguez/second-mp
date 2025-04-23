@@ -22,7 +22,7 @@
             </div>
         @else
             <div class="bg-blue-600 text-white px-6 py-4">
-                <h3 class="text-xl font-semibold">Contact us via this form, and wait for your Support Ticket!</h3>
+                <h3 class="text-[20px] font-semibold">Contact us via this form, and wait for your Support Ticket!</h3>
             </div>
             <form wire:submit.prevent="submitTicket" class="p-6">
                 <div class="mb-5">

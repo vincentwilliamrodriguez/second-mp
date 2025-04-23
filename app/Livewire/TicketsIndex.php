@@ -11,7 +11,6 @@ class TicketsIndex extends Component
     public $tickets;
     public $archivedTickets;
     public $activeTab = 'list';
-    public $replies = [];
     public $search = '';
 
     public function mount()
@@ -26,7 +25,19 @@ class TicketsIndex extends Component
             'archivedTickets' => $this->archivedTickets,
             'activeTab' => $this->activeTab,
         ]);
-    }
+
+        $this->tickets = Ticket::where('is_hidden', false)
+            ->where('ticket_number', 'like', '%'.$this->search.'%')
+            ->orWhere('user_name', 'like', '%'.$this->search.'%')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $this->archivedTickets = Ticket::where('is_hidden', true)
+            ->where('ticket_number', 'like', '%'.$this->search.'%')
+            ->orWhere('user_name', 'like', '%'.$this->search.'%')
+            ->orderBy('created_at', 'asc')
+            ->get();
+        }
 
     public function setTab($tab)
     {
@@ -55,20 +66,6 @@ class TicketsIndex extends Component
         $this->refreshTickets();
     }
 
-    public function submitReply($ticketId)
-    {
-        $this->validate([
-            "replies.$ticketId" => 'required|string|min:3',
-        ]);
-
-        TicketReply::create([
-            'ticket_id' => $ticketId,
-            'message' => $this->replies[$ticketId],
-        ]);
-
-        $this->replies[$ticketId] = '';
-    }
-
     private function refreshTickets()
     {
         $this->tickets = Ticket::where('is_hidden', false)
@@ -79,4 +76,33 @@ class TicketsIndex extends Component
             ->orderBy('created_at', 'asc')
             ->get();
     }
+
+    public function searchTickets()
+    {
+        if (empty($this->search)) {
+            $this->refreshTickets();
+        } else {
+            $this->tickets = Ticket::where('is_hidden', false)
+                ->where(function($query) {
+                    $query->where('ticket_number', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_email', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_phone', 'like', '%'.$this->search.'%');
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+
+            $this->archivedTickets = Ticket::where('is_hidden', true)
+                ->where(function($query) {
+                    $query->where('ticket_number', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_email', 'like', '%'.$this->search.'%')
+                        ->orWhere('user_phone', 'like', '%'.$this->search.'%');
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
+        }
+    }
+
 }
