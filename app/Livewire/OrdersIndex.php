@@ -64,12 +64,20 @@ class OrdersIndex extends Component
     public $cells;
     public $cellData;
 
+    public $listeners = ['refreshOrdersTable'];
+
 
     public function render() {
+        $orders = $this->refreshOrdersTable();
+
+        return view('livewire.orders-index', compact('orders'));
+    }
+
+    public function refreshOrdersTable() {
         $orders = $this->fetchOrders();
         $this->updateTableData($orders);
 
-        return view('livewire.orders-index', compact('orders'));
+        return $orders;
     }
 
     public function fetchOrders() {

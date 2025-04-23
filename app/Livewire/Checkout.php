@@ -175,6 +175,7 @@ class Checkout extends Component {
                     'product_id' => $item['product_id'],
                     'order_quantity' => $item['order_quantity'],
                     'product_price' => $item['product_price'],
+                    'date_placed' => now(),
                 ]);
 
                 // Update product quantity

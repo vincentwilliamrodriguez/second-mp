@@ -1,6 +1,6 @@
 {{-- This is the new show/create/edit product page with Livewire --}}
 
-<flux:modal name='products-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('resetform'); method=''" x-data="{method: '', defaultSizes: {
+<flux:modal name='products-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('resetform')" x-data="{method: '', defaultSizes: {
             'Show': '!min-w-[750px] !min-h-[400px]',
             'Create': '!min-w-[750px] !min-h-[400px]',
             'Edit': '!min-w-[750px] !min-h-[400px]',

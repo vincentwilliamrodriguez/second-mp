@@ -21,10 +21,10 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->integer('order_quantity');
             $table->float('product_price', 12, 2);
-            $table->date('date_placed')->nullable();
-            $table->date('date_accepted')->nullable();
-            $table->date('date_shipped')->nullable();
-            $table->date('date_delivered')->nullable();
+            $table->timestamp('date_placed')->nullable();
+            $table->timestamp('date_accepted')->nullable();
+            $table->timestamp('date_shipped')->nullable();
+            $table->timestamp('date_delivered')->nullable();
             $table->enum('status', ['pending', 'accepted', 'shipped', 'delivered', 'cancelled']);
             $table->timestamps();
             $table->softDeletes();

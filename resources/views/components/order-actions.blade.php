@@ -9,25 +9,12 @@
         View
     </flux:button>
 
-
-    @hasanyrole(['customer'])
-        <flux:button variant='primary' icon='x-mark' size='xs' class="!h-min !text-red-600 hover:!text-red-900 !px-2 !py-1 !bg-red-100 !hover:bg-red-200 rounded-md text-xs flex gap-1 items-center transition-all"
-            wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Cancel', orderId: '{{ $order->id }}' })"
-            x-on:click.prevent="$flux.modal('orders-child').show()"
-        >
-            Cancel
-        </flux:button>
-    @endhasanyrole
-
-
-    @hasanyrole(['seller', 'admin'])
-        <flux:button variant='primary' icon='pencil-square' size='xs' class="!h-min !text-amber-600 hover:!text-amber-900 !px-2 !py-1 !bg-amber-100 !hover:bg-amber-200 rounded-md text-xs flex gap-1 items-center transition-all"
-            wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Edit', orderId: '{{ $order->id }}' })"
-            x-on:click.prevent="$flux.modal('orders-child').show()"
-        >
-            Manage
-        </flux:button>
-    @endhasanyrole
+    <flux:button variant='primary' icon='pencil-square' size='xs' class="!h-min !text-amber-600 hover:!text-amber-900 !px-2 !py-1 !bg-amber-100 !hover:bg-amber-200 rounded-md text-xs flex gap-1 items-center transition-all"
+        wire:click.prevent="$dispatchTo('orders-child', 'open', {method: 'Edit', orderId: '{{ $order->id }}' })"
+        x-on:click.prevent="$flux.modal('orders-child').show()"
+    >
+        Manage
+    </flux:button>
 
 
     @role('admin')
