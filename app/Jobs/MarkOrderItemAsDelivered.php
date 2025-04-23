@@ -30,8 +30,6 @@ class MarkOrderItemAsDelivered implements ShouldQueue
         $item->status = 'delivered';
         $item->date_delivered = now();
         $item->save();
-
-        // TODO: Add monetary system
     }
 }
 

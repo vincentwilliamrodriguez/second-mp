@@ -32,7 +32,7 @@ class MarkOrderItemAsShipped implements ShouldQueue
         $item->date_shipped = now();
         $item->save();
 
-        MarkOrderItemAsDelivered::dispatch($item->id)->delay(now()->addMinute());
+        MarkOrderItemAsDelivered::dispatch($item->id)->delay(now()->addSeconds(10));
     }
 }
 

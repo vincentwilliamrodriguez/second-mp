@@ -109,6 +109,13 @@
                 @endif
 
 
+                {{-- Wallet View --}}
+                @can('read-products')
+                    <div class="relative mr-4 mb-1">
+                        @livewire('wallet-button')
+                    </div>
+                @endcan
+
                 {{-- Cart Flyout Toggle --}}
                 @can('create-orders')
                     <div class="relative mr-8 mb-1">

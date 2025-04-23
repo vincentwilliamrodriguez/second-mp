@@ -242,7 +242,7 @@ class OrdersChild extends Component
 
         $item->update(['status' => 'accepted', 'date_accepted' => now()]);
 
-        MarkOrderItemAsShipped::dispatch($item->id)->delay(now()->addMinute());
+        MarkOrderItemAsShipped::dispatch($item->id)->delay(now()->addSeconds(10));
 
         $this->updateTableData($this->order->orderItems);
         $this->dispatch('refreshOrdersTable');
