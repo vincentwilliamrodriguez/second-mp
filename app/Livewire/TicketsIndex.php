@@ -9,9 +9,12 @@ use App\Models\TicketReply;
 class TicketsIndex extends Component
 {
     public $tickets;
-    public $archivedTickets;
-    public $activeTab = 'list';
+    public $acceptedTickets;
+    public $availableTab = 'list';
+    public $queryString = ['availableTab'];
     public $search = '';
+    public $replyText = '';
+    public $replyingTo = null;
 
     public function mount()
     {
@@ -22,26 +25,14 @@ class TicketsIndex extends Component
     {
         return view('livewire.tickets-index', [
             'tickets' => $this->tickets,
-            'archivedTickets' => $this->archivedTickets,
-            'activeTab' => $this->activeTab,
+            'acceptedTickets' => $this->acceptedTickets,
+            'availableTab' => $this->availableTab,
         ]);
-
-        $this->tickets = Ticket::where('is_hidden', false)
-            ->where('ticket_number', 'like', '%'.$this->search.'%')
-            ->orWhere('user_name', 'like', '%'.$this->search.'%')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        $this->archivedTickets = Ticket::where('is_hidden', true)
-            ->where('ticket_number', 'like', '%'.$this->search.'%')
-            ->orWhere('user_name', 'like', '%'.$this->search.'%')
-            ->orderBy('created_at', 'asc')
-            ->get();
-        }
+    }
 
     public function setTab($tab)
     {
-        $this->activeTab = $tab;
+        $this->availableTab = $tab;
     }
 
     public function deleteTicket($ticketId, $action)
@@ -72,37 +63,54 @@ class TicketsIndex extends Component
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $this->archivedTickets = Ticket::where('is_hidden', true)
+        $this->acceptedTickets = Ticket::where('is_hidden', true)
             ->orderBy('created_at', 'asc')
             ->get();
     }
 
-    public function searchTickets()
+    public function searchEmail()
     {
-        if (empty($this->search)) {
-            $this->refreshTickets();
-        } else {
-            $this->tickets = Ticket::where('is_hidden', false)
-                ->where(function($query) {
-                    $query->where('ticket_number', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_name', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_email', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_phone', 'like', '%'.$this->search.'%');
-                })
-                ->orderBy('created_at', 'asc')
-                ->get();
+        $this->tickets = Ticket::where('is_hidden', false)
+            ->where('user_email', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-
-            $this->archivedTickets = Ticket::where('is_hidden', true)
-                ->where(function($query) {
-                    $query->where('ticket_number', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_name', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_email', 'like', '%'.$this->search.'%')
-                        ->orWhere('user_phone', 'like', '%'.$this->search.'%');
-                })
-                ->orderBy('created_at', 'asc')
-                ->get();
-        }
+        $this->acceptedTickets = Ticket::where('is_hidden', true)
+            ->where('user_email', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'asc')
+            ->get();
     }
 
+    public function startReply($ticketId)
+    {
+        $this->replyingTo = $ticketId;
+        $this->replyText = '';
+    }
+
+    public function cancelReply()
+    {
+        $this->replyingTo = null;
+        $this->replyText = '';
+    }
+
+    public function sendReply()
+    {
+        $this->validate([
+            'replyText' => 'required|min:3',
+        ]);
+
+        $ticket = Ticket::findOrFail($this->replyingTo);
+
+        TicketReply::create([
+            'ticket_id' => $this->replyingTo,
+            'message' => $this->replyText,
+            'is_from_staff' => true,
+            'is_read' => false
+        ]);
+
+        $this->replyingTo = null;
+        $this->replyText = '';
+
+        session()->flash('message', 'Reply sent successfully!');
+    }
 }

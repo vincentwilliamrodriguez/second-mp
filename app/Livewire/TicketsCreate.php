@@ -4,16 +4,20 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Ticket;
+use App\Models\TicketReply;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class TicketsCreate extends Component
 {
+    public $ticket;
     public $user_name, $user_phone, $user_description;
     public $ticket_submitted = false;
     public $ticket_number;
     public $showTicketsModal = false;
     public $userTickets = [];
+    public $replyingTo = null;
+    public $replyText = '';
 
     protected $rules = [
         'user_name' => 'required|string|max:255',
@@ -57,7 +61,8 @@ class TicketsCreate extends Component
 
     public function showUserTickets()
     {
-        $this->userTickets = Ticket::where('user_email', Auth::user()->email)
+        $this->userTickets = Ticket::with('replies')
+            ->where('user_email', Auth::user()->email)
             ->orderBy('created_at', 'desc')
             ->get();
         $this->showTicketsModal = true;
@@ -66,5 +71,41 @@ class TicketsCreate extends Component
     public function closeModal()
     {
         $this->showTicketsModal = false;
+        $this->replyingTo = null;
+        $this->replyText = '';
+    }
+
+    public function startReply($ticketId)
+    {
+        $this->replyingTo = $ticketId;
+        $this->replyText = '';
+    }
+
+    public function cancelReply()
+    {
+        $this->replyingTo = null;
+        $this->replyText = '';
+    }
+
+    public function sendReply()
+    {
+        $this->validate([
+            'replyText' => 'required|min:3',
+        ]);
+
+        TicketReply::create([
+            'ticket_id' => $this->replyingTo,
+            'message' => $this->replyText,
+            'is_from_staff' => false,
+            'is_read' => false
+        ]);
+
+        $this->userTickets = Ticket::with('replies')
+            ->where('user_email', Auth::user()->email)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $this->replyingTo = null;
+        $this->replyText = '';
     }
 }
