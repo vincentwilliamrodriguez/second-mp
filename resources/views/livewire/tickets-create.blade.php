@@ -75,7 +75,7 @@
                                 <p class="text-gray-800 font-semibold">Ticket Number: {{ $ticket->ticket_number }}</p>
                                 <p class="text-sm text-gray-600 mt-1">Submitted: {{ $ticket->created_at->format('F j, Y g:i A') }}</p>
                             </div>
-                            <div class="text-xs px-2 py-1 rounded {{ $ticket->is_hidden ? 'bg-gray-200 text-gray-700' : 'bg-green-200 text-green-800' }}">
+                            <div class="text-xs px-2 py-1 rounded {{ $ticket->is_hidden ? 'bg-green-200 text-green-800':'bg-gray-200 text-gray-700'}}">
                                 {{ $ticket->is_hidden ? 'Accepted' : 'Available' }}
                             </div>
                         </div>
