@@ -144,10 +144,19 @@ class Checkout extends Component {
             'paymentMethod' => ['required', 'string', 'in:cod,e_wallet'],
         ]);
 
+
         if (empty($this->cartItems)) {
             session()->flash('error', 'Your cart is empty. Please add items to your cart before checkout.');
             return redirect()->route('cart');
         }
+
+        if (($this->paymentMethod === 'e_wallet')
+            && (auth()->user()->balance < $this->totalAmount) )
+        {
+            session()->flash('error', 'You do not have enough funds in your ShopSteam E-Wallet to make this purchase.');
+            return redirect()->route('checkout');
+        }
+
 
         try {
             $order = Order::create([
@@ -165,8 +174,14 @@ class Checkout extends Component {
                 'shipping_fee' => $this->shippingFee,
                 'tax' => $this->taxAmount,
                 'total_amount' => $this->totalAmount,
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
+
+            // Update customer's balance
+            if ($this->paymentMethod === 'e_wallet') {
+                auth()->user()->balance -= $this->totalAmount;
+                auth()->user()->save();
+            }
 
             // Create order items
             foreach ($this->cartItems as $item) {
@@ -178,12 +193,14 @@ class Checkout extends Component {
                     'date_placed' => now(),
                 ]);
 
-                // Update product quantity
-
+                // Update product quantity and seller's balance
                 $product = Product::find($item['product_id']);
                 if ($product) {
                     $product->quantity -= $item['order_quantity'];
                     $product->save();
+
+                    $product->seller->balance += $item['product_price'] * $item['order_quantity'];
+                    $product->seller->save();
                 }
             }
 

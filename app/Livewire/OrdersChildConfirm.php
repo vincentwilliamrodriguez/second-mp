@@ -59,7 +59,7 @@ class OrdersChildConfirm extends Component
         }
 
         session()->flash('message', ($value === 'accepted') ? 'Accepted all pending items successfully.' : 'Cancelled all pending items successfully.');
-        // $this->redirectRoute('orders.index');
+        // redirect()->route('orders.index');;
         $this->modal('orders-child-confirm')->close();
     }
 

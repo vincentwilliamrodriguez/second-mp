@@ -48,9 +48,9 @@
                     @endcan
 
                     @can('read-tickets')
-                            <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
-                                {{ __('Support') }}
-                            </x-nav-link>
+                        <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
+                            {{ __('Support') }}
+                        </x-nav-link>
                     @endcan
                 </div>
             </div>
@@ -108,6 +108,13 @@
                     </div>
                 @endif
 
+
+                {{-- Wallet View --}}
+                @can('read-products')
+                    <div class="relative mr-4 mb-1">
+                        @livewire('wallet-button')
+                    </div>
+                @endcan
 
                 {{-- Cart Flyout Toggle --}}
                 @can('create-orders')

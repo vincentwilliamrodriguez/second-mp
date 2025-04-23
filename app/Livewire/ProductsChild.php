@@ -131,7 +131,7 @@ class ProductsChild extends Component {
                 break;
         }
 
-        $this->redirectRoute('products.index');
+        redirect()->route('products.index');;
     }
 
     public function deleteProduct() {
@@ -143,7 +143,7 @@ class ProductsChild extends Component {
         }
 
         session()->flash('message', 'Product deleted successfully.');
-        $this->redirectRoute('products.index');
+        redirect()->route('products.index');;
     }
 
     public function addToCart() {
@@ -158,7 +158,7 @@ class ProductsChild extends Component {
         $wasAdded = $this->addItemToCart($cartData);
 
         session()->flash('message', $wasAdded ? 'Product added to cart successfully.' : 'Cart updated successfully.');
-        $this->redirectRoute('cart');
+        redirect()->route('cart');
     }
 
     private function savePicture() {

@@ -211,7 +211,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <h4 class="font-medium text-gray-900">Same-day Delivery</h4>
-                                    <p class="text-sm text-gray-600">Within the day</p>
+                                    <p class="text-sm text-gray-600">Within the day (Metro Manila only)</p>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <span class="font-semibold text-indigo-700">₱50</span>

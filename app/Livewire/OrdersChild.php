@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Jobs\MarkOrderItemAsShipped;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -240,6 +241,9 @@ class OrdersChild extends Component
         $this->authorize('update', $item);
 
         $item->update(['status' => 'accepted', 'date_accepted' => now()]);
+
+        MarkOrderItemAsShipped::dispatch($item->id)->delay(now()->addSeconds(10));
+
         $this->updateTableData($this->order->orderItems);
         $this->dispatch('refreshOrdersTable');
     }
@@ -249,6 +253,10 @@ class OrdersChild extends Component
         $this->authorize('update', $item);
 
         $item->update(['status' => 'cancelled']);
+
+        $revertedProductQuantity = $item->product->quantity + $item->order_quantity;
+        $item->product->update(['quantity' => $revertedProductQuantity]);
+
         $this->updateTableData($this->order->orderItems);
         $this->dispatch('refreshOrdersTable');
     }
