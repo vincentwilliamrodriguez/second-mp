@@ -1,4 +1,10 @@
-{{-- The PHP code below defines the parameters of the admin's users tables --}}
+<x-tab>
+    @livewire('user-index')
+</x-tab>
+
+{{-- This is the old user index file --}}
+
+{{-- The PHP code below defines the parameters of the admin's users tables
 
 @php
     $usersTableWidths = [
@@ -60,10 +66,8 @@
             @can('create-users')
                 <x-button
                     onclick="window.location.href='{{ route('users.create') }}'" :baseColor="'blue'" :iconSize="'w-6 h-6'">
-
                     <x-slot name='icon'><x-eos-add-box-o/></x-slot>
                     Create User
-
                 </x-button>
             @endcan
         </div>
@@ -73,6 +77,5 @@
             :columns="$usersTableColumns"
             :widths="$usersTableWidths"
         />
-
     </div>
-</x-tab>
+</x-tab> --}}

@@ -4,21 +4,30 @@
             <h3 class="text-[25px] font-bold">Support Dashboard</h3>
         </div>
         <div class="flex space-x-2 px-6">
-            <button wire:click="setTab('list')"
-            class="px-4 py-2 font-bold rounded {{ $availableTab === 'list' ? 'bg-blue-300 text-white' : 'bg-gray-200 text-black' }}">
+            <button wire:click="setTab('list')" class="px-4 py-2 font-bold rounded {{ $availableTab === 'list' ? 'bg-blue-300 text-white' : 'bg-gray-200 text-black' }}">
                 Available Tickets
             </button>
-            <button wire:click="setTab('accepted')"
-                class="px-4 py-2 font-bold rounded {{ $availableTab === 'accepted' ? 'bg-blue-300 text-white' : 'bg-gray-200 text-black' }}">
+            <button wire:click="setTab('accepted')" class="px-4 py-2 font-bold rounded {{ $availableTab === 'accepted' ? 'bg-blue-300 text-white' : 'bg-gray-200 text-black' }}">
                 Accepted Tickets
             </button>
         </div>
     </div>
 
     <div class="bg-gray-200">
-        <div class="px-6 py-4 flex space-x-2">
-            <input wire:model="search" type="text" placeholder="Search by Email" class="text-black px-4 py-2 rounded border">
-            <button wire:click="searchEmail" class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
+        <div class="px-6 py-4 flex flex-row flex-wrap items-center gap-2">
+
+            <input wire:model="search" type="text" placeholder="Search by Email" class="text-black px-4 py-2 rounded border"/>
+
+            <button wire:click="searchEmail" class="px-4 py-2 text-sm font-sans font-semibold rounded bg-blue-600 text-white border-2 border-blue-600">
+                Search
+            </button>
+
+           <button wire:click="toggleSort" class="px-4 py-2 text-sm font-sans font-semibold rounded border-2 border-blue-600
+                {{ $sortDirection === 'asc'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-blue-600' }}">
+               {{ $sortDirection === 'asc' ? 'Oldest → Newest' : 'Newest → Oldest' }}
+           </button>
         </div>
     </div>
 
@@ -31,14 +40,14 @@
     @if ($availableTab === 'list')
         <div class="bg-white shadow rounded-lg overflow-x-auto">
             <table class="w-full text-sm">
-                <thead class="bg-gray-100 text-left">
+                <thead class="bg-gray-100 text">
                     <tr class="text-black">
-                        <th class="px-4 py-2">Ticket #</th>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Email</th>
-                        <th class="px-4 py-2">Phone</th>
-                        <th class="px-4 py-2">Created</th>
-                        <th class="px-4 py-2">Actions</th>
+                        <th class="px-4 py-2 text-center">Ticket</th>
+                        <th class="px-4 py-2 text-center">Name</th>
+                        <th class="px-4 py-2 text-cetner">Email</th>
+                        <th class="px-4 py-2 text-center">Phone</th>
+                        <th class="px-4 py-2 text-center">Created</th>
+                        <th class="px-4 py-2 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,24 +58,32 @@
                             <td class="px-4 py-2">{{ $ticket->user_email }}</td>
                             <td class="px-4 py-2">{{ $ticket->user_phone }}</td>
                             <td class="px-4 py-2">{{ $ticket->created_at->format('M d, Y') }}</td>
-                            <td class="px-4 py-2 space-y-2">
-                                <div>
-                                    <button wire:click="deleteTicket({{ $ticket->id }}, 'hide')"
-                                        class="text-green-600 font-bold text-sm hover:underline"
-                                        onclick="return confirm('Accept this ticket?')">
-                                            Accept
-                                    </button>
-                                </div>
+                            <td class="px-4 py-2">
+                                <div class="flex flex-col gap-2">
+                                    <flux:button
+                                        class="!h-min !text-green-600 hover:!text-green-900 !px-2 !py-1 !bg-green-100 hover:!bg-green-200 rounded-md text-xs flex gap-1 items-center transition-all"
+                                        wire:click.prevent="deleteTicket({{ $ticket->id }}, 'hide')"
+                                        x-on:click.prevent="$flux.modal('tickets-child-accept-{{ $ticket->id }}').show()"
+                                    >
+                                        <x-slot name="icon">
+                                            <flux:icon.check class="size-4"></flux:icon.check>
+                                        </x-slot>
+                                        Accept
+                                    </flux:button>
 
-                                @role('admin')
-                                    <div>
-                                        <button wire:click="deleteTicket({{ $ticket->id }}, 'delete')"
-                                            class="text-red-600 font-bold text-sm hover:underline"
-                                            onclick="return confirm('Permanently delete this ticket?')">
-                                                Delete
-                                        </button>
-                                    </div>
-                                @endrole
+                                    @role('admin')
+                                        <flux:button
+                                            class="!h-min !text-red-600 hover:!text-red-900 !px-2 !py-1 !bg-red-100 hover:!bg-red-200 rounded-md text-xs flex gap-1 items-center transition-all"
+                                            wire:click.prevent="deleteTicket({{ $ticket->id }}, 'delete')"
+                                            x-on:click.prevent="$flux.modal('tickets-child-delete-{{ $ticket->id }}').show()"
+                                        >
+                                            <x-slot name="icon">
+                                                <flux:icon.trash class="size-4"></flux:icon.trash>
+                                            </x-slot>
+                                            Delete
+                                        </flux:button>
+                                    @endrole
+                                </div>
                             </td>
                         </tr>
                         <tr class="border-b bg-gray-50">
@@ -126,7 +143,7 @@
             <table class="w-full text-sm">
                 <thead class="bg-gray-100 text-left">
                     <tr class="text-black">
-                        <th class="px-4 py-2">Ticket #</th>
+                        <th class="px-4 py-2">Ticket</th>
                         <th class="px-4 py-2">Name</th>
                         <th class="px-4 py-2">Email</th>
                         <th class="px-4 py-2">Phone</th>
@@ -143,7 +160,16 @@
                             <td class="px-4 py-2">{{ $ticket->user_phone }}</td>
                             <td class="px-4 py-2">{{ $ticket->created_at->format('M d, Y') }}</td>
                             <td class="px-4 py-2">
-                                <button wire:click="restoreTicket({{ $ticket->id }})" class="text-blue-600 font-bold text-sm hover:underline block mb-2">Return</button>
+                                <flux:button
+                                    class="!h-min !text-blue-600 hover:!text-blue-900 !px-2 !py-1 !bg-blue-100 hover:!bg-blue-200 rounded-md text-xs flex gap-1 items-center transition-all mb-2"
+                                    wire:click.prevent="restoreTicket({{ $ticket->id }})"
+                                    x-on:click.prevent="$flux.modal('tickets-child-restore-{{ $ticket->id }}').show()"
+                                >
+                                    <x-slot name="icon">
+                                        <flux:icon.arrow-left class="size-4"></flux:icon.arrow-left>
+                                    </x-slot>
+                                    Return
+                                </flux:button>
                             </td>
                         </tr>
                         <tr class="border-b bg-gray-50">

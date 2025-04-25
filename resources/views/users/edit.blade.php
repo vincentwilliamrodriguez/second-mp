@@ -1,4 +1,10 @@
 <x-tab title="Edit User">
+    @livewire('user-edit', ['user' => $user])
+</x-tab>
+
+{{-- This is the old user edit file --}}
+
+{{-- <x-tab title="Edit User">
     <div class="w-[70vw] max-w-[700px] p-6 bg-white rounded-lg shadow-sm mx-auto">
         <div class="mb-6 flex items-center">
             <h1 class="text-2xl font-bold text-gray-800">Edit User</h1>
@@ -73,4 +79,4 @@
             </div>
         </form>
     </div>
-</x-tab>
+</x-tab> --}}

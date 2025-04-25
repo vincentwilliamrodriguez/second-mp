@@ -11,10 +11,11 @@ class TicketsIndex extends Component
     public $tickets;
     public $acceptedTickets;
     public $availableTab = 'list';
-    public $queryString = ['availableTab'];
+    public $queryString = ['availableTab','sortDirection'];
     public $search = '';
     public $replyText = '';
     public $replyingTo = null;
+    public $sortDirection = 'asc';
 
     public function mount()
     {
@@ -60,11 +61,11 @@ class TicketsIndex extends Component
     private function refreshTickets()
     {
         $this->tickets = Ticket::where('is_hidden', false)
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', $this->sortDirection)
             ->get();
 
         $this->acceptedTickets = Ticket::where('is_hidden', true)
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', $this->sortDirection)
             ->get();
     }
 
@@ -112,5 +113,11 @@ class TicketsIndex extends Component
         $this->replyText = '';
 
         session()->flash('message', 'Reply sent successfully!');
+    }
+
+    public function toggleSort()
+    {
+        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        $this->refreshTickets();
     }
 }

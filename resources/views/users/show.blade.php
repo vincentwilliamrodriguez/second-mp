@@ -1,4 +1,8 @@
-<x-tab title="Users">
+<x-tab>
+    @livewire('user-show', ['user' => $user])
+</x-tab>
+
+{{-- <x-tab title="Users">
     <div class="bg-white rounded-lg shadow-sm max-w-5xl mx-auto p-6 w-[700px]">
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-grow flex flex-col">
@@ -35,4 +39,4 @@
             </div>
         </div>
     </div>
-</x-tab>
+</x-tab> --}}
