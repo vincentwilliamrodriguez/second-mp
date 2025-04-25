@@ -1,4 +1,8 @@
-<div class="w-[50vw] max-w-[900px] mx-auto">
+<x-tab>
+    @livewire('tickets-create')
+</x-tab>
+
+{{-- <div class="w-[50vw] max-w-[900px] mx-auto">
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
         @if(session('ticket_submitted'))
             <div class="bg-green-300 text-black px-6 py-4">
@@ -62,5 +66,5 @@
             </div>
         @endif
     </div>
-</div>
+</div> --}}
 

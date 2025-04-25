@@ -21,7 +21,7 @@ class TicketsCreate extends Component
 
     protected $rules = [
         'user_name' => 'required|string|max:255',
-        'user_phone' => ['required', 'string', 'regex:/^(\+63|0)\d{10}$/'],
+        'user_phone' => 'required|string',
         'user_description' => 'required|string',
     ];
 
