@@ -1,4 +1,10 @@
-<x-tab title="Create User">
+<x-tab>
+    @livewire('user-create')
+</x-tab>
+
+{{-- This is the old user create file --}}
+
+{{-- <x-tab title="Create User">
     <div class="w-[70vw] max-w-[700px] p-6 bg-white rounded-lg shadow-sm mx-auto">
         <div class="mb-6 flex items-center">
             <h1 class="text-2xl font-bold text-gray-800">Create New User</h1>
@@ -8,7 +14,7 @@
 
         <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
             @csrf
-            
+
             <div class="mb-5">
                 <x-label for="name" value="{{ __('Full Name') }}" class="flex items-center gap-1 mb-1">
                     <x-eos-person class="w-4 h-4 text-blue-600" />
@@ -71,4 +77,4 @@
             </div>
         </form>
     </div>
-</x-tab>
+</x-tab> --}}

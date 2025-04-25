@@ -10,15 +10,22 @@ trait CartTrait
     public $cartKey;
 
     public $totalCount = 0;
-    public $totalPrice = 0;
+
+    // Calculated Values
+    public $subtotal = 0;
+    public $shippingFee = 0;
+    public $taxAmount = 0;
+    public $totalAmount = 0;
+
+    // Formatted versions of calculated values;
+    public $subtotalFormatted = '';
+    public $shippingFeeFormatted = '';
+    public $taxAmountFormatted = '';
+    public $totalAmountFormatted = '';
 
 
     public function mount() {
         $this->cartKey = 'cart.' . auth()->user()->id;
-    }
-
-    public function retrieveProduct($cartItem) {
-        return Product::where('id', $cartItem['product_id'])->first();
     }
 
     public function getUnsortedCart() {
@@ -58,6 +65,10 @@ trait CartTrait
         $sortedCart[$curSellerIndex]['seller_rowspan'] = count($sortedCart) - $curSellerIndex;
 
         return $sortedCart;
+    }
+
+    public function retrieveProduct($cartItem) {
+        return Product::where('id', $cartItem['product_id'])->first();
     }
 
     public function retrieveItemById($id) {
@@ -121,19 +132,36 @@ trait CartTrait
     }
 
     public function clearAllCartItems() {
+        $this->cartKey = 'cart.' . auth()->user()->id;
         session()->put($this->cartKey, []);
     }
 
     public function updateTotals() {
         $cart = $this->getSortedCart();
 
-        $this->reset('totalCount', 'totalPrice');
+        $this->reset('totalCount', 'subtotal');
 
         foreach ($cart as $cartItem) {
             $this->totalCount += $cartItem['order_quantity'];
-            $this->totalPrice += $cartItem['order_quantity'] * $cartItem['product_price'];
+            $this->subtotal += $cartItem['order_quantity'] * $cartItem['product_price'];
         }
 
-        $this->totalPrice = Number::currency($this->totalPrice, 'PHP');
+        // Calculate tax (12% VAT)
+        $this->taxAmount = $this->subtotal * 0.12;
+
+        // Calculate total amount
+        $this->totalAmount = $this->subtotal + $this->shippingFee + $this->taxAmount;
+
+
+        $formattedVariables = [
+            'subtotal',
+            'shippingFee',
+            'taxAmount',
+            'totalAmount',
+        ];
+
+        foreach ($formattedVariables as $varName) {
+            $this->{$varName . 'Formatted'} = Number::currency($this->{$varName}, 'PHP');
+        }
     }
 }

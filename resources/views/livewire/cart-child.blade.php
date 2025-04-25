@@ -1,4 +1,4 @@
-<flux:modal name='cart-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('close'); method=''" x-data="{method: '', defaultSizes: {
+<flux:modal name='cart-child' class="fixed !max-w-none" x-on:open="$wire.state = null; method=$event.detail.method" wire:close="$dispatch('close')" x-data="{method: '', defaultSizes: {
     'Delete': '!min-w-[400px] !min-h-[150px]',
     'Clear': '!min-w-[400px] !min-h-[150px]',
 }}">

@@ -52,7 +52,7 @@ class CartChild extends Component
         $this->deleteItemFromCart($this->item['id']);
 
         session()->flash('message', 'Item removed from cart successfully.');
-        $this->redirectRoute('cart');
+        redirect()->route('cart');;
     }
 
     public function clearCart() {
@@ -60,6 +60,6 @@ class CartChild extends Component
         $this->clearAllCartItems();
 
         session()->flash('message', 'Cart cleared successfully.');
-        $this->redirectRoute('cart');
+        redirect()->route('cart');;
     }
 }

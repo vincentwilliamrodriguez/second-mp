@@ -12,7 +12,12 @@ use App\Livewire\ProductsChild;
 use App\Livewire\ProductsIndex;
 use App\Livewire\TicketsIndex;
 use App\Livewire\TicketsCreate;
+use App\Livewire\UsersIndex;
+use App\Livewire\UserCreate;
+use App\Livewire\UserEdit;
+use App\Livewire\UserShow;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -134,6 +139,4 @@ Route::middleware([
         Route::get('cart', Cart::class)->name('cart');
         Route::get('checkout', Checkout::class)->name('checkout');
     });
-
-
 });

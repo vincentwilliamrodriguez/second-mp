@@ -2,7 +2,6 @@
     {{-- Global Modals --}}
 
     <div>
-        {{-- Modal for Products Child (show, create, edit, or delete) --}}
         <livewire:products-child
             wire:key="products-child"
             :categoryValues="config('products-categories.categoryValues')"
@@ -10,6 +9,8 @@
         />
         <livewire:cart-flyout wire:key="cart-flyout"/>
         <livewire:cart-child wire:key="cart-child"/>
+        <livewire:orders-child wire:key="orders-child"/>
+        <livewire:orders-child-confirm wire:key="orders-child-confirm"/>
     </div>
 
 
@@ -47,9 +48,9 @@
                     @endcan
 
                     @can('read-tickets')
-                            <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
-                                {{ __('Support') }}
-                            </x-nav-link>
+                        <x-nav-link href="{{ route('tickets.index') }}" :active="request()->routeIs('tickets.create')">
+                            {{ __('Support') }}
+                        </x-nav-link>
                     @endcan
                 </div>
             </div>
@@ -107,6 +108,13 @@
                     </div>
                 @endif
 
+
+                {{-- Wallet View --}}
+                @can('read-products')
+                    <div class="relative mr-4 mb-1">
+                        @livewire('wallet-button')
+                    </div>
+                @endcan
 
                 {{-- Cart Flyout Toggle --}}
                 @can('create-orders')

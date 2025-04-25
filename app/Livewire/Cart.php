@@ -24,6 +24,7 @@ class Cart extends Component
     public function render()
     {
         $this->updateTotals();
+
         $cartItems = $this->getSortedCart();
 
         return view('livewire.cart', compact('cartItems'));
@@ -35,20 +36,4 @@ class Cart extends Component
         $this->updateItemInCart($cartItem['id'], $cartItem);
         $this->updateTotals();
     }
-
-    // public function removeFromCart($orderId)
-    // {
-    //     $cartItems = session('cart.' . auth()->id(), []);
-
-    //     foreach ($cartItems as $key => $item) {
-    //         if ($item['id'] == $orderId) {
-    //             unset($cartItems[$key]);
-    //             break;
-    //         }
-    //     }
-
-    //     session(['cart.' . auth()->id() => $cartItems]);
-
-    //     $this->dispatch('cart-updated');
-    // }
 }

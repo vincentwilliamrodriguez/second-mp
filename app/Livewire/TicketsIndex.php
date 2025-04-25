@@ -9,9 +9,13 @@ use App\Models\TicketReply;
 class TicketsIndex extends Component
 {
     public $tickets;
-    public $archivedTickets;
-    public $activeTab = 'list';
-    public $replies = [];
+    public $acceptedTickets;
+    public $availableTab = 'list';
+    public $queryString = ['availableTab','sortDirection'];
+    public $search = '';
+    public $replyText = '';
+    public $replyingTo = null;
+    public $sortDirection = 'asc';
 
     public function mount()
     {
@@ -22,14 +26,14 @@ class TicketsIndex extends Component
     {
         return view('livewire.tickets-index', [
             'tickets' => $this->tickets,
-            'archivedTickets' => $this->archivedTickets,
-            'activeTab' => $this->activeTab,
+            'acceptedTickets' => $this->acceptedTickets,
+            'availableTab' => $this->availableTab,
         ]);
     }
 
     public function setTab($tab)
     {
-        $this->activeTab = $tab;
+        $this->availableTab = $tab;
     }
 
     public function deleteTicket($ticketId, $action)
@@ -54,28 +58,66 @@ class TicketsIndex extends Component
         $this->refreshTickets();
     }
 
-    public function submitReply($ticketId)
-    {
-        $this->validate([
-            "replies.$ticketId" => 'required|string|min:3',
-        ]);
-
-        TicketReply::create([
-            'ticket_id' => $ticketId,
-            'message' => $this->replies[$ticketId],
-        ]);
-
-        $this->replies[$ticketId] = '';
-    }
-
     private function refreshTickets()
     {
         $this->tickets = Ticket::where('is_hidden', false)
+            ->orderBy('created_at', $this->sortDirection)
+            ->get();
+
+        $this->acceptedTickets = Ticket::where('is_hidden', true)
+            ->orderBy('created_at', $this->sortDirection)
+            ->get();
+    }
+
+    public function searchEmail()
+    {
+        $this->tickets = Ticket::where('is_hidden', false)
+            ->where('user_email', 'like', '%' . $this->search . '%')
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $this->archivedTickets = Ticket::where('is_hidden', true)
+        $this->acceptedTickets = Ticket::where('is_hidden', true)
+            ->where('user_email', 'like', '%' . $this->search . '%')
             ->orderBy('created_at', 'asc')
             ->get();
+    }
+
+    public function startReply($ticketId)
+    {
+        $this->replyingTo = $ticketId;
+        $this->replyText = '';
+    }
+
+    public function cancelReply()
+    {
+        $this->replyingTo = null;
+        $this->replyText = '';
+    }
+
+    public function sendReply()
+    {
+        $this->validate([
+            'replyText' => 'required|min:3',
+        ]);
+
+        $ticket = Ticket::findOrFail($this->replyingTo);
+
+        TicketReply::create([
+            'ticket_id' => $this->replyingTo,
+            'message' => $this->replyText,
+            'is_from_staff' => true,
+            'is_read' => false
+        ]);
+
+        $this->replyingTo = null;
+        $this->replyText = '';
+
+        session()->flash('message', 'Reply sent successfully!');
+    }
+
+    public function toggleSort()
+    {
+        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        $this->refreshTickets();
     }
 }
