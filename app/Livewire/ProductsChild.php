@@ -163,7 +163,7 @@ class ProductsChild extends Component {
 
     private function savePicture() {
         if ($this->isPictureUploaded()) {
-            if ($this->product->picture) {
+            if (isset($this->product->picture)) {
                 FacadesStorage::disk('public')->delete($this->product->picture);
             }
 

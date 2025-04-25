@@ -56,7 +56,7 @@ class OrdersChild extends Component
 
             case 'Edit':
                 $this->authorize('update', $this->order);
-                $this->updateTableData($this->order->orderItems);
+                $this->updateTableData($this->order->orderItemsWrapper());
                 break;
 
             case 'Delete':
@@ -239,12 +239,11 @@ class OrdersChild extends Component
     public function acceptItem($itemId) {
         $item = OrderItem::findOrFail($itemId);
         $this->authorize('update', $item);
-
         $item->update(['status' => 'accepted', 'date_accepted' => now()]);
 
         MarkOrderItemAsShipped::dispatch($item->id)->delay(now()->addSeconds(10));
 
-        $this->updateTableData($this->order->orderItems);
+        $this->updateTableData($this->order->orderItemsWrapper());
         $this->dispatch('refreshOrdersTable');
     }
 
@@ -257,7 +256,7 @@ class OrdersChild extends Component
         $revertedProductQuantity = $item->product->quantity + $item->order_quantity;
         $item->product->update(['quantity' => $revertedProductQuantity]);
 
-        $this->updateTableData($this->order->orderItems);
+        $this->updateTableData($this->order->orderItemsWrapper());
         $this->dispatch('refreshOrdersTable');
     }
 
